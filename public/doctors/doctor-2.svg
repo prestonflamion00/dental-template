@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 440" width="420" height="440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dfdc"/><stop offset="1" stop-color="#e2c5c2"/></linearGradient>
+    <radialGradient id="glow" cx="0.7" cy="0.2" r="0.6"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef0ef"/></linearGradient>
+  </defs>
+  <rect width="420" height="440" fill="url(#bg)"/>
+  <rect width="420" height="440" fill="url(#glow)"/>
+  <circle cx="330" cy="90" r="70" fill="#fff" opacity=".18"/>
+  <path d="M60 440c4-92 60-140 150-140s146 48 150 140z" fill="url(#coat)"/>
+  <path d="M180 300l30 70 30-70z" fill="#c98d98"/>
+  <path d="M150 312l60 128M270 312l-60 128" stroke="#dfe3e1" stroke-width="3"/>
+  <rect x="186" y="232" width="48" height="74" rx="22" fill="#e9c3a6"/>
+  <path d="M186 268c14 10 34 10 48 0v20c-14 10-34 10-48 0z" fill="#000" opacity=".08"/>
+  <path d="M140 168c-8-62 28-104 70-104s80 40 72 104c6 40 14 86 32 112-36 10-66-6-80-30h-56c-14 24-44 40-80 30 18-26 34-72 42-112z" fill="#6b4a32"/>
+  <ellipse cx="210" cy="178" rx="62" ry="74" fill="#e9c3a6"/>
+  
+  <path d="M148 150c10-44 40-66 62-66s56 18 66 66c-20-26-44-34-66-34s-46 8-62 34z" fill="#6b4a32"/>
+  <circle cx="298" cy="392" r="10" fill="#c98d98" opacity=".9"/>
+</svg>
