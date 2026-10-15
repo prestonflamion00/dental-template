@@ -2,12 +2,12 @@ import { ImageResponse } from "next/og";
 import office from "@/config/office";
 import { resolveTheme } from "@/config/themes";
 
-// Favicon in the office's brand colour, generated at build time.
+// /favicon.png in the office's brand colour, generated at build time.
+// (A plain route rather than app/icon.tsx so the link respects a deploy sub-folder.)
 export const dynamic = "force-static";
-export const size = { width: 64, height: 64 };
-export const contentType = "image/png";
+const size = { width: 64, height: 64 };
 
-export default function Icon() {
+export function GET() {
   const t = resolveTheme(office.theme.preset, office.theme.accent);
   return new ImageResponse(
     (

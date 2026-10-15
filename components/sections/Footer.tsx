@@ -3,7 +3,7 @@ import type { OfficeConfig } from "@/config/types";
 import { Logo } from "@/components/ui/Logo";
 import { SocialIcon } from "@/components/ui/Icon";
 import { compactHours } from "@/lib/hours";
-import { mapsHref, telHref } from "@/lib/format";
+import { mapsHref, telHref, withBase } from "@/lib/format";
 
 const SOCIAL_LABELS: Record<string, string> = {
   facebook: "Facebook",
@@ -80,9 +80,9 @@ export function Footer({ office }: { office: OfficeConfig }) {
           <nav aria-label="Footer">
             <h2 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Info</h2>
             <ul className="mt-3 grid gap-1.5 text-ink">
-              <li><a href="/privacy" className="inline-block py-1 hover:text-accent">Privacy policy</a></li>
-              <li><a href="/accessibility" className="inline-block py-1 hover:text-accent">Accessibility</a></li>
-              <li><a href="/#contact" className="inline-block py-1 hover:text-accent">Contact</a></li>
+              <li><a href={withBase("/privacy")} className="inline-block py-1 hover:text-accent">Privacy policy</a></li>
+              <li><a href={withBase("/accessibility")} className="inline-block py-1 hover:text-accent">Accessibility</a></li>
+              <li><a href={withBase("/#contact")} className="inline-block py-1 hover:text-accent">Contact</a></li>
             </ul>
           </nav>
         </div>

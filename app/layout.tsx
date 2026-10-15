@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import office from "@/config/office";
 import { allThemesCss, resolveTheme, themeToCssVars, THEME_PRESETS } from "@/config/themes";
 import { dentistJsonLd } from "@/lib/schema";
+import { withBase } from "@/lib/format";
 import "./globals.css";
 
 // Self-hosted variable fonts (no runtime requests to Google).
@@ -37,6 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: office.seo.title, description: office.seo.description },
   formatDetection: { telephone: true, address: true },
+  icons: { icon: { url: withBase("/favicon.png"), type: "image/png" } },
 };
 
 export const viewport: Viewport = {

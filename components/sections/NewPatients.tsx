@@ -3,7 +3,7 @@ import type { OfficeConfig } from "@/config/types";
 import { Icon } from "@/components/ui/Icon";
 import { Section } from "@/components/ui/Section";
 import { BookButton } from "@/components/booking/BookButton";
-import { telHref } from "@/lib/format";
+import { telHref, withBase } from "@/lib/format";
 
 export function NewPatients({ office }: { office: OfficeConfig }) {
   const { copy, insurances, newPatientFormsUrl, contact } = office;
@@ -37,7 +37,7 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
             {/* MOCK: points at a sample PDF. Replace with the office's real forms, or an online intake link (e.g. Jotform HIPAA, NexHealth Forms). */}
-            <a href={newPatientFormsUrl ?? "#"} className="btn btn-glass" download>
+            <a href={newPatientFormsUrl ? withBase(newPatientFormsUrl) : "#"} className="btn btn-glass" download>
               <FileDown size={18} aria-hidden="true" className="text-accent" />
               Download new patient forms
             </a>

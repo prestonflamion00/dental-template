@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import office from "@/config/office";
 import { Logo } from "./Logo";
 import { Footer } from "@/components/sections/Footer";
+import { withBase } from "@/lib/format";
 
 /** Shell for secondary pages (privacy, accessibility). */
 export function SimplePage({ title, children }: { title: string; children: React.ReactNode }) {
@@ -9,10 +10,10 @@ export function SimplePage({ title, children }: { title: string; children: React
     <>
       <header className="px-3 pt-3 sm:px-5 sm:pt-4">
         <div className="glass-strong mx-auto flex max-w-6xl items-center justify-between rounded-[24px] px-5 py-2.5">
-          <a href="/">
+          <a href={withBase("/")}>
             <Logo practice={office.practice} />
           </a>
-          <a href="/" className="btn btn-glass">
+          <a href={withBase("/")} className="btn btn-glass">
             <ArrowLeft size={18} aria-hidden="true" /> Home
           </a>
         </div>

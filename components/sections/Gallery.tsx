@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useId, useState } from "react";
 import { MoveHorizontal } from "lucide-react";
 import type { GalleryItem } from "@/config/types";
+import { withBase } from "@/lib/format";
 
 /** Before/after comparison: drag the handle (or use arrow keys on the slider). */
 function Compare({ item }: { item: GalleryItem }) {
@@ -12,9 +13,9 @@ function Compare({ item }: { item: GalleryItem }) {
   return (
     <figure className="glass rounded-[28px] p-3" data-reveal>
       <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-accent-soft select-none has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-accent">
-        <Image src={item.after} alt={`After: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
+        <Image src={withBase(item.after)} alt={`After: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
         <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-          <Image src={item.before} alt={`Before: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
+          <Image src={withBase(item.before)} alt={`Before: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
         </div>
         <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">Before</span>
         <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">After</span>

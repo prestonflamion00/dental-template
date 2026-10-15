@@ -1,12 +1,13 @@
 import Image from "next/image";
 import type { OfficeConfig } from "@/config/types";
 import { Tooth } from "./Icon";
+import { withBase } from "@/lib/format";
 
 /** Text logo (default) or image logo when `practice.logo.image` is set. */
 export function Logo({ practice, compact = false }: { practice: OfficeConfig["practice"]; compact?: boolean }) {
   const { logo, name } = practice;
   if (logo.image) {
-    return <Image src={logo.image} alt={name} width={180} height={48} className="h-10 w-auto" priority />;
+    return <Image src={withBase(logo.image)} alt={name} width={180} height={48} className="h-10 w-auto" priority />;
   }
   return (
     <span className="flex items-center gap-2.5">

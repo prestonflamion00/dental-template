@@ -1,5 +1,9 @@
 # Dental Office Website Template
 
+### [👉 Open the live website](https://prestonflamion00.github.io/dental-template/) · [Theme demo mode](https://prestonflamion00.github.io/dental-template/?demo)
+
+<sub>The live site rebuilds automatically a couple of minutes after every change to the `main` branch (see the **Actions** tab).</sub>
+
 A premium, re-skinnable website for dental practices. Each practice's content, branding and section layout lives in one typed config file, so a new office needs no code changes.
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · no backend, no API keys, static-export friendly.
@@ -93,6 +97,8 @@ Three presets are defined in `config/themes.ts` and applied as CSS custom proper
 4. Deploy, then add the practice's domain under **Settings → Domains** and set `seo.siteUrl` to match.
 
 **Many practices, one repo:** create one Vercel project per practice from the same repo, each with its own `NEXT_PUBLIC_OFFICE` and domain.
+
+**GitHub Pages (already set up):** `.github/workflows/deploy-pages.yml` publishes to `https://<user>.github.io/<repo>/` on every push to `main`. If the first run fails, open **Settings → Pages**, set **Source** to **GitHub Actions**, and re-run the workflow from the **Actions** tab.
 
 **Other hosts:** `npm run export` writes a static site to `/out` (Netlify, Cloudflare Pages, S3, GitHub Pages). Image optimization is turned off automatically in that mode.
 

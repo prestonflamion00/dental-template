@@ -28,3 +28,12 @@ export function initials(name: string): string {
 export function cx(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
+
+/**
+ * Prefix a site-relative path ("/doctors/a.svg", "/privacy") with the deploy
+ * sub-folder, e.g. "/dental-template" on GitHub Pages. No-op on Vercel/root hosts.
+ */
+export function withBase(path: string): string {
+  const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  return base && path.startsWith("/") && !path.startsWith("//") ? base + path : path;
+}

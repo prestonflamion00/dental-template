@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
-import { cx } from "@/lib/format";
+import { cx, withBase } from "@/lib/format";
 
 export function Doctors({ office }: { office: OfficeConfig }) {
   const { doctors, copy } = office;
@@ -13,7 +13,7 @@ export function Doctors({ office }: { office: OfficeConfig }) {
           <li key={d.name} className="glass glass-hover flex flex-col rounded-[28px] p-3" data-reveal style={{ ["--d" as string]: `${i * 90}ms` }}>
             <div className="relative aspect-[4/4.2] overflow-hidden rounded-[22px] bg-accent-soft">
               <Image
-                src={d.photo}
+                src={withBase(d.photo)}
                 alt={`Portrait of ${d.name}`}
                 fill
                 sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"

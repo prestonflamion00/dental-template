@@ -4,7 +4,7 @@ import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
 import { Stars } from "@/components/ui/Stars";
-import { telHref } from "@/lib/format";
+import { telHref, withBase } from "@/lib/format";
 
 export function Hero({ office }: { office: OfficeConfig }) {
   const { practice, copy, rating, contact, doctors } = office;
@@ -72,7 +72,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                 {doctors.slice(0, 3).map((d) => (
                   <Image
                     key={d.name}
-                    src={d.photo}
+                    src={withBase(d.photo)}
                     alt=""
                     width={48}
                     height={48}
