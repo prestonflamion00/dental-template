@@ -3,6 +3,7 @@ import type { OfficeConfig } from "../types";
 /** Demo 2 — a boutique cosmetic & implant studio. Theme: blush sand. */
 const lumiere: OfficeConfig = {
   id: "lumiere",
+  showcase: true, // fictional demo practice: shown on the public examples page
 
   practice: {
     name: "Lumière Dental Studio",

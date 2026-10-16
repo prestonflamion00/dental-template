@@ -3,6 +3,7 @@ import type { OfficeConfig } from "../types";
 /** Demo 3 — a cheerful pediatric practice. Theme: soft blue-sage. */
 const littleSprouts: OfficeConfig = {
   id: "little-sprouts",
+  showcase: true, // fictional demo practice: shown on the public examples page
 
   practice: {
     name: "Little Sprouts Pediatric Dentistry",

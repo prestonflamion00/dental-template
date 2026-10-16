@@ -1,13 +1,15 @@
 # Dental Office Website Template
 
-### [👉 Open all practice demos](https://prestonflamion00.github.io/dental-template/)
+### [👉 Website examples](https://prestonflamion00.github.io/dental-template/)
 
-Each practice has its own link you can text to a dentist:
+Each practice has its own link you can text to a dentist. The public examples page lists only the fictional showcase practices:
 [Maple Grove](https://prestonflamion00.github.io/dental-template/maple-grove/) ·
 [Lumière](https://prestonflamion00.github.io/dental-template/lumiere/) ·
 [Little Sprouts](https://prestonflamion00.github.io/dental-template/little-sprouts/)
 
-<sub>The live site rebuilds automatically a few minutes after every change to the `main` branch (see the **Actions** tab). New practices get their own link and appear on the demo page automatically.</sub>
+<sub>The live site rebuilds automatically a few minutes after every change to the `main` branch (see the **Actions** tab).</sub>
+
+**Real prospects stay unlisted.** A practice without `showcase: true` gets its own working link, but it isn't listed on the public page. Every practice, prospects included, is listed on a private hub page at an unlisted address (the `HUB_PATH` in `scripts/build-all.mjs`). All demo sites tell search engines not to index them.
 
 A premium, re-skinnable website for dental practices. Each practice's content, branding and section layout lives in one typed config file, so a new office needs no code changes.
 
@@ -45,7 +47,8 @@ npm run check:contrast # WCAG AA audit of every theme, including text on glass
 
 The live site builds **every** office in `config/offices/` (via `scripts/build-all.mjs`):
 
-- `https://<user>.github.io/dental-template/` lists all practice demos, with share buttons
+- `https://<user>.github.io/dental-template/` is the public examples page (only `showcase: true` practices)
+- `https://<user>.github.io/dental-template/<HUB_PATH>/` is the private hub listing every practice, with share buttons
 - `https://<user>.github.io/dental-template/<key>/` holds one full site per practice
 
 The file name is the key and the URL, e.g. `config/offices/smith-dental.ts` → `/smith-dental/`.

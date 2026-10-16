@@ -3,6 +3,7 @@ import type { OfficeConfig } from "../types";
 /** Demo 1 — a warm, general family practice. Theme: warm neutral. */
 const mapleGrove: OfficeConfig = {
   id: "maple-grove",
+  showcase: true, // fictional demo practice: shown on the public examples page
 
   practice: {
     name: "Maple Grove Family Dental",

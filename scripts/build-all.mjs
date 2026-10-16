@@ -1,10 +1,12 @@
 /**
- * Builds every practice in config/offices/ into its own folder, plus an index
- * page that links to all of them:
+ * Builds every practice in config/offices/ into its own folder, plus two index pages:
  *
- *   site/index.html            ← "Practice demos" hub
+ *   site/index.html            ← PUBLIC "Website examples": only offices with `showcase: true`
+ *   site/hub-77aa44n8g2/      ← PRIVATE hub listing every practice (unlisted URL)
  *   site/maple-grove/          ← one full static site per practice
- *   site/lumiere/ …
+ *
+ * Real prospects (no `showcase`) are never listed publicly; anyone with their link can open it.
+ * All demo builds are marked noindex so search engines don't list them (set NOINDEX=0 to disable).
  *
  * Usage:  BASE_PATH=/dental-template SITE_URL=https://you.github.io/dental-template node scripts/build-all.mjs
  * (BASE_PATH is the sub-folder the site is served from; empty for a root domain.
@@ -19,6 +21,9 @@ import { pathToFileURL } from "node:url";
 const root = join(import.meta.dirname, "..");
 const base = (process.env.BASE_PATH ?? "").replace(/\/$/, "");
 const siteUrl = (process.env.SITE_URL ?? "").replace(/\/$/, "");
+const noindex = process.env.NOINDEX !== "0";
+// Unlisted address of the private hub. Not linked from anywhere on the site.
+const HUB_PATH = process.env.HUB_PATH || "hub-77aa44n8g2";
 const outDir = join(root, "site");
 
 const slugs = readdirSync(join(root, "config/offices"))
@@ -46,7 +51,13 @@ for (const slug of slugs) {
   const res = spawnSync("npx", ["next", "build"], {
     cwd: root,
     stdio: "inherit",
-    env: { ...process.env, STATIC_EXPORT: "1", NEXT_PUBLIC_OFFICE: slug, NEXT_PUBLIC_BASE_PATH: `${base}/${slug}` },
+    env: {
+      ...process.env,
+      STATIC_EXPORT: "1",
+      NEXT_PUBLIC_OFFICE: slug,
+      NEXT_PUBLIC_BASE_PATH: `${base}/${slug}`,
+      NEXT_PUBLIC_NOINDEX: noindex ? "1" : "",
+    },
   });
   if (res.status !== 0) process.exit(res.status ?? 1);
   cpSync(join(root, "out"), join(outDir, slug), { recursive: true });
@@ -56,7 +67,8 @@ for (const slug of slugs) {
 
 /* ── Index page ─────────────────────────────────────────────────────────── */
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const cards = built
+function cardsFor(items, showBadge) {
+  return items
   .map(({ slug, office: o }) => {
     const t = themes[o.theme.preset];
     const accent = o.theme.accent ?? t.accent;
@@ -68,6 +80,7 @@ const cards = built
       <h2>${esc(o.practice.name)}</h2>
       <p class="meta">${esc(o.contact.address.city)}, ${esc(o.contact.address.region)} · ${esc(t.label)} theme</p>
       <p class="tag">${esc(o.practice.tagline)}</p>
+      ${showBadge ? `<p class="badge">${o.showcase ? "Public example" : "Private: link only"}</p>` : ""}
       <div class="actions">
         <a class="btn primary" href="${url}">Open website</a>
         <a class="btn" href="${url}?demo">Theme demo</a>
@@ -77,16 +90,16 @@ const cards = built
     </li>`;
   })
   .join("");
+}
 
-writeFileSync(
-  join(outDir, "index.html"),
-  `<!doctype html>
+function renderPage({ title, heading, lead, items, showBadge }) {
+  return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Practice demos</title>
+<title>${esc(title)}</title>
 <style>
   :root { --ink:#2b211b; --muted:#5c4e44; --bg:#fbf7f1; }
   * { box-sizing: border-box; }
@@ -109,15 +122,17 @@ writeFileSync(
   .btn.primary { background:var(--accent); color:#fff; border-color:transparent; }
   button.btn { font: inherit; font-weight:600; cursor:pointer; }
   .btn:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+  .badge { display:inline-block; font-size:.8rem; font-weight:700; padding:3px 10px; border-radius:999px; background:#f3e9df; margin:0 0 16px; }
+  .empty { color:var(--muted); }
   .link { font-size:.85rem; color:var(--muted); margin:14px 0 0; word-break:break-all; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Practice demos</h1>
-  <p class="lead">${built.length} practice website${built.length === 1 ? "" : "s"}. Each has its own link you can text to the dentist.</p>
-  <ul>${cards}
-  </ul>
+  <h1>${esc(heading)}</h1>
+  <p class="lead">${lead}</p>
+  ${items.length ? `<ul>${cardsFor(items, showBadge)}
+  </ul>` : `<p class="empty">Nothing here yet.</p>`}
 </main>
 <script>
   // Share sheet on phones (Messages, email…); copy to clipboard elsewhere.
@@ -131,8 +146,34 @@ writeFileSync(
 </script>
 </body>
 </html>
-`,
+`;
+}
+
+// Public page: fictional showcase practices only.
+writeFileSync(
+  join(outDir, "index.html"),
+  renderPage({
+    title: "Website examples",
+    heading: "Website examples",
+    lead: "Example dental practice websites. Each one is a complete, working site, built to look great on phones.",
+    items: built.filter((b) => b.office.showcase),
+    showBadge: false,
+  }),
+);
+
+// Private hub: every practice, including unlisted prospects.
+mkdirSync(join(outDir, HUB_PATH), { recursive: true });
+writeFileSync(
+  join(outDir, HUB_PATH, "index.html"),
+  renderPage({
+    title: "All demos (private)",
+    heading: "All practice demos",
+    lead: `Private page: only people with this link can open it. ${built.length} practice website${built.length === 1 ? "" : "s"}. Practices marked “Private” aren’t listed on the public examples page.`,
+    items: built,
+    showBadge: true,
+  }),
 );
 
 if (existsSync(join(root, "out"))) rmSync(join(root, "out"), { recursive: true, force: true });
 console.log(`\n✓ Built ${built.length} practices into site/: ${built.map((b) => b.slug).join(", ")}`);
+console.log(`  Private hub: ${base}/${HUB_PATH}/`);
