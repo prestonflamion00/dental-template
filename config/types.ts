@@ -108,6 +108,12 @@ export interface OfficeConfig {
   /** Short slug, used for keys and analytics. */
   id: string;
 
+  /**
+   * List this practice on the PUBLIC examples page. Leave it off for real
+   * prospects: their link still works, but it isn't listed anywhere public.
+   */
+  showcase?: boolean;
+
   practice: {
     name: string;
     tagline: string;

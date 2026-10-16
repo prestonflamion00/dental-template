@@ -38,6 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: office.seo.title, description: office.seo.description },
   formatDetection: { telephone: true, address: true },
+  // Demo builds (scripts/build-all.mjs) are kept out of search engines.
+  ...(process.env.NEXT_PUBLIC_NOINDEX === "1" ? { robots: { index: false, follow: false } } : {}),
   icons: { icon: { url: withBase("/favicon.png"), type: "image/png" } },
 };
 
