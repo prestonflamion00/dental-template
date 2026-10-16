@@ -1,7 +1,7 @@
 import type { OfficeConfig } from "../types";
 
 /** Demo 1 — a warm, general family practice. Theme: warm neutral. */
-const family: OfficeConfig = {
+const mapleGrove: OfficeConfig = {
   id: "maple-grove",
 
   practice: {
@@ -259,4 +259,4 @@ const family: OfficeConfig = {
   },
 };
 
-export default family;
+export default mapleGrove;

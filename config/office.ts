@@ -3,23 +3,35 @@
  * │  ACTIVE OFFICE — change this one line to switch practices.   │
  * └──────────────────────────────────────────────────────────────┘
  *
- * Options: "family" | "cosmetic" | "pediatric" (or any file you add below).
- * You can also set NEXT_PUBLIC_OFFICE in the environment (e.g. per Vercel
- * project) to deploy several offices from one repo without editing code.
+ * Used for `npm run dev`. Each key is also the practice's web address on the
+ * live site, e.g. "maple-grove" → https://<user>.github.io/<repo>/maple-grove/
+ *
+ * The live site builds EVERY office listed below (see scripts/build-all.mjs),
+ * so adding a practice = add its file in config/offices/ + one line here.
  */
-const ACTIVE_OFFICE: OfficeKey = "family";
+const ACTIVE_OFFICE: OfficeKey = "maple-grove";
 
 import type { OfficeConfig } from "./types";
-import family from "./offices/family";
-import cosmetic from "./offices/cosmetic";
-import pediatric from "./offices/pediatric";
+import mapleGrove from "./offices/maple-grove";
+import lumiere from "./offices/lumiere";
+import littleSprouts from "./offices/little-sprouts";
 
-/** Registry of available offices. Add a new office: import it and add a key here. */
-export const offices = { family, cosmetic, pediatric } satisfies Record<string, OfficeConfig>;
+/** Registry: key = file name in config/offices/ = URL slug. */
+export const offices = {
+  "maple-grove": mapleGrove,
+  lumiere: lumiere,
+  "little-sprouts": littleSprouts,
+} satisfies Record<string, OfficeConfig>;
 export type OfficeKey = keyof typeof offices;
 
-const envKey = process.env.NEXT_PUBLIC_OFFICE as OfficeKey | undefined;
-const office: OfficeConfig = offices[envKey && envKey in offices ? envKey : ACTIVE_OFFICE];
+// NEXT_PUBLIC_OFFICE picks the office at build time (set by build-all, or per Vercel project).
+const envKey = process.env.NEXT_PUBLIC_OFFICE;
+if (envKey && !(envKey in offices)) {
+  throw new Error(
+    `NEXT_PUBLIC_OFFICE="${envKey}" is not registered in config/office.ts. Add it to the \`offices\` list.`,
+  );
+}
+const office: OfficeConfig = offices[(envKey as OfficeKey) || ACTIVE_OFFICE];
 
 export default office;
 export type { OfficeConfig } from "./types";
