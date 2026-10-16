@@ -1,8 +1,13 @@
 # Dental Office Website Template
 
-### [👉 Open the live website](https://prestonflamion00.github.io/dental-template/) · [Theme demo mode](https://prestonflamion00.github.io/dental-template/?demo)
+### [👉 Open all practice demos](https://prestonflamion00.github.io/dental-template/)
 
-<sub>The live site rebuilds automatically a couple of minutes after every change to the `main` branch (see the **Actions** tab).</sub>
+Each practice has its own link you can text to a dentist:
+[Maple Grove](https://prestonflamion00.github.io/dental-template/maple-grove/) ·
+[Lumière](https://prestonflamion00.github.io/dental-template/lumiere/) ·
+[Little Sprouts](https://prestonflamion00.github.io/dental-template/little-sprouts/)
+
+<sub>The live site rebuilds automatically a few minutes after every change to the `main` branch (see the **Actions** tab). New practices get their own link and appear on the demo page automatically.</sub>
 
 A premium, re-skinnable website for dental practices. Each practice's content, branding and section layout lives in one typed config file, so a new office needs no code changes.
 
@@ -10,11 +15,11 @@ A premium, re-skinnable website for dental practices. Each practice's content, b
 
 **Demo offices included:**
 
-| Key | Practice | Theme | Notes |
+| Key / URL | Practice | Theme | Notes |
 | --- | --- | --- | --- |
-| `family` | Maple Grove Family Dental (Portland) | warm-neutral | 3 doctors, full section set |
-| `cosmetic` | Lumière Dental Studio (Scottsdale) | blush-sand | Gallery promoted right after services |
-| `pediatric` | Little Sprouts Pediatric Dentistry (Austin) | sage-blue | No gallery, emergency card near the top |
+| `maple-grove` | Maple Grove Family Dental (Portland) | warm-neutral | 3 doctors, full section set |
+| `lumiere` | Lumière Dental Studio (Scottsdale) | blush-sand | Gallery promoted right after services |
+| `little-sprouts` | Little Sprouts Pediatric Dentistry (Austin) | sage-blue | No gallery, emergency card near the top |
 
 ---
 
@@ -24,7 +29,8 @@ A premium, re-skinnable website for dental practices. Each practice's content, b
 npm install
 npm run dev            # http://localhost:3000
 npm run build && npm start   # production build
-npm run export         # fully static site in /out (any static host)
+npm run export         # static site for the active office in /out
+npm run build:all      # every office + demo index page in /site (what GitHub Pages publishes)
 npm run typecheck
 npm run check:contrast # WCAG AA audit of every theme, including text on glass
 ```
@@ -35,27 +41,34 @@ npm run check:contrast # WCAG AA audit of every theme, including text on glass
 
 ---
 
-## Switch the active office (one line)
+## Every practice gets its own link
 
-Open `config/office.ts` and change:
+The live site builds **every** office in `config/offices/` (via `scripts/build-all.mjs`):
+
+- `https://<user>.github.io/dental-template/` lists all practice demos, with share buttons
+- `https://<user>.github.io/dental-template/<key>/` holds one full site per practice
+
+The file name is the key and the URL, e.g. `config/offices/smith-dental.ts` → `/smith-dental/`.
+
+**Local preview:** `npm run dev` shows the office named on this line in `config/office.ts`:
 
 ```ts
-const ACTIVE_OFFICE: OfficeKey = "family"; // "family" | "cosmetic" | "pediatric"
+const ACTIVE_OFFICE: OfficeKey = "maple-grove"; // any key from the offices list
 ```
 
-You can also skip the code edit and set the `NEXT_PUBLIC_OFFICE=cosmetic` environment variable. This lets you run several Vercel projects (one per practice) from the same repo.
+On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single practice (e.g. one Vercel project per practice with its own domain).
 
 ---
 
 ## Add a new office in under 10 minutes
 
-1. **Copy a demo** (2 min). Duplicate the closest match, e.g. `config/offices/family.ts` → `config/offices/smith.ts`, and rename the exported constant.
+1. **Copy a demo** (2 min). Duplicate the closest match, e.g. `config/offices/maple-grove.ts` → `config/offices/smith-dental.ts` (the file name becomes the URL), and rename the exported constant.
 2. **Register it** (30 sec). In `config/office.ts`:
    ```ts
-   import smith from "./offices/smith";
-   export const offices = { family, cosmetic, pediatric, smith } satisfies Record<string, OfficeConfig>;
-   const ACTIVE_OFFICE: OfficeKey = "smith";
+   import smithDental from "./offices/smith-dental";
+   export const offices = { "maple-grove": mapleGrove, lumiere, "little-sprouts": littleSprouts, "smith-dental": smithDental } …
    ```
+   The build stops with a clear message if a file in `config/offices/` isn't registered.
 3. **Edit the essentials** (5 min). TypeScript flags anything missing or mistyped:
    - `practice`: name, tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
    - `contact`: phone, email, address, `timezone`, `hours` (24h `"HH:MM"`, `null` = closed)
@@ -67,7 +80,9 @@ You can also skip the code edit and set the `NEXT_PUBLIC_OFFICE=cosmetic` enviro
    `hero, quickInfo, services, emergency, newPatients, doctors, cta, reviews, gallery, faq, contact`.
    The nav links follow automatically. The nav, footer and mobile action bar are always shown.
 6. **Swap images** (1 min). Put doctor portraits (~4:5) in `/public/doctors/`, before/after images in `/public/gallery/`, and the forms PDF in `/public/forms/`. Then update the paths in the config.
-7. Run `npm run dev`, take a look, and deploy.
+7. Run `npm run dev` to preview (set `ACTIVE_OFFICE` to the new key), then push to `main`. The new practice goes live at `/smith-dental/`.
+
+A fill-in **client intake form** (Google Doc) covers every field above in plain language. Use it as a call script for white-glove onboarding, or send it to the practice.
 
 The page title, meta description, OpenGraph image, favicon colour, JSON-LD `Dentist` schema, sitemap and robots.txt are all generated from the config.
 
@@ -98,7 +113,7 @@ Three presets are defined in `config/themes.ts` and applied as CSS custom proper
 
 **Many practices, one repo:** create one Vercel project per practice from the same repo, each with its own `NEXT_PUBLIC_OFFICE` and domain.
 
-**GitHub Pages (already set up):** `.github/workflows/deploy-pages.yml` publishes to `https://<user>.github.io/<repo>/` on every push to `main`. If the first run fails, open **Settings → Pages**, set **Source** to **GitHub Actions**, and re-run the workflow from the **Actions** tab.
+**GitHub Pages (already set up):** `.github/workflows/deploy-pages.yml` runs `npm run build:all` and publishes every practice to `https://<user>.github.io/<repo>/<key>/` on every push to `main`. If the first run fails, open **Settings → Pages**, set **Source** to **GitHub Actions**, and re-run the workflow from the **Actions** tab.
 
 **Other hosts:** `npm run export` writes a static site to `/out` (Netlify, Cloudflare Pages, S3, GitHub Pages). Image optimization is turned off automatically in that mode.
 
@@ -126,10 +141,10 @@ Every integration lives behind one async function in **`lib/integrations.ts`**. 
 
 ```
 config/
-  office.ts            ← the one line that picks the active office
+  office.ts            ← registry of offices + the active one for local dev
   types.ts             ← OfficeConfig schema (fully typed)
   themes.ts            ← presets, contrast helpers, accent override logic
-  offices/             ← family.ts, cosmetic.ts, pediatric.ts
+  offices/             ← maple-grove.ts, lumiere.ts, little-sprouts.ts (file name = URL)
 app/
   layout.tsx           ← fonts, theme variables, metadata, JSON-LD
   page.tsx             ← renders sections in config order
@@ -144,6 +159,7 @@ lib/
   integrations.ts      ← all mocks / integration points
   schema.ts, format.ts
 scripts/
+  build-all.mjs        ← builds every office + the demo index page
   check-contrast.ts    ← WCAG AA audit for all themes
   make-placeholders.py ← regenerates placeholder art
 ```

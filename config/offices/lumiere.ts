@@ -1,7 +1,7 @@
 import type { OfficeConfig } from "../types";
 
 /** Demo 2 — a boutique cosmetic & implant studio. Theme: blush sand. */
-const cosmetic: OfficeConfig = {
+const lumiere: OfficeConfig = {
   id: "lumiere",
 
   practice: {
@@ -236,4 +236,4 @@ const cosmetic: OfficeConfig = {
   },
 };
 
-export default cosmetic;
+export default lumiere;

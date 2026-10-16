@@ -1,7 +1,7 @@
 import type { OfficeConfig } from "../types";
 
 /** Demo 3 — a cheerful pediatric practice. Theme: soft blue-sage. */
-const pediatric: OfficeConfig = {
+const littleSprouts: OfficeConfig = {
   id: "little-sprouts",
 
   practice: {
@@ -241,4 +241,4 @@ const pediatric: OfficeConfig = {
   },
 };
 
-export default pediatric;
+export default littleSprouts;
