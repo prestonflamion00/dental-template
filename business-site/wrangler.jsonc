@@ -1,0 +1,11 @@
+// Butterbite's own business website: plain static files in public/, no build step.
+// Cloudflare Worker settings: Path "/business-site", no build command,
+// Deploy command "npx wrangler@4 deploy". Kept self-contained so it can move to its own repo later.
+{
+  "name": "butterbite-site",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  }
+}
