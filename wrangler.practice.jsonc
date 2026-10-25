@@ -9,6 +9,8 @@
   "name": "practice",
   "main": "worker/contact.ts",
   "compatibility_date": "2026-10-01",
+  // Every branch push gets its own preview link (see README, "Preview builds").
+  "preview_urls": true,
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",

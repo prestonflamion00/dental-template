@@ -127,6 +127,8 @@ Three presets are defined in `config/themes.ts` and applied as CSS custom proper
 
 The Worker's name in the dashboard must match the name in the deploy command (`demos` for the first). Add the practice's domain under the Worker's **Settings → Domains & Routes**.
 
+**Preview builds (standard for every public Worker).** Each Worker has two builds in **Settings → Build**: one for `main` that runs the deploy command above (production), and one for every other branch that runs the same build with `npx wrangler versions upload` instead (`-c`/`--name` flags kept). A push to a branch then gets a preview link named after the branch, `https://<branch>-<worker>.butterbite.workers.dev`, without touching the live site; merging to `main` releases it. Keep `"preview_urls": true` in the Worker's wrangler config. The uptime monitor is the exception: no previews and no public address.
+
 **Real contact form (practice Workers only).** `worker/contact.ts` emails each message to the practice with reply-to set to the visitor, and stores nothing. To turn it on for a practice:
 1. Add the build variable `NEXT_PUBLIC_CONTACT_ENDPOINT=/api/contact` (without it the form stays a mock, as on the demos site).
 2. In Cloudflare **Email Routing**, verify the practice's inbox as a destination address (they click a link in an email). Sending to verified addresses is free.
