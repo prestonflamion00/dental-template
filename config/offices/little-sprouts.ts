@@ -4,6 +4,7 @@ import type { OfficeConfig } from "../types";
 const littleSprouts: OfficeConfig = {
   id: "little-sprouts",
   showcase: true, // fictional demo practice: shown on the public examples page
+  fictional: true, // shows the demo banner
 
   practice: {
     name: "Little Sprouts Pediatric Dentistry",

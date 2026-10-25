@@ -114,6 +114,12 @@ export interface OfficeConfig {
    */
   showcase?: boolean;
 
+  /**
+   * Made-up practice used for demos. Shows a "fictional practice" banner on every page so
+   * nobody mistakes it for a real office once it's live on a real domain.
+   */
+  fictional?: boolean;
+
   practice: {
     name: string;
     tagline: string;
