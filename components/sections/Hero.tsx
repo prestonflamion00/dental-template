@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck, CalendarDays, Check, HeartHandshake, Phone } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, Phone } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
@@ -111,7 +111,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
             </div>
           </div>
 
-          {/* Floating accents (decorative duplicates of info stated elsewhere) */}
+          {/* Floating accent (decorative duplicate of the rating stated below) */}
           <div
             aria-hidden="true"
             className="glass absolute -right-2 -top-6 hidden rounded-2xl px-4 py-3 sm:block lg:-right-6"
@@ -121,13 +121,6 @@ export function Hero({ office }: { office: OfficeConfig }) {
               <Stars rating={rating.value} size={14} className="text-ink" />
             </div>
             <p className="text-xs font-semibold text-muted">{rating.count.toLocaleString()} reviews</p>
-          </div>
-          <div
-            aria-hidden="true"
-            className="glass absolute -bottom-6 -left-3 hidden items-center gap-2.5 rounded-2xl px-4 py-3 sm:flex lg:-left-8"
-          >
-            <HeartHandshake size={20} className="text-accent" />
-            <span className="text-sm font-semibold text-ink">No judgment. Ever.</span>
           </div>
         </div>
       </div>
