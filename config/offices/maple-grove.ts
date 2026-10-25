@@ -4,6 +4,7 @@ import type { OfficeConfig } from "../types";
 const mapleGrove: OfficeConfig = {
   id: "maple-grove",
   showcase: true, // fictional demo practice: shown on the public examples page
+  fictional: true, // shows the demo banner
 
   practice: {
     name: "Maple Grove Family Dental",

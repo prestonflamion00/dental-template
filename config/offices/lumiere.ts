@@ -4,6 +4,7 @@ import type { OfficeConfig } from "../types";
 const lumiere: OfficeConfig = {
   id: "lumiere",
   showcase: true, // fictional demo practice: shown on the public examples page
+  fictional: true, // shows the demo banner
 
   practice: {
     name: "Lumière Dental Studio",
