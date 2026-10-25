@@ -161,6 +161,9 @@ writeFileSync(
   }),
 );
 
+// Site-wide robots.txt so crawlers skip the whole demos site, not just pages marked noindex.
+if (noindex) writeFileSync(join(outDir, "robots.txt"), "User-agent: *\nDisallow: /\n");
+
 // Private hub: every practice, including unlisted prospects.
 mkdirSync(join(outDir, HUB_PATH), { recursive: true });
 writeFileSync(

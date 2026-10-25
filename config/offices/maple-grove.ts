@@ -253,7 +253,7 @@ const mapleGrove: OfficeConfig = {
   },
 
   seo: {
-    siteUrl: "https://maplegrovedental.example",
+    siteUrl: "https://maplegrove-demo.com",
     title: "Maple Grove Family Dental | Gentle Family Dentist in Portland, OR",
     description:
       "Gentle, judgment-free dental care for the whole family in NE Portland. Cleanings, checkups, Invisalign, implants and same-day emergencies. Accepting new patients.",
