@@ -13,6 +13,7 @@
  */
 
 import { CONTACT_TOPICS } from "../lib/contact-topics";
+import { parsePhone } from "../lib/phone";
 
 interface EmailAddress {
   email: string;
@@ -61,10 +62,11 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
 
   const name = clean(body.name, LIMITS.name);
   const email = clean(body.email, LIMITS.email);
-  const phone = clean(body.phone, LIMITS.phone);
+  const typedPhone = clean(body.phone, LIMITS.phone);
+  const phone = typedPhone ? parsePhone(typedPhone) : null;
   const topic = CONTACT_TOPICS.find((t) => t === body.topic) ?? "Other";
   const message = typeof body.message === "string" ? body.message.trim().slice(0, LIMITS.message) : "";
-  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || message.length < 10) {
+  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || message.length < 10 || (phone && !phone.ok)) {
     return json({ ok: false, error: "invalid" }, 400);
   }
 
@@ -80,7 +82,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
         "",
         `Name:  ${name}`,
         `Email: ${email}`,
-        `Phone: ${phone || "not given"}`,
+        `Phone: ${phone?.ok ? phone.display : "not given"}`,
         `Topic: ${topic}`,
         "",
         message,

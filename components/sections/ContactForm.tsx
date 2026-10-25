@@ -10,6 +10,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { contactIsLive, sendContactMessage } from "@/lib/integrations";
 import { CONTACT_TOPICS, type ContactTopic } from "@/lib/contact-topics";
+import { parsePhone } from "@/lib/phone";
 import { cx } from "@/lib/format";
 
 type Values = { name: string; email: string; phone: string; topic: ContactTopic | ""; message: string };
@@ -19,7 +20,8 @@ export function validateContact(v: Values): Errors {
   const e: Errors = {};
   if (v.name.trim().length < 2) e.name = "Please tell us your name.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) e.email = "Please enter a valid email so we can reply.";
-  if (v.phone && v.phone.replace(/\D/g, "").length < 10) e.phone = "Please enter a 10-digit phone number, or leave it blank.";
+  if (v.phone.trim() && !parsePhone(v.phone).ok)
+    e.phone = "Please check your phone number. Outside the US, start with + and your country code.";
   if (!v.topic) e.topic = "Please choose what your message is about.";
   if (v.message.trim().length < 10) e.message = "Please add a little more detail (at least 10 characters).";
   return e;
