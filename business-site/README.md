@@ -6,4 +6,4 @@ Our own marketing site (working name "Butterbite"). Plain static files in `publi
 
 **Before launch:** set the real name and domain, add the booking link (free Cal.com account) and email in the contact section, and remove `noindex` from `public/index.html` and the `Disallow` from `public/robots.txt`.
 
-Example-site screenshots in `public/img/` are of the fictional demo practices.
+Example-site screenshots in `public/img/` show each design (Butter, Honey, Cinnamon) on a fictional demo practice.
