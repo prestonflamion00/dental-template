@@ -65,19 +65,7 @@ const figtree = localFont({
   weight: "300 900",
   display: "swap",
 });
-const oatDisplay = localFont({
-  src: "../node_modules/@fontsource-variable/lora/files/lora-latin-wght-normal.woff2",
-  variable: "--font-oat-display",
-  weight: "400 700",
-  display: "swap",
-});
-const cocoaDisplay = localFont({
-  src: "../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-soft-normal.woff2",
-  variable: "--font-cocoa-display",
-  weight: "100 900",
-  display: "swap",
-});
-const fontVars = [body, display, honeyDisplay, honeyBody, peachDisplay, warmSans, cinnamonDisplay, handwriting, figtree, oatDisplay, cocoaDisplay].map((f) => f.variable).join(" ");
+const fontVars = [body, display, honeyDisplay, honeyBody, peachDisplay, warmSans, cinnamonDisplay, handwriting, figtree].map((f) => f.variable).join(" ");
 
 const design = office.design ?? "butter";
 // Butter takes its colours from the theme preset (plus any accent override); the other designs bring their own.

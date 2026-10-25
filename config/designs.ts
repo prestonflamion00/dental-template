@@ -6,15 +6,13 @@
  *   honey     warm and friendly: rounded type, solid colour blocks, grain, sticker shadows
  *   peach     sunrise: peach-to-lilac light, arch frames, graceful light serif
  *   cinnamon  scrapbook: tilted taped cards, polaroid photos, handwritten notes from the dentist
- *   oat       calm and natural: paper texture, plant sprigs, soft bookish serif, lots of space
- *   cocoa     cozy café: rich browns and cream, soft chunky serif, arches, wavy section edges
  *
  * Every design except butter brings its own colours (below), checked by `npm run check:contrast`.
  * An office picks one with `design`; sales demos preview any of them with ?design=honey.
  */
 import { themeToCssVars, type ThemeTokens } from "./themes.ts";
 
-export const DESIGNS = ["butter", "honey", "peach", "cinnamon", "oat", "cocoa"] as const;
+export const DESIGNS = ["butter", "honey", "peach", "cinnamon"] as const;
 export type Design = (typeof DESIGNS)[number];
 
 export const designLabels: Record<Design, { label: string; feel: string }> = {
@@ -22,8 +20,6 @@ export const designLabels: Record<Design, { label: string; feel: string }> = {
   honey: { label: "Honey", feel: "Warm, friendly, handmade" },
   peach: { label: "Peach", feel: "Sunday-morning sunrise" },
   cinnamon: { label: "Cinnamon", feel: "A handwritten note from someone who knows you" },
-  oat: { label: "Oat", feel: "A calm, cozy living room" },
-  cocoa: { label: "Cocoa", feel: "Hot chocolate by the window" },
 };
 
 /** Fixed palettes for the designs that don't use a theme preset. */
@@ -73,38 +69,6 @@ export const designPalettes: Record<Exclude<Design, "butter">, ThemeTokens> = {
     accent: "#a3441e",
     accent2: "#7f3315",
     accentSoft: "#f8e2d2",
-    success: "#2f6b45",
-    danger: "#a3352b",
-  },
-  oat: {
-    label: "Oat",
-    bg: "#f6f1e7",
-    bg2: "#efe7d8",
-    bg3: "#f3ede2",
-    orb1: "#e3d6bf",
-    orb2: "#d5dcc8",
-    orb3: "#ead2c2",
-    ink: "#2c2a24",
-    muted: "#5b564b",
-    accent: "#56694d",
-    accent2: "#43543c",
-    accentSoft: "#e5e9dc",
-    success: "#2f6b45",
-    danger: "#a3352b",
-  },
-  cocoa: {
-    label: "Cocoa",
-    bg: "#fbf4ec",
-    bg2: "#f3e3d3",
-    bg3: "#f7ece1",
-    orb1: "#f2c9c0",
-    orb2: "#e8c39e",
-    orb3: "#f3dcc8",
-    ink: "#3b2418",
-    muted: "#6a4c3c",
-    accent: "#8a4b2a",
-    accent2: "#6b3519",
-    accentSoft: "#f3e0d0",
     success: "#2f6b45",
     danger: "#a3352b",
   },

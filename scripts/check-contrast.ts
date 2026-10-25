@@ -47,8 +47,6 @@ const designCards: Record<keyof typeof designPalettes, (t: ThemeTokens) => strin
   honey: () => "#fffdf8",
   peach: () => "#fffaf6",
   cinnamon: () => "#fffdf9",
-  oat: () => "#fbf8f2",
-  cocoa: () => "#fffaf5",
 };
 for (const [d, t] of Object.entries(designPalettes) as [keyof typeof designPalettes, ThemeTokens][]) {
   const onAccent = "#ffffff";
