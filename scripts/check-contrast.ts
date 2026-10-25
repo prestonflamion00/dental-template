@@ -8,7 +8,7 @@
  *
  * Run: npm run check:contrast   (Node 22+, uses built-in TypeScript stripping)
  */
-import { THEME_PRESETS, themes, resolveTheme, contrast, mix, textSurfaces, type ThemeTokens } from "../config/themes.ts";
+import { THEME_PRESETS, themes, resolveTheme, contrast, textSurfaces, type ThemeTokens } from "../config/themes.ts";
 import { designPalettes } from "../config/designs.ts";
 
 const AA = 4.5;
@@ -44,16 +44,14 @@ for (const accent of ["#f59fb0", "#7dd3c0", "#ffcc00", "#3b82f6"]) {
 
 // Designs with their own palettes: flat or dark cards instead of white glass (see app/designs.css).
 const designCards: Record<keyof typeof designPalettes, (t: ThemeTokens) => string> = {
-  crisp: () => "#ffffff",
   honey: () => "#fffdf8",
-  midnight: (t) => mix("#ffffff", t.bg2, 0.07),
   peach: () => "#fffaf6",
   cinnamon: () => "#fffdf9",
   oat: () => "#fbf8f2",
   cocoa: () => "#fffaf5",
 };
 for (const [d, t] of Object.entries(designPalettes) as [keyof typeof designPalettes, ThemeTokens][]) {
-  const onAccent = d === "midnight" ? "#14110b" : "#ffffff";
+  const onAccent = "#ffffff";
   let worst = Infinity;
   for (const s of [t.bg, t.bg2, t.bg3, t.accentSoft, designCards[d](t)]) {
     for (const [k, fg] of [["ink", t.ink], ["muted", t.muted], ["accent text", t.accent], ["success", t.success], ["danger", t.danger]]) {

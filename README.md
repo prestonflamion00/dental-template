@@ -93,14 +93,12 @@ The page title, meta description, OpenGraph image, favicon colour, JSON-LD `Dent
 
 ## Designs
 
-Eight looks share the same sections, content and code, so a change to any section reaches all of them. Set `design` in the office file (default `butter`). Sales demos switch live with `?design=crisp`, or `?demo` for a picker.
+Six looks share the same sections, content and code, so a change to any section reaches all of them. Set `design` in the office file (default `butter`). Sales demos switch live with `?design=honey`, or `?demo` for a picker.
 
 | Design | Feel |
 | --- | --- |
 | `butter` | soft, airy, frosted glass; colours from the theme preset below |
-| `crisp` | editorial: big sans type, flat surfaces, thin lines, bento tiles |
 | `honey` | warm and friendly: rounded type, solid colour blocks, grain, sticker shadows |
-| `midnight` | dark and premium: high-contrast serif, gold accent, dark glass |
 | `peach` | sunrise: peach-to-lilac light, arch frames, graceful light serif |
 | `cinnamon` | scrapbook: tilted taped cards, polaroid photos, handwritten note from the dentist |
 | `oat` | calm and natural: paper texture, plant sprigs, soft bookish serif, lots of space |

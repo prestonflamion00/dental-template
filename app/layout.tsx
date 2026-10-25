@@ -23,12 +23,6 @@ const display = localFont({
 });
 
 // Fonts for the other designs. Browsers only download the ones the active design uses.
-const crispSans = localFont({
-  src: "../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2",
-  variable: "--font-crisp",
-  weight: "100 900",
-  display: "swap",
-});
 const honeyDisplay = localFont({
   src: "../node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2",
   variable: "--font-honey-display",
@@ -39,15 +33,6 @@ const honeyBody = localFont({
   src: "../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2",
   variable: "--font-honey-body",
   weight: "200 1000",
-  display: "swap",
-});
-const midnightDisplay = localFont({
-  src: [
-    { path: "../node_modules/@fontsource-variable/bodoni-moda/files/bodoni-moda-latin-standard-normal.woff2", style: "normal" },
-    { path: "../node_modules/@fontsource-variable/bodoni-moda/files/bodoni-moda-latin-standard-italic.woff2", style: "italic" },
-  ],
-  variable: "--font-midnight-display",
-  weight: "400 900",
   display: "swap",
 });
 const peachDisplay = localFont({
@@ -92,7 +77,7 @@ const cocoaDisplay = localFont({
   weight: "100 900",
   display: "swap",
 });
-const fontVars = [body, display, crispSans, honeyDisplay, honeyBody, midnightDisplay, peachDisplay, warmSans, cinnamonDisplay, handwriting, figtree, oatDisplay, cocoaDisplay].map((f) => f.variable).join(" ");
+const fontVars = [body, display, honeyDisplay, honeyBody, peachDisplay, warmSans, cinnamonDisplay, handwriting, figtree, oatDisplay, cocoaDisplay].map((f) => f.variable).join(" ");
 
 const design = office.design ?? "butter";
 // Butter takes its colours from the theme preset (plus any accent override); the other designs bring their own.
@@ -128,7 +113,7 @@ export const viewport: Viewport = {
 
 /**
  * Runs before paint: marks JS as available (enables scroll-reveal) and lets
- * sales demos preview other presets with ?theme=sage-blue and other designs with ?design=crisp (no rebuild needed).
+ * sales demos preview other presets with ?theme=sage-blue and other designs with ?design=honey (no rebuild needed).
  */
 const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var q=new URLSearchParams(location.search),t=q.get('theme'),g=q.get('design');if(t&&${JSON.stringify(
   THEME_PRESETS,
