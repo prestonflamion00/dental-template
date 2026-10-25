@@ -127,6 +127,13 @@ Three presets are defined in `config/themes.ts` and applied as CSS custom proper
 
 The Worker's name in the dashboard must match the name in the deploy command (`demos` for the first). Add the practice's domain under the Worker's **Settings → Domains & Routes**.
 
+**Real contact form (practice Workers only).** `worker/contact.ts` emails each message to the practice with reply-to set to the visitor, and stores nothing. To turn it on for a practice:
+1. Add the build variable `NEXT_PUBLIC_CONTACT_ENDPOINT=/api/contact` (without it the form stays a mock, as on the demos site).
+2. In Cloudflare **Email Routing**, verify the practice's inbox as a destination address (they click a link in an email). Sending to verified addresses is free.
+3. Add runtime variables under the Worker's **Settings → Variables and secrets**: `CONTACT_TO` (that inbox), `CONTACT_FROM` (a sender on a domain with Email Routing enabled) and optionally `PRACTICE_NAME`.
+
+Enabling Email Routing changes a domain's mail (MX) records, so never enable it on a practice domain that already has email. Send from our own business domain instead.
+
 **Other hosts:** `npm run export` writes a static site to `/out` (Netlify, Cloudflare Pages, S3, GitHub Pages). Image optimization is turned off automatically in that mode.
 
 ---
@@ -139,7 +146,7 @@ Every integration lives behind one async function in **`lib/integrations.ts`**. 
 | --- | --- | --- |
 | Booking availability | `getAvailableSlots()`: fake slots derived from office hours | NexHealth, LocalMed, Zocdoc, Open Dental or Dentrix APIs, called from a server route |
 | Booking submission | `submitBooking()`: returns a fake confirmation | Same provider. Or set `booking.url` to skip the modal and link to a hosted scheduler. |
-| Contact form | `sendContactMessage()` | Formspree, Basin or Netlify Forms (static-friendly), or a Resend/Postmark server route |
+| Contact form | `sendContactMessage()`: mock unless `NEXT_PUBLIC_CONTACT_ENDPOINT` is set | Live on practice Workers via `worker/contact.ts` (Cloudflare email; see above) |
 | Reviews & rating badge | Read from the config | Google Places API (fetched at build time), Birdeye, Podium or Weave |
 | Map | Illustrated SVG card plus a "Directions" deep link (`components/sections/Contact.tsx`) | Lazy Google Maps Embed or OpenStreetMap iframe |
 | New patient forms | Sample PDF in `/public/forms` | The practice's real PDF, or a HIPAA-compliant online intake link |

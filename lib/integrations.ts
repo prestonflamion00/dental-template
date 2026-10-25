@@ -8,6 +8,7 @@
  */
 import type { Day, DayHours } from "@/config/types";
 import { dayFromDate } from "./hours";
+import type { ContactTopic } from "./contact-topics";
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -81,18 +82,32 @@ export interface ContactMessage {
   name: string;
   email: string;
   phone?: string;
+  topic: ContactTopic;
   message: string;
+  /** Bot traps checked by the server: a hidden field that must stay empty, and when the form was first shown. */
+  company: string;
+  startedAt: number;
 }
 
+/** Set at build time for practices whose Worker runs worker/contact.ts; demos leave it unset and stay mocked. */
+const CONTACT_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
+export const contactIsLive = !!CONTACT_ENDPOINT;
+
 /**
- * MOCK: pretends to send the message.
- * REPLACE WITH: Formspree / Basin / Netlify Forms (static-friendly, just POST
- * to their endpoint), or a server route that sends via Resend/Postmark.
- * Note: don't collect protected health information through a non-HIPAA form.
+ * Sends the message to the practice by email (worker/contact.ts), or pretends to when no endpoint is set.
+ * Throws if the server couldn't send it, so the form can show an error.
  */
 export async function sendContactMessage(msg: ContactMessage): Promise<{ ok: true }> {
-  await wait(900);
-  void msg;
+  if (!CONTACT_ENDPOINT) {
+    await wait(900);
+    return { ok: true };
+  }
+  const res = await fetch(CONTACT_ENDPOINT, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(msg),
+  });
+  if (!res.ok) throw new Error(`Contact form failed (${res.status})`);
   return { ok: true };
 }
 
