@@ -7,6 +7,7 @@
  */
 
 import type { ThemePreset } from "./themes";
+import type { Design } from "./designs";
 
 /** Icon names available to services, steps and badges (see components/ui/Icon.tsx). */
 export type IconName =
@@ -177,6 +178,9 @@ export interface OfficeConfig {
   newPatientFormsUrl?: string;
 
   social: Partial<Record<"facebook" | "instagram" | "google" | "youtube" | "tiktok" | "yelp", string>>;
+
+  /** Overall look (config/designs.ts). Defaults to "butter", which uses `theme` for its colours. */
+  design?: Design;
 
   theme: {
     preset: ThemePreset;
