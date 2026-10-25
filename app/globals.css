@@ -349,6 +349,11 @@
     color: var(--accent);
   }
 
+  /* Handwritten note (components/sections/Hero.tsx); only some designs show it. */
+  .hand-note {
+    display: none;
+  }
+
   /* Italic serif highlight within headlines. */
   .highlight {
     font-style: italic;

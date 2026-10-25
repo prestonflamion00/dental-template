@@ -34,11 +34,11 @@ export function DemoThemeSwitcher() {
 
   return (
     <div
-      className="glass-strong fixed bottom-28 left-3 z-50 flex items-center gap-1 rounded-full p-1.5 pl-3 md:bottom-6 md:left-6"
+      className="glass-strong fixed bottom-28 left-3 z-50 flex max-w-[calc(100vw-1.5rem)] items-center gap-1 overflow-x-auto rounded-full p-1.5 pl-3 md:bottom-6 md:left-6"
       role="group"
       aria-label="Demo: preview design"
     >
-      <Palette size={18} aria-hidden="true" className="mr-1 text-muted" />
+      <Palette size={18} aria-hidden="true" className="mr-1 shrink-0 text-muted" />
       {DESIGNS.map((d) => (
         <button
           key={d}
@@ -47,7 +47,7 @@ export function DemoThemeSwitcher() {
           aria-pressed={current === d}
           title={designLabels[d].feel}
           className={cx(
-            "min-h-10 rounded-full px-3.5 text-sm font-semibold transition",
+            "min-h-10 shrink-0 rounded-full px-3.5 text-sm font-semibold transition",
             current === d ? "bg-ink text-bg" : "text-ink hover:bg-ink/10",
           )}
         >

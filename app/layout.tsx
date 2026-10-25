@@ -50,7 +50,49 @@ const midnightDisplay = localFont({
   weight: "400 900",
   display: "swap",
 });
-const fontVars = [body, display, crispSans, honeyDisplay, honeyBody, midnightDisplay].map((f) => f.variable).join(" ");
+const peachDisplay = localFont({
+  src: "../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2",
+  variable: "--font-peach-display",
+  weight: "200 800",
+  display: "swap",
+});
+const warmSans = localFont({
+  src: "../node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2",
+  variable: "--font-warm-sans",
+  weight: "100 1000",
+  display: "swap",
+});
+const cinnamonDisplay = localFont({
+  src: "../node_modules/@fontsource/young-serif/files/young-serif-latin-400-normal.woff2",
+  variable: "--font-cinnamon-display",
+  weight: "400",
+  display: "swap",
+});
+const handwriting = localFont({
+  src: "../node_modules/@fontsource-variable/caveat/files/caveat-latin-wght-normal.woff2",
+  variable: "--font-hand",
+  weight: "400 700",
+  display: "swap",
+});
+const figtree = localFont({
+  src: "../node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2",
+  variable: "--font-figtree",
+  weight: "300 900",
+  display: "swap",
+});
+const oatDisplay = localFont({
+  src: "../node_modules/@fontsource-variable/lora/files/lora-latin-wght-normal.woff2",
+  variable: "--font-oat-display",
+  weight: "400 700",
+  display: "swap",
+});
+const cocoaDisplay = localFont({
+  src: "../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-soft-normal.woff2",
+  variable: "--font-cocoa-display",
+  weight: "100 900",
+  display: "swap",
+});
+const fontVars = [body, display, crispSans, honeyDisplay, honeyBody, midnightDisplay, peachDisplay, warmSans, cinnamonDisplay, handwriting, figtree, oatDisplay, cocoaDisplay].map((f) => f.variable).join(" ");
 
 const design = office.design ?? "butter";
 // Butter takes its colours from the theme preset (plus any accent override); the other designs bring their own.

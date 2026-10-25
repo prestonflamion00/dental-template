@@ -47,6 +47,10 @@ const designCards: Record<keyof typeof designPalettes, (t: ThemeTokens) => strin
   crisp: () => "#ffffff",
   honey: () => "#fffdf8",
   midnight: (t) => mix("#ffffff", t.bg2, 0.07),
+  peach: () => "#fffaf6",
+  cinnamon: () => "#fffdf9",
+  oat: () => "#fbf8f2",
+  cocoa: () => "#fffaf5",
 };
 for (const [d, t] of Object.entries(designPalettes) as [keyof typeof designPalettes, ThemeTokens][]) {
   const onAccent = d === "midnight" ? "#14110b" : "#ffffff";

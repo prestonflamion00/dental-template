@@ -100,6 +100,9 @@ export function Hero({ office }: { office: OfficeConfig }) {
               ))}
             </ul>
 
+            {/* Handwritten sign-off: hidden unless the design shows it (app/designs.css). */}
+            <p className="hand-note">See you soon! – {doctors[0].name}</p>
+
             <div className="mt-7 flex items-center gap-3 rounded-2xl bg-white/70 p-4">
               <span className="icon-tile !size-11 shrink-0 !rounded-xl" aria-hidden="true">
                 <CalendarDays size={20} />
