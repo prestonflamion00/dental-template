@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import office from "@/config/office";
 import { resolveTheme } from "@/config/themes";
+import { designPalettes } from "@/config/designs";
 
 // Generated at build time from the office config: no design tool needed per practice.
 export const dynamic = "force-static";
@@ -9,7 +10,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OpengraphImage() {
-  const t = resolveTheme(office.theme.preset, office.theme.accent);
+  // Match the site's design, so the link preview looks like the page it opens.
+  const design = office.design ?? "butter";
+  const t = design === "butter" ? resolveTheme(office.theme.preset, office.theme.accent) : designPalettes[design];
   const a = office.contact.address;
   return new ImageResponse(
     (

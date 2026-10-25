@@ -7,6 +7,17 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Butterbite | Websites and marketing for dental practices</title>
 <meta name="description" content="Butterbite builds modern websites and handles Google profiles and reviews for dental practices, so new patients find you and pick you.">
+<!-- Link previews (texts, email, social). Absolute URLs: update when the real domain is set. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Butterbite">
+<meta property="og:title" content="Butterbite | More new patients, less hassle">
+<meta property="og:description" content="Websites that make patients feel at home, plus Google profile and review care for dental practices.">
+<meta property="og:url" content="https://butterbite-site.butterbite.workers.dev/">
+<meta property="og:image" content="https://butterbite-site.butterbite.workers.dev/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Butterbite: More new patients, less hassle. Three example dental websites on phones.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,8 +99,12 @@
 
   .examples { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
   .example { text-decoration: none; color: inherit; display: block; }
-  .example .frame { border-radius: 28px; border: 7px solid var(--ink); overflow: hidden; background: var(--ink); aspect-ratio: 1 / 1.2; }
-  .example img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; border-radius: 21px; }
+  .example .frame { position: relative; border-radius: 28px; border: 7px solid var(--ink); overflow: hidden; background: var(--ink); aspect-ratio: 1 / 1.2; }
+  /* Each image is a tall strip of the site that scrolls inside the phone on hover, focus, or (on touch screens) when in view. */
+  .example img { position: absolute; top: 0; left: 0; width: 100%; height: auto; display: block; }
+  .example.playing img { animation: reel 18s ease-in-out infinite alternate; }
+  @keyframes reel { 0%, 6% { transform: translateY(0); } 94%, 100% { transform: translateY(calc(-1 * var(--dist, 0px))); } }
+  @media (prefers-reduced-motion: reduce) { .example.playing img { animation: none; } }
   .example h3 { margin-top: 16px; }
   .example p { color: var(--muted); font-size: .95rem; }
 
@@ -152,14 +167,14 @@
           <a class="btn btn-ghost" href="#examples">See example sites</a>
         </div>
         <ul class="points">
-          <li>Month-to-month</li>
+          <li>No long contracts</li>
           <li>You own your domain</li>
           <li>No patient data, ever</li>
         </ul>
       </div>
       <div class="phones" aria-hidden="true">
-        <div class="phone a"><img src="/img/butter.webp" alt="" width="585" height="1170"></div>
-        <div class="phone b"><img src="/img/honey.webp" alt="" width="585" height="1170"></div>
+        <div class="phone a"><img src="/img/butter-top.webp" alt="" width="585" height="1170"></div>
+        <div class="phone b"><img src="/img/honey-top.webp" alt="" width="585" height="1170"></div>
       </div>
     </div>
   </section>
@@ -188,7 +203,7 @@
         </div>
         <div class="card">
           <h3>Google profile and reviews</h3>
-          <p>We clean up your Google listing, keep it current, and set up a steady flow of fresh reviews from happy patients, sent from your own tools.</p>
+          <p>We clean up your Google listing, keep it current, and make it easy for every patient to leave a review, using the tools you already have.</p>
         </div>
         <div class="card">
           <h3>Ads, when you’re ready</h3>
@@ -213,19 +228,19 @@
   <section id="examples" aria-labelledby="examples-title">
     <div class="wrap">
       <p class="eyebrow">Examples</p>
-      <h2 id="examples-title">See the kind of site we build</h2>
+      <h2 id="examples-title">Websites that make patients feel at home</h2>
       <p class="lead">Three looks, each shown on a fictional practice. Open one on your phone or computer.</p>
       <div class="examples">
         <a class="example" href="https://demos.butterbite.workers.dev/maple-grove/?design=butter" target="_blank" rel="noopener">
-          <div class="frame"><img src="/img/butter.webp" alt="Butter design, shown on Maple Grove Family Dental, on a phone" width="585" height="1170" loading="lazy"></div>
+          <div class="frame"><img src="/img/butter.webp" alt="Butter design, shown on Maple Grove Family Dental, on a phone" loading="lazy"></div>
           <h3>Butter</h3><p>Soft and airy, with frosted glass. Shown on a family practice.</p>
         </a>
         <a class="example" href="https://demos.butterbite.workers.dev/little-sprouts/?design=honey" target="_blank" rel="noopener">
-          <div class="frame"><img src="/img/honey.webp" alt="Honey design, shown on Little Sprouts Pediatric Dentistry, on a phone" width="585" height="1170" loading="lazy"></div>
+          <div class="frame"><img src="/img/honey.webp" alt="Honey design, shown on Little Sprouts Pediatric Dentistry, on a phone" loading="lazy"></div>
           <h3>Honey</h3><p>Warm, friendly and playful. Shown on a kids’ practice.</p>
         </a>
         <a class="example" href="https://demos.butterbite.workers.dev/lumiere/?design=cinnamon" target="_blank" rel="noopener">
-          <div class="frame"><img src="/img/cinnamon.webp" alt="Cinnamon design, shown on Lumière Dental Studio, on a phone" width="585" height="1170" loading="lazy"></div>
+          <div class="frame"><img src="/img/cinnamon.webp" alt="Cinnamon design, shown on Lumière Dental Studio, on a phone" loading="lazy"></div>
           <h3>Cinnamon</h3><p>Personal and handmade, with a note from the dentist. Shown on a cosmetic studio.</p>
         </a>
       </div>
@@ -238,7 +253,7 @@
       <h2 id="diff-title">Fair terms, real people</h2>
       <div class="compare">
         <div class="card"><h3>You own your domain</h3><p>Your web address is registered to your practice, always.</p></div>
-        <div class="card"><h3>No long contracts</h3><p>Month-to-month on most plans. Stay because it works.</p></div>
+        <div class="card"><h3>No long contracts</h3><p>Month-to-month after the first three months. Stay because it works.</p></div>
         <div class="card"><h3>Built for dental</h3><p>Every site is made for how patients choose a dentist.</p></div>
         <div class="card"><h3>No patient data</h3><p>Booking runs through your own scheduling system. We never handle patient records.</p></div>
       </div>
@@ -264,7 +279,7 @@
       <h2 id="faq-title">Questions dentists ask us</h2>
       <div class="faq">
         <details><summary>Do I own my website and domain?</summary><p>Your domain is always yours. We host, maintain and update your site for you as part of your plan.</p></details>
-        <details><summary>Is there a long contract?</summary><p>No. Essentials and Growth are month-to-month. Premium, which includes Google Ads, has a six-month minimum so the ads have time to work.</p></details>
+        <details><summary>Is there a long contract?</summary><p>No. Essentials and Growth have a three-month minimum, then go month-to-month. Premium, which includes Google Ads, has a six-month minimum so the ads have time to work.</p></details>
         <details><summary>What about HIPAA?</summary><p>We never handle patient records. Online booking runs through the scheduling system you already use, and website forms ask visitors not to share medical details.</p></details>
         <details><summary>I already have a website. Can you help?</summary><p>Yes. We can move your content to a faster, modern site, or keep what works and focus on your Google profile and reviews.</p></details>
       </div>
@@ -290,5 +305,30 @@
     <p>Example sites shown are fictional practices.</p>
   </div>
 </footer>
+<script>
+  // Example phones: scroll the site strip on hover/focus, or while in view on touch screens.
+  (function () {
+    var examples = document.querySelectorAll(".example");
+    function measure(ex) {
+      var img = ex.querySelector("img"), frame = ex.querySelector(".frame");
+      ex.style.setProperty("--dist", Math.max(0, img.offsetHeight - frame.clientHeight) + "px");
+    }
+    examples.forEach(function (ex) {
+      var img = ex.querySelector("img");
+      if (img.complete) measure(ex); else img.addEventListener("load", function () { measure(ex); });
+      ex.addEventListener("mouseenter", function () { ex.classList.add("playing"); });
+      ex.addEventListener("mouseleave", function () { ex.classList.remove("playing"); });
+      ex.addEventListener("focus", function () { ex.classList.add("playing"); });
+      ex.addEventListener("blur", function () { ex.classList.remove("playing"); });
+    });
+    window.addEventListener("resize", function () { examples.forEach(measure); });
+    if (window.matchMedia("(hover: none)").matches && "IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { e.target.classList.toggle("playing", e.isIntersecting); });
+      }, { threshold: 0.6 });
+      examples.forEach(function (ex) { io.observe(ex); });
+    }
+  })();
+</script>
 </body>
 </html>
