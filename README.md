@@ -118,6 +118,15 @@ Three presets are defined in `config/themes.ts` and applied as CSS custom proper
 
 **GitHub Pages (already set up):** `.github/workflows/deploy-pages.yml` runs `npm run build:all` and publishes every practice to `https://<user>.github.io/<repo>/<key>/` on every push to `main`. If the first run fails, open **Settings → Pages**, set **Source** to **GitHub Actions**, and re-run the workflow from the **Actions** tab.
 
+**Cloudflare Workers (where we're moving):** two kinds of Worker, both connected to this repo in the Cloudflare dashboard (Compute → Workers & Pages → Create → Import a repository):
+
+| Worker | Build command | Deploy command | Build variables |
+| --- | --- | --- | --- |
+| Demos (every practice + hub) | `npm run build:all` | `npx wrangler deploy` | — |
+| One practice on its own domain | `npm run export` | `npx wrangler deploy -c wrangler.practice.jsonc --name <worker-name>` | `NEXT_PUBLIC_OFFICE=<key>`, plus `NEXT_PUBLIC_NOINDEX=1` for demos |
+
+The Worker's name in the dashboard must match the name in the deploy command (`demos` for the first). Add the practice's domain under the Worker's **Settings → Domains & Routes**.
+
 **Other hosts:** `npm run export` writes a static site to `/out` (Netlify, Cloudflare Pages, S3, GitHub Pages). Image optimization is turned off automatically in that mode.
 
 ---

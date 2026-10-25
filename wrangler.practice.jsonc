@@ -1,0 +1,13 @@
+// Cloudflare Workers config for ONE practice on its own domain (built by `npm run export` into out/).
+// One Cloudflare Worker per practice, all sharing this file:
+//   Build command:  npm run export        (with NEXT_PUBLIC_OFFICE=<key> as a build variable)
+//   Deploy command: npx wrangler deploy -c wrangler.practice.jsonc --name <worker-name>
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "practice",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
