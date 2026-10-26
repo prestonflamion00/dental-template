@@ -11,7 +11,7 @@ export function Logo({ practice, compact = false }: { practice: OfficeConfig["pr
   }
   return (
     <span className="flex items-center gap-2.5">
-      <span className="icon-tile !size-10 !rounded-[14px]" aria-hidden="true">
+      <span className="icon-tile !size-10 !rounded-[14px] max-[359px]:!hidden" aria-hidden="true">
         <Tooth size={22} />
       </span>
       <span className="flex flex-col leading-none">

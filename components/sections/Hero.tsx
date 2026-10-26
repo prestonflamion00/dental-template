@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck, CalendarDays, Check, HeartHandshake, Phone } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, Phone } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
@@ -100,6 +100,9 @@ export function Hero({ office }: { office: OfficeConfig }) {
               ))}
             </ul>
 
+            {/* Handwritten sign-off: hidden unless the design shows it (app/designs.css). */}
+            <p className="hand-note">See you soon! – {doctors[0].name}</p>
+
             <div className="mt-7 flex items-center gap-3 rounded-2xl bg-white/70 p-4">
               <span className="icon-tile !size-11 shrink-0 !rounded-xl" aria-hidden="true">
                 <CalendarDays size={20} />
@@ -111,7 +114,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
             </div>
           </div>
 
-          {/* Floating accents (decorative duplicates of info stated elsewhere) */}
+          {/* Floating accent (decorative duplicate of the rating stated below) */}
           <div
             aria-hidden="true"
             className="glass absolute -right-2 -top-6 hidden rounded-2xl px-4 py-3 sm:block lg:-right-6"
@@ -121,13 +124,6 @@ export function Hero({ office }: { office: OfficeConfig }) {
               <Stars rating={rating.value} size={14} className="text-ink" />
             </div>
             <p className="text-xs font-semibold text-muted">{rating.count.toLocaleString()} reviews</p>
-          </div>
-          <div
-            aria-hidden="true"
-            className="glass absolute -bottom-6 -left-3 hidden items-center gap-2.5 rounded-2xl px-4 py-3 sm:flex lg:-left-8"
-          >
-            <HeartHandshake size={20} className="text-accent" />
-            <span className="text-sm font-semibold text-ink">No judgment. Ever.</span>
           </div>
         </div>
       </div>

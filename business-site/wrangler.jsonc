@@ -1,0 +1,22 @@
+// Butterbite's own business website: static files in public/ plus a small contact-form handler
+// (worker.ts), no build step. Cloudflare Worker settings: Path "/business-site", no build command,
+// Deploy command "npx wrangler@4 deploy". Kept self-contained so it can move to its own repo later.
+// Runtime variables CONTACT_TO and CONTACT_FROM are set in Cloudflare; keep_vars stops deploys wiping them.
+{
+  "name": "butterbite-site",
+  "main": "worker.ts",
+  "compatibility_date": "2026-10-01",
+  // Public site: keep the workers.dev address and per-branch preview links on.
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  "send_email": [{ "name": "EMAIL" }],
+  "keep_vars": true,
+  // No request logs: form submissions must not be stored anywhere.
+  "observability": { "enabled": false }
+}

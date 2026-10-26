@@ -279,6 +279,15 @@
       background-color 0.25s;
     cursor: pointer;
   }
+  /* Very narrow screens (small phones, zoomed text): let long labels wrap rather than overflow. */
+  @media (max-width: 379px) {
+    .btn {
+      white-space: normal;
+      text-align: center;
+      line-height: 1.2;
+      padding-block: 0.6rem;
+    }
+  }
   .btn:active {
     transform: scale(0.98);
   }
@@ -347,6 +356,11 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--accent);
+  }
+
+  /* Handwritten note (components/sections/Hero.tsx); only some designs show it. */
+  .hand-note {
+    display: none;
   }
 
   /* Italic serif highlight within headlines. */

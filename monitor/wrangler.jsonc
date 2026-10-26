@@ -1,0 +1,15 @@
+// Uptime monitor (see monitor.ts). Cloudflare Worker settings: Path "/monitor", no build command,
+// Deploy command "npx wrangler@4 deploy". Runtime variables ALERT_TO and ALERT_FROM are set in the dashboard.
+{
+  "name": "butterbite-monitor",
+  "main": "monitor.ts",
+  "compatibility_date": "2026-10-01",
+  // No public address: the site list would reveal our clients.
+  "workers_dev": false,
+  "preview_urls": false,
+  "triggers": { "crons": ["*/5 * * * *"] },
+  // Last known status per site, so we email on changes only. Created automatically on first deploy.
+  "kv_namespaces": [{ "binding": "STATE" }],
+  "send_email": [{ "name": "EMAIL" }],
+  "keep_vars": true
+}

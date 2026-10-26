@@ -1,13 +1,25 @@
 // Cloudflare Workers config for ONE practice on its own domain (built by `npm run export` into out/).
 // One Cloudflare Worker per practice, all sharing this file:
-//   Build command:  npm run export        (with NEXT_PUBLIC_OFFICE=<key> as a build variable)
+//   Build command:  npm run export        (build variables: NEXT_PUBLIC_OFFICE=<key>, NEXT_PUBLIC_CONTACT_ENDPOINT=/api/contact)
 //   Deploy command: npx wrangler deploy -c wrangler.practice.jsonc --name <worker-name>
+// The contact form (worker/contact.ts) needs runtime variables CONTACT_TO and CONTACT_FROM,
+// set in the dashboard (Settings → Variables and secrets); keep_vars stops deploys from wiping them.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "practice",
+  "main": "worker/contact.ts",
   "compatibility_date": "2026-10-01",
+  // Every branch push gets its own preview link (see README, "Preview builds").
+  "preview_urls": true,
   "assets": {
     "directory": "./out",
-    "not_found_handling": "404-page"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  // Sending to a verified destination address is free on every plan.
+  "send_email": [{ "name": "EMAIL" }],
+  "keep_vars": true,
+  // No request logs: form submissions must not be stored anywhere.
+  "observability": { "enabled": false }
 }

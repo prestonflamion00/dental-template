@@ -83,7 +83,7 @@ function cardsFor(items, showBadge) {
       ${showBadge ? `<p class="badge">${o.showcase ? "Public example" : "Private: link only"}</p>` : ""}
       <div class="actions">
         <a class="btn primary" href="${url}">Open website</a>
-        <a class="btn" href="${url}?demo">Theme demo</a>
+        <a class="btn" href="${url}?demo">Design demo</a>
         <button class="btn share" type="button" data-url="${esc(shareUrl)}" data-title="${esc(o.practice.name)}">Share link</button>
       </div>
       <p class="link">${esc(shareUrl)}</p>

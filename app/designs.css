@@ -1,0 +1,289 @@
+/*
+ * Designs (config/designs.ts): the same markup, re-skinned by <html data-design>.
+ * Butter is the base look in globals.css and needs nothing here.
+ * Rules are unlayered on purpose so they win over component classes and Tailwind utilities.
+ * Rough first pass: shared classes (.glass, .btn, headings, rounded corners) carry most of each look.
+ */
+
+/* ───────────────────────── Honey: warm, friendly, handmade ───────────────────────── */
+:root[data-design="honey"] {
+  --font-body: var(--font-honey-body);
+  --font-display: var(--font-honey-display);
+  --orb-opacity: 0.7;
+  --honey-yellow: #ffcf5a;
+}
+[data-design="honey"] body {
+  background: var(--bg);
+}
+/* Paper grain over everything (decorative, ignores clicks). */
+[data-design="honey"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* Orbs become solid, blobby shapes instead of soft glows. */
+[data-design="honey"] :is(.orb, .orb-local) {
+  background: var(--c);
+  border-radius: 42% 58% 63% 37% / 45% 40% 60% 55%;
+}
+[data-design="honey"] .orb-1 {
+  width: 34vmax;
+  height: 34vmax;
+  top: -10vmax;
+  right: -8vmax;
+}
+[data-design="honey"] .orb-2 {
+  width: 30vmax;
+  height: 30vmax;
+  bottom: -12vmax;
+  left: -10vmax;
+}
+[data-design="honey"] .orb-3 {
+  width: 14vmax;
+  height: 14vmax;
+}
+[data-design="honey"] .orb-local {
+  opacity: 0.45;
+  transform: scale(0.55);
+}
+[data-design="honey"] :is(h1, h2, h3) {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+[data-design="honey"] .highlight {
+  font-style: normal;
+  font-weight: inherit;
+  color: var(--ink);
+  background: linear-gradient(transparent 58%, var(--honey-yellow) 58%, var(--honey-yellow) 92%, transparent 92%);
+  padding: 0 0.08em;
+}
+[data-design="honey"] .eyebrow {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 0.95rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+/* Solid cards with a chunky outline and a flat "sticker" shadow. */
+[data-design="honey"] :is(.glass, .glass-strong) {
+  background: #fffdf8;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+[data-design="honey"] :is(.glass, .glass-strong)::before {
+  display: none;
+}
+[data-design="honey"] .glass-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+[data-design="honey"] .btn-primary {
+  background: var(--accent);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+[data-design="honey"] .btn-primary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+[data-design="honey"] .btn-glass {
+  background: var(--honey-yellow);
+  border: 2px solid var(--ink);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+[data-design="honey"] .btn-glass:hover {
+  background: #ffd977;
+}
+[data-design="honey"] .icon-tile {
+  border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+  background: var(--honey-yellow);
+  color: var(--ink);
+  box-shadow: none;
+}
+/* Alternate sections get a colour block, so the page reads in bands. */
+[data-design="honey"] main > section:nth-of-type(even) {
+  background: var(--bg-2);
+}
+
+/* ───────────────────────── Peach: sunrise light, arches, graceful serif ───────────────────────── */
+:root[data-design="peach"] {
+  --font-display: var(--font-peach-display);
+  --font-body: var(--font-warm-sans);
+  --orb-opacity: 0.7;
+}
+[data-design="peach"] body {
+  background: linear-gradient(180deg, #fff4ec 0%, #ffe6d6 30%, #fde4e6 65%, #f3e4f3 100%) fixed;
+}
+[data-design="peach"] .orb-1 {
+  /* The "sun": a warm glow rising behind the hero. */
+  top: -30vmax;
+  right: 5vmax;
+}
+[data-design="peach"] :is(h1, h2, h3) {
+  font-weight: 380;
+  letter-spacing: -0.015em;
+}
+[data-design="peach"] #hero-title {
+  font-weight: 340;
+  line-height: 1.02;
+}
+[data-design="peach"] .highlight {
+  font-weight: 340;
+  background: linear-gradient(90deg, var(--accent), #c25a3d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-design="peach"] .eyebrow::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, #ffd27a, #f08a5d);
+  box-shadow: 0 0 0 4px rgb(240 138 93 / 0.18);
+}
+[data-design="peach"] :is(.glass, .glass-strong) {
+  background: linear-gradient(160deg, rgb(255 251 247 / 0.85), rgb(255 244 236 / 0.62) 60%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 24px 50px -28px rgb(176 69 58 / 0.3);
+}
+/* Arches: the hero card and the team photos rise like windows. */
+[data-design="peach"] #top [data-reveal] > .glass:first-child {
+  border-radius: 240px 240px 32px 32px;
+  padding-top: 4.5rem;
+}
+[data-design="peach"] #doctors li > div:first-child {
+  border-radius: 999px 999px 18px 18px;
+}
+[data-design="peach"] .btn-primary {
+  background: linear-gradient(135deg, #c25a3d, var(--accent) 55%, var(--accent-2));
+}
+[data-design="peach"] .icon-tile {
+  border-radius: 999px 999px 14px 14px;
+  background: linear-gradient(180deg, #ffe2c4, var(--accent-soft));
+}
+
+/* ───────────────────────── Cinnamon: scrapbook, taped cards, handwriting ───────────────────────── */
+:root[data-design="cinnamon"] {
+  --font-display: var(--font-cinnamon-display);
+  --font-body: var(--font-figtree);
+  --tape: rgb(233 185 73 / 0.55);
+}
+[data-design="cinnamon"] body {
+  background: var(--bg);
+}
+[data-design="cinnamon"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-design="cinnamon"] :is(.ambient, .orb-local) {
+  display: none;
+}
+[data-design="cinnamon"] :is(h1, h2, h3) {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+/* Highlighted words look written in by hand. */
+[data-design="cinnamon"] .highlight {
+  font-family: var(--font-hand);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 0.9;
+  color: var(--accent);
+}
+[data-design="cinnamon"] .hand-note {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: var(--font-hand);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--accent);
+  rotate: -2deg;
+}
+/* Rubber-stamp eyebrows. */
+[data-design="cinnamon"] .eyebrow {
+  padding: 0.35rem 0.9rem;
+  border: 1.5px dashed currentColor;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+}
+/* Paper cards, slightly tilted, held on with tape. */
+[data-design="cinnamon"] :is(.glass, .glass-strong) {
+  background: #fffdf9;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid rgb(51 32 26 / 0.12);
+  box-shadow:
+    0 1px 0 rgb(51 32 26 / 0.06),
+    0 14px 28px -18px rgb(51 32 26 / 0.35);
+}
+[data-design="cinnamon"] :is(.glass, .glass-strong)::before {
+  display: none;
+}
+[data-design="cinnamon"] main li.glass::before {
+  display: block;
+  inset: auto;
+  top: -11px;
+  left: 50%;
+  width: 86px;
+  height: 22px;
+  padding: 0;
+  border-radius: 2px;
+  background: var(--tape);
+  -webkit-mask: none;
+  mask: none;
+  translate: -50% 0;
+  rotate: -3deg;
+}
+[data-design="cinnamon"] main li.glass:nth-child(odd) {
+  rotate: -0.7deg;
+}
+[data-design="cinnamon"] main li.glass:nth-child(even) {
+  rotate: 0.6deg;
+}
+[data-design="cinnamon"] #top [data-reveal] > .glass:first-child {
+  rotate: 1deg;
+}
+/* Team photos as polaroids. */
+[data-design="cinnamon"] #doctors li.glass {
+  border-radius: 4px;
+  padding: 12px 12px 6px;
+}
+[data-design="cinnamon"] #doctors li > div:first-child {
+  border-radius: 2px;
+}
+[data-design="cinnamon"] .btn-primary {
+  background: var(--accent);
+  box-shadow: 0 3px 0 var(--accent-2);
+}
+[data-design="cinnamon"] .btn-glass {
+  background: #fffdf9;
+  border: 1.5px solid rgb(51 32 26 / 0.25);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 3px 0 rgb(51 32 26 / 0.12);
+}
+[data-design="cinnamon"] .icon-tile {
+  border-radius: 999px;
+  background: #f6dfa6;
+  color: var(--ink);
+  box-shadow: none;
+}

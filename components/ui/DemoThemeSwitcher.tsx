@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Palette } from "lucide-react";
-import { THEME_PRESETS, themes, type ThemePreset } from "@/config/themes";
+import { DESIGNS, designLabels, designPalettes, type Design } from "@/config/designs";
+import { themes, type ThemePreset } from "@/config/themes";
 import { cx } from "@/lib/format";
 
 /**
- * Sales-demo helper: add ?demo to the URL to show a floating theme picker.
- * Hidden from real visitors. Uses the same CSS variables as config theming.
+ * Sales-demo helper: add ?demo to the URL to show a floating design picker.
+ * Hidden from real visitors. Swaps <html data-design>, the same switch an office sets with `design`.
  */
 export function DemoThemeSwitcher() {
   const [visible, setVisible] = useState(false);
@@ -16,34 +17,41 @@ export function DemoThemeSwitcher() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("demo")) setVisible(true);
-    setCurrent(document.documentElement.getAttribute("data-theme") ?? "");
+    setCurrent(document.documentElement.getAttribute("data-design") ?? "butter");
   }, []);
 
   if (!visible) return null;
 
-  const apply = (p: ThemePreset) => {
+  const apply = (d: Design) => {
     const root = document.documentElement;
-    root.setAttribute("data-theme", p);
-    root.style.cssText = ""; // drop any accent override so the preset shows as-is
-    setCurrent(p);
-    const meta = document.querySelector('meta[name="theme-color"]');
-    meta?.setAttribute("content", themes[p].bg);
+    root.setAttribute("data-design", d);
+    root.style.cssText = ""; // drop any accent override so the design shows as-is
+    setCurrent(d);
+    const preset = root.getAttribute("data-theme") as ThemePreset;
+    const bg = d === "butter" ? themes[preset]?.bg : designPalettes[d].bg;
+    if (bg) document.querySelector('meta[name="theme-color"]')?.setAttribute("content", bg);
   };
 
   return (
-    <div className="glass-strong fixed bottom-28 left-3 z-50 flex items-center gap-2 rounded-full p-1.5 pl-3 md:bottom-6 md:left-6" role="group" aria-label="Demo: preview theme">
-      <Palette size={18} aria-hidden="true" className="text-muted" />
-      {THEME_PRESETS.map((p) => (
+    <div
+      className="glass-strong fixed bottom-28 left-3 z-50 flex max-w-[calc(100vw-1.5rem)] items-center gap-1 overflow-x-auto rounded-full p-1.5 pl-3 md:bottom-6 md:left-6"
+      role="group"
+      aria-label="Demo: preview design"
+    >
+      <Palette size={18} aria-hidden="true" className="mr-1 shrink-0 text-muted" />
+      {DESIGNS.map((d) => (
         <button
-          key={p}
+          key={d}
           type="button"
-          onClick={() => apply(p)}
-          aria-pressed={current === p}
-          title={themes[p].label}
-          className={cx("size-9 rounded-full border-2 transition", current === p ? "border-ink scale-110" : "border-white")}
-          style={{ background: `linear-gradient(135deg, ${themes[p].orb1}, ${themes[p].accent})` }}
+          onClick={() => apply(d)}
+          aria-pressed={current === d}
+          title={designLabels[d].feel}
+          className={cx(
+            "min-h-10 shrink-0 rounded-full px-3.5 text-sm font-semibold transition",
+            current === d ? "bg-ink text-bg" : "text-ink hover:bg-ink/10",
+          )}
         >
-          <span className="sr-only">{themes[p].label}</span>
+          {designLabels[d].label}
         </button>
       ))}
     </div>

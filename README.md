@@ -91,6 +91,30 @@ The page title, meta description, OpenGraph image, favicon colour, JSON-LD `Dent
 
 ---
 
+## Designs
+
+Four looks share the same sections, content and code, so a change to any section reaches all of them. Set `design` in the office file (default `butter`). Sales demos switch live with `?design=honey`, or `?demo` for a picker.
+
+| Design | Feel |
+| --- | --- |
+| `butter` | soft, airy, frosted glass; colours from the theme preset below |
+| `honey` | warm and friendly: rounded type, solid colour blocks, grain, sticker shadows |
+| `peach` | sunrise: peach-to-lilac light, arch frames, graceful light serif |
+| `cinnamon` | scrapbook: tilted taped cards, polaroid photos, handwritten note from the dentist |
+
+Palettes live in `config/designs.ts`; each look is in `app/designs.css`. Only Butter uses the theme presets and `theme.accent`.
+
+## Checking every screen size
+
+Before a release, run the responsive check on the pages you changed (any live, preview or local URL). It loads each page at 12 widths from a 320px phone to a 1920px desktop and fails if anything is wider than the screen:
+
+```
+npm run check:responsive -- "https://demos.butterbite.workers.dev/maple-grove/?design=honey"
+npm run check:responsive -- --shots shots/ <url>   # also save a screenshot per width to look through
+```
+
+Then spot-check on a real iPhone and an Android phone (the check runs Chrome, so Safari-only quirks need a real device). Layout rules that keep this passing: let grid and flex children shrink (`min-w-0`), never fix widths in pixels, and let buttons wrap on very narrow screens (already handled in `globals.css`). The full link bar shows from 1280px; below that the menu button takes over.
+
 ## Themes
 
 Three presets are defined in `config/themes.ts` and applied as CSS custom properties on `<html data-theme="…">`:
@@ -127,6 +151,15 @@ Three presets are defined in `config/themes.ts` and applied as CSS custom proper
 
 The Worker's name in the dashboard must match the name in the deploy command (`demos` for the first). Add the practice's domain under the Worker's **Settings → Domains & Routes**.
 
+**Preview builds (standard for every public Worker).** Each Worker has two builds in **Settings → Build**: one for `main` that runs the deploy command above (production), and one for every other branch that runs the same build with `npx wrangler versions upload` instead (`-c`/`--name` flags kept). A push to a branch then gets a preview link named after the branch, `https://<branch>-<worker>.butterbite.workers.dev`, without touching the live site; merging to `main` releases it. Keep `"preview_urls": true` in the Worker's wrangler config. The uptime monitor is the exception: no previews and no public address.
+
+**Real contact form (practice Workers only).** `worker/contact.ts` emails each message to the practice with reply-to set to the visitor, and stores nothing. To turn it on for a practice:
+1. Add the build variable `NEXT_PUBLIC_CONTACT_ENDPOINT=/api/contact` (without it the form stays a mock, as on the demos site).
+2. In Cloudflare **Email Routing**, verify the practice's inbox as a destination address (they click a link in an email). Sending to verified addresses is free.
+3. Add runtime variables under the Worker's **Settings → Variables and secrets**: `CONTACT_TO` (that inbox), `CONTACT_FROM` (a sender on a domain with Email Routing enabled) and optionally `PRACTICE_NAME`.
+
+Enabling Email Routing changes a domain's mail (MX) records, so never enable it on a practice domain that already has email. Send from our own business domain instead.
+
 **Other hosts:** `npm run export` writes a static site to `/out` (Netlify, Cloudflare Pages, S3, GitHub Pages). Image optimization is turned off automatically in that mode.
 
 ---
@@ -139,7 +172,7 @@ Every integration lives behind one async function in **`lib/integrations.ts`**. 
 | --- | --- | --- |
 | Booking availability | `getAvailableSlots()`: fake slots derived from office hours | NexHealth, LocalMed, Zocdoc, Open Dental or Dentrix APIs, called from a server route |
 | Booking submission | `submitBooking()`: returns a fake confirmation | Same provider. Or set `booking.url` to skip the modal and link to a hosted scheduler. |
-| Contact form | `sendContactMessage()` | Formspree, Basin or Netlify Forms (static-friendly), or a Resend/Postmark server route |
+| Contact form | `sendContactMessage()`: mock unless `NEXT_PUBLIC_CONTACT_ENDPOINT` is set | Live on practice Workers via `worker/contact.ts` (Cloudflare email; see above) |
 | Reviews & rating badge | Read from the config | Google Places API (fetched at build time), Birdeye, Podium or Weave |
 | Map | Illustrated SVG card plus a "Directions" deep link (`components/sections/Contact.tsx`) | Lazy Google Maps Embed or OpenStreetMap iframe |
 | New patient forms | Sample PDF in `/public/forms` | The practice's real PDF, or a HIPAA-compliant online intake link |

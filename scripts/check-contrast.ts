@@ -9,6 +9,7 @@
  * Run: npm run check:contrast   (Node 22+, uses built-in TypeScript stripping)
  */
 import { THEME_PRESETS, themes, resolveTheme, contrast, textSurfaces, type ThemeTokens } from "../config/themes.ts";
+import { designPalettes } from "../config/designs.ts";
 
 const AA = 4.5;
 let failures = 0;
@@ -39,6 +40,25 @@ function audit(name: string, t: ThemeTokens) {
 for (const p of THEME_PRESETS) audit(p, themes[p]);
 for (const accent of ["#f59fb0", "#7dd3c0", "#ffcc00", "#3b82f6"]) {
   for (const p of THEME_PRESETS) audit(`${p} + ${accent}`, resolveTheme(p, accent));
+}
+
+// Designs with their own palettes: flat or dark cards instead of white glass (see app/designs.css).
+const designCards: Record<keyof typeof designPalettes, (t: ThemeTokens) => string> = {
+  honey: () => "#fffdf8",
+  peach: () => "#fffaf6",
+  cinnamon: () => "#fffdf9",
+};
+for (const [d, t] of Object.entries(designPalettes) as [keyof typeof designPalettes, ThemeTokens][]) {
+  const onAccent = "#ffffff";
+  let worst = Infinity;
+  for (const s of [t.bg, t.bg2, t.bg3, t.accentSoft, designCards[d](t)]) {
+    for (const [k, fg] of [["ink", t.ink], ["muted", t.muted], ["accent text", t.accent], ["success", t.success], ["danger", t.danger]]) {
+      const c = check(`design ${d} ${k}`, fg, s);
+      if (k !== "success" && k !== "danger") worst = Math.min(worst, c);
+    }
+  }
+  const btn = check(`design ${d} button`, onAccent, t.accent);
+  console.log(`${("design " + d).padEnd(28)} worst text-on-surface ${worst.toFixed(2)}:1 · button ${btn.toFixed(2)}:1`);
 }
 
 if (failures) {
