@@ -113,13 +113,10 @@
   .browser .bar { display: flex; gap: 6px; padding: 10px 12px; background: var(--sand); border-bottom: 1px solid var(--line); }
   .browser .bar i { width: 10px; height: 10px; border-radius: 99px; background: #d9c9ad; }
   .browser img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; }
-  /* Phone: an iPhone laid over the corner; the site strip scrolls inside it. */
+  /* Phone: an iPhone laid over the corner, showing the site's first screen. */
   .example .frame { position: absolute; right: 0; bottom: 0; width: 27%; aspect-ratio: 9 / 19.5; border-radius: 30px; border: 6px solid var(--ink); overflow: hidden; background: var(--ink); box-shadow: 0 30px 50px -25px rgb(43 33 24 / .6); }
   .example .frame::before { content: ""; position: absolute; top: 8px; left: 50%; translate: -50% 0; width: 34%; height: 14px; border-radius: 99px; background: var(--ink); z-index: 2; }
-  .example .frame img { position: absolute; top: 0; left: 0; width: 100%; height: auto; display: block; }
-  .example.playing .frame img { animation: reel 18s ease-in-out infinite alternate; }
-  @keyframes reel { 0%, 6% { transform: translateY(0); } 94%, 100% { transform: translateY(calc(-1 * var(--dist, 0px))); } }
-  @media (prefers-reduced-motion: reduce) { .example.playing .frame img { animation: none; } }
+  .example .frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
   .example h3 { font-size: 1.8rem; }
   .example p { color: var(--muted); margin-top: 8px; }
   .example .open { display: inline-block; margin-top: 16px; font-weight: 700; color: var(--honey); }
@@ -221,7 +218,7 @@
       <div class="cards">
         <div class="card">
           <h3>A website that books patients</h3>
-          <p>Fast, mobile-first and accessible, with your services, team, hours and insurance up front. Online booking works with the scheduling system you already use.</p>
+          <p>Fast, accessible and looks great on every screen, with your services, team, hours and insurance up front. Online booking works with the scheduling system you already use.</p>
         </div>
         <div class="card">
           <h3>Google profile and reviews</h3>
@@ -256,21 +253,21 @@
         <a class="example" href="https://demos.butterbite.workers.dev/maple-grove/?design=butter" target="_blank" rel="noopener">
           <div class="mock">
             <div class="browser"><div class="bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="/img/butter-desktop.webp" alt="Butter design on a computer, shown on Maple Grove Family Dental" width="1440" height="900" loading="lazy"></div>
-            <div class="frame"><img src="/img/butter.webp" alt="Butter design on a phone" loading="lazy"></div>
+            <div class="frame"><img src="/img/butter-top.webp" alt="Butter design on a phone" loading="lazy"></div>
           </div>
           <div><h3>Butter</h3><p>Soft and airy, with frosted glass. Shown on a family practice.</p><span class="open">Open the demo →</span></div>
         </a>
         <a class="example" href="https://demos.butterbite.workers.dev/little-sprouts/?design=honey" target="_blank" rel="noopener">
           <div class="mock">
             <div class="browser"><div class="bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="/img/honey-desktop.webp" alt="Honey design on a computer, shown on Little Sprouts Pediatric Dentistry" width="1440" height="900" loading="lazy"></div>
-            <div class="frame"><img src="/img/honey.webp" alt="Honey design on a phone" loading="lazy"></div>
+            <div class="frame"><img src="/img/honey-top.webp" alt="Honey design on a phone" loading="lazy"></div>
           </div>
           <div><h3>Honey</h3><p>Warm, friendly and playful. Shown on a kids’ practice.</p><span class="open">Open the demo →</span></div>
         </a>
         <a class="example" href="https://demos.butterbite.workers.dev/lumiere/?design=cinnamon" target="_blank" rel="noopener">
           <div class="mock">
             <div class="browser"><div class="bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="/img/cinnamon-desktop.webp" alt="Cinnamon design on a computer, shown on Lumière Dental Studio" width="1440" height="900" loading="lazy"></div>
-            <div class="frame"><img src="/img/cinnamon.webp" alt="Cinnamon design on a phone" loading="lazy"></div>
+            <div class="frame"><img src="/img/cinnamon-top.webp" alt="Cinnamon design on a phone" loading="lazy"></div>
           </div>
           <div><h3>Cinnamon</h3><p>Personal and handmade, with a note from the dentist. Shown on a cosmetic studio.</p><span class="open">Open the demo →</span></div>
         </a>
@@ -297,9 +294,9 @@
       <h2 id="plans-title">Three plans that grow with you</h2>
       <p class="lead">Simple pricing with a one-time setup and a flat monthly fee. We’ll walk you through it on our call.</p>
       <div class="plans">
-        <div class="card plan"><p class="tag">Essentials</p><h3>A great website</h3><ul><li>Professional website, hosting and security</li><li>Online booking link</li><li>Google-ready SEO setup</li><li>Monthly results email</li></ul></div>
-        <div class="card plan"><p class="tag">Growth</p><h3>Website plus Google</h3><ul><li>Everything in Essentials</li><li>Google profile care</li><li>Review requests</li><li>Ongoing local SEO</li></ul></div>
-        <div class="card plan"><p class="tag">Premium</p><h3>Full marketing</h3><ul><li>Everything in Growth</li><li>Fully custom design</li><li>Google Ads management</li><li>Monthly strategy call</li></ul></div>
+        <div class="card plan"><p class="tag">Essentials</p><h3>A website patients love</h3><ul><li>Professional website, hosting and security</li><li>Online booking link</li><li>Google-ready SEO setup</li><li>Monthly results email</li></ul></div>
+        <div class="card plan"><p class="tag">Growth</p><h3>Your website and Google, always improving</h3><ul><li>Everything in Essentials</li><li>Google profile care</li><li>Review requests</li><li>Ongoing local SEO</li></ul></div>
+        <div class="card plan"><p class="tag">Premium</p><h3>Your full growth team</h3><ul><li>Everything in Growth</li><li>Fully custom design</li><li>Google Ads management</li><li>Monthly strategy call</li></ul></div>
       </div>
     </div>
   </section>
@@ -320,7 +317,7 @@
   <section class="dark cta" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <p class="eyebrow">Get started</p>
-      <h2 id="contact-title">Websites you can sink your teeth into.</h2>
+      <h2 id="contact-title">Let’s build a website your patients can sink their teeth into.</h2>
       <p class="lead" style="color: var(--on-dark)">Book a free 20-minute call. We’ll show you a demo built for your practice.</p>
       <div class="actions">
         <a class="btn btn-primary" style="background: var(--honey-light); color: var(--ink)" href="#contact">Book a free call</a>
@@ -337,32 +334,13 @@
   </div>
 </footer>
 <script>
-  // Example phones: scroll the site strip on hover/focus, or while in view on touch screens.
+  // On a branch preview (<branch>-butterbite-site.<sub>.workers.dev), open that branch's demos preview,
+  // so unmerged designs show; the live site keeps the live demo links.
   (function () {
-    var examples = document.querySelectorAll(".example");
-    function measure(ex) {
-      var img = ex.querySelector(".frame img"), frame = ex.querySelector(".frame");
-      ex.style.setProperty("--dist", Math.max(0, img.offsetHeight - frame.clientHeight) + "px");
-    }
-    examples.forEach(function (ex) {
-      var img = ex.querySelector(".frame img");
-      if (img.complete) measure(ex); else img.addEventListener("load", function () { measure(ex); });
-      ex.addEventListener("mouseenter", function () { measure(ex); ex.classList.add("playing"); });
-      ex.addEventListener("mouseleave", function () { ex.classList.remove("playing"); });
-      ex.addEventListener("focus", function () { ex.classList.add("playing"); });
-      ex.addEventListener("blur", function () { ex.classList.remove("playing"); });
-    });
-    window.addEventListener("resize", function () { examples.forEach(measure); });
-    // On a branch preview (<branch>-butterbite-site.<sub>.workers.dev), open that branch's demos preview,
-    // so unmerged designs show; the live site keeps the live demo links.
     var m = location.hostname.match(/^(.+)-butterbite-site\.(.+\.workers\.dev)$/);
-    if (m) examples.forEach(function (ex) { ex.href = ex.href.replace("demos.butterbite.workers.dev", m[1] + "-demos." + m[2]); });
-    if (window.matchMedia("(hover: none)").matches && "IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) measure(e.target); e.target.classList.toggle("playing", e.isIntersecting); });
-      }, { threshold: 0.6 });
-      examples.forEach(function (ex) { io.observe(ex); });
-    }
+    if (m) document.querySelectorAll(".example").forEach(function (ex) {
+      ex.href = ex.href.replace("demos.butterbite.workers.dev", m[1] + "-demos." + m[2]);
+    });
   })();
 </script>
 </body>

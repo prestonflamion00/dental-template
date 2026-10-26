@@ -6,7 +6,7 @@ Our own marketing site (working name "Butterbite"). Plain static files in `publi
 
 **Before launch:** set the real name and domain, add the booking link (free Cal.com account) and email in the contact section, and remove `noindex` from `public/index.html` and the `Disallow` from `public/robots.txt`.
 
-Example-site screenshots in `public/img/` show each design (Butter, Honey, Cinnamon) on a fictional demo practice. Regenerate them with the clean-screenshot tool, then the link preview image:
+Example-site screenshots in `public/img/` show each design (Butter, Honey, Cinnamon) on a fictional demo practice: a desktop screen (`*-desktop.webp`) with a phone screen (`*-top.webp`) over it. Regenerate them with the clean-screenshot tool (it also writes a tall `*.webp` strip, which this site doesn't use; delete those), then the link preview image:
 
 ```
 node scripts/shots.mjs business-site/public/img butter="https://demos.butterbite.workers.dev/maple-grove/?design=butter" honey="https://demos.butterbite.workers.dev/little-sprouts/?design=honey" cinnamon="https://demos.butterbite.workers.dev/lumiere/?design=cinnamon"

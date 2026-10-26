@@ -3,9 +3,9 @@
  * Applied as <html data-design="...">; the look itself lives in app/designs.css.
  *
  *   butter    soft, airy, frosted glass (the original). Colours come from the theme preset.
- *   honey     warm and friendly: rounded type, solid colour blocks, grain, sticker shadows
+ *   honey     warm and friendly: golden background, rounded type, solid colour blocks, grain, sticker shadows
  *   peach     sunrise: peach-to-lilac light, arch frames, graceful light serif
- *   cinnamon  scrapbook: tilted taped cards, polaroid photos, handwritten notes from the dentist
+ *   cinnamon  scrapbook on soft sage paper: tilted taped cards, polaroid photos, handwritten notes from the dentist
  *
  * Every design except butter brings its own colours (below), checked by `npm run check:contrast`.
  * An office picks one with `design`; sales demos preview any of them with ?design=honey.
@@ -26,19 +26,19 @@ export const designLabels: Record<Design, { label: string; feel: string }> = {
 export const designPalettes: Record<Exclude<Design, "butter">, ThemeTokens> = {
   honey: {
     label: "Honey",
-    bg: "#fff7e8",
-    bg2: "#ffefcf",
-    bg3: "#fff3dc",
+    bg: "#ffeec4",
+    bg2: "#ffe3a3",
+    bg3: "#ffe9b5",
     orb1: "#ffd36b",
     orb2: "#ffb48a",
     orb3: "#bfe3d6",
     ink: "#2a1a0a",
-    muted: "#5a4430",
-    accent: "#b9420f",
-    accent2: "#8f320b",
-    accentSoft: "#ffe9d6",
-    success: "#2f6b45",
-    danger: "#a3352b",
+    muted: "#55402b",
+    accent: "#a83c0d",
+    accent2: "#842f0a",
+    accentSoft: "#ffe2c2",
+    success: "#2a6340",
+    danger: "#9c3127",
   },
   peach: {
     label: "Peach",
@@ -58,19 +58,19 @@ export const designPalettes: Record<Exclude<Design, "butter">, ThemeTokens> = {
   },
   cinnamon: {
     label: "Cinnamon",
-    bg: "#fbf3e6",
-    bg2: "#f6e8d3",
-    bg3: "#f8eedf",
+    bg: "#eef1e5",
+    bg2: "#e2e8d5",
+    bg3: "#e8ecdd",
     orb1: "#e9b949",
     orb2: "#b9c7a9",
     orb3: "#f2c4a7",
-    ink: "#33201a",
-    muted: "#64483b",
-    accent: "#a3441e",
-    accent2: "#7f3315",
-    accentSoft: "#f8e2d2",
-    success: "#2f6b45",
-    danger: "#a3352b",
+    ink: "#2f2219",
+    muted: "#55473a",
+    accent: "#9c401b",
+    accent2: "#7a3214",
+    accentSoft: "#f6e1d2",
+    success: "#2a6340",
+    danger: "#9c3127",
   },
 };
 
