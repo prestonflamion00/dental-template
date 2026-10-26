@@ -16,11 +16,15 @@
   h1 em { color: #8a5212; }
   p { font-size: 27px; color: #4a3d33; margin-top: 22px; line-height: 1.35; }
   .tag { margin-top: 30px; font-size: 19px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #8a5212; }
-  .phone { position: absolute; width: 230px; border-radius: 34px; border: 8px solid #2b2118; background: #2b2118; overflow: hidden; box-shadow: 0 30px 60px -28px rgb(43 33 24 / .55); }
-  .phone img { display: block; width: 100%; border-radius: 26px; }
-  .p1 { left: 640px; top: 110px; transform: rotate(-7deg); }
-  .p2 { left: 800px; top: 60px; transform: rotate(0deg); z-index: 2; }
-  .p3 { left: 960px; top: 120px; transform: rotate(7deg); }
+  .phone { position: absolute; width: 230px; }
+  .iphone { container-type: inline-size; aspect-ratio: 390 / 844; border-radius: 16% / 7.4%; background: linear-gradient(145deg, #3a3a3d, #1b1b1d 45%, #2c2c2f); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12), 0 30px 60px -28px rgb(43 33 24 / .55); }
+  .iphone .screen { position: absolute; inset: 3.2cqw; border-radius: 13cqw; overflow: hidden; }
+  .iphone .screen img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .iphone::after { content: ""; position: absolute; z-index: 2; top: 5.6cqw; left: 50%; translate: -50% 0; width: 29cqw; height: 8.4cqw; border-radius: 99px; background: #000; }
+  .iphone::before { content: "9:41"; position: absolute; z-index: 2; top: 6.4cqw; left: 13cqw; font: 600 4.3cqw/1 "Plus Jakarta Sans", sans-serif; color: #111; }
+  .p1 { left: 640px; top: 90px; transform: rotate(-7deg); }
+  .p2 { left: 800px; top: 40px; transform: rotate(0deg); z-index: 2; }
+  .p3 { left: 960px; top: 100px; transform: rotate(7deg); }
 </style>
 </head>
 <body>
@@ -30,8 +34,8 @@
     <p>Websites that make patients feel at home.</p>
     <div class="tag">Websites · Google · Reviews</div>
   </div>
-  <div class="phone p1"><img src="../public/img/honey-top.webp" alt=""></div>
-  <div class="phone p2"><img src="../public/img/butter-top.webp" alt=""></div>
-  <div class="phone p3"><img src="../public/img/cinnamon-top.webp" alt=""></div>
+  <div class="phone p1 iphone"><div class="screen"><img src="../public/img/honey-top.webp" alt=""></div></div>
+  <div class="phone p2 iphone"><div class="screen"><img src="../public/img/butter-top.webp" alt=""></div></div>
+  <div class="phone p3 iphone"><div class="screen"><img src="../public/img/cinnamon-top.webp" alt=""></div></div>
 </body>
 </html>

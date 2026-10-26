@@ -7,7 +7,7 @@
  *
  * Writes three WebP files per site:
  *   <name>.webp          a tall phone "highlight reel": hero, quick info, services, team and reviews, for scrolling thumbnails
- *   <name>-top.webp      the phone's first screen, for static phone mockups
+ *   <name>-top.webp      the phone's first screen (iPhone-sized, with room for the status bar), for phone mockups
  *   <name>-desktop.webp  the first screen on a laptop (1440 x 900), for desktop mockups
  *
  * "Clean" means: no demo banner, no sticky call/book bar, no demo picker, every scroll-in
@@ -28,7 +28,8 @@ if (!outDir || !pairs.length || pairs.some((p) => !p.includes("="))) {
 
 const WIDTH = 390; // a typical phone, in CSS pixels
 const SCALE = 1.5; // sharp on retina screens without huge files
-const TOP_HEIGHT = 780; // first screen, 1:2 like the phone frames
+const TOP_HEIGHT = 844; // first screen of an iPhone (390 x 844)
+const STATUS_BAR = 47; // room at the top for the status bar and Dynamic Island drawn by the mockup
 const REEL_MAX = 5200; // longest reel, in CSS pixels
 const QUALITY = 0.78;
 const DESKTOP = { width: 1440, height: 900 };
@@ -81,8 +82,12 @@ for (const pair of pairs) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(600);
 
+  // Push the page down by the status bar's height, as on a real iPhone, for the still only.
+  const statusBar = await page.addStyleTag({ content: `body { padding-top: ${STATUS_BAR}px !important; }` });
+  await page.waitForTimeout(200);
   const top = await page.screenshot({ clip: { x: 0, y: 0, width: WIDTH, height: TOP_HEIGHT } });
   writeFileSync(join(outDir, `${name}-top.webp`), await toWebp(encoder, top));
+  await statusBar.evaluate((el) => el.remove());
 
   await page.addStyleTag({ content: REEL_CSS });
   await page.waitForTimeout(300);
