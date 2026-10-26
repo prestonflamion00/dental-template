@@ -5,9 +5,10 @@
  *   node scripts/shots.mjs <outDir> <name>=<url> [<name>=<url> ...]
  *   e.g. node scripts/shots.mjs business-site/public/img butter="https://demos.butterbite.workers.dev/maple-grove/?design=butter"
  *
- * Writes two WebP files per site:
- *   <name>.webp      a tall "highlight reel": hero, quick info, services, team and reviews, for scrolling thumbnails
- *   <name>-top.webp  just the first screen, for static phone mockups
+ * Writes three WebP files per site:
+ *   <name>.webp          a tall phone "highlight reel": hero, quick info, services, team and reviews, for scrolling thumbnails
+ *   <name>-top.webp      the phone's first screen, for static phone mockups
+ *   <name>-desktop.webp  the first screen on a laptop (1440 x 900), for desktop mockups
  *
  * "Clean" means: no demo banner, no sticky call/book bar, no demo picker, every scroll-in
  * animation finished, fonts loaded. Uses the Playwright that is installed with Chromium.
@@ -30,6 +31,7 @@ const SCALE = 1.5; // sharp on retina screens without huge files
 const TOP_HEIGHT = 780; // first screen, 1:2 like the phone frames
 const REEL_MAX = 5200; // longest reel, in CSS pixels
 const QUALITY = 0.78;
+const DESKTOP = { width: 1440, height: 900 };
 
 const CLEAN_CSS = `
   .demo-banner, [data-mobile-bar], [aria-label="Demo: preview design"] { display: none !important; }
@@ -87,7 +89,15 @@ for (const pair of pairs) {
   const height = Math.min(REEL_MAX, await page.evaluate(() => document.documentElement.scrollHeight));
   const reel = await page.screenshot({ fullPage: true, clip: { x: 0, y: 0, width: WIDTH, height } });
   writeFileSync(join(outDir, `${name}.webp`), await toWebp(encoder, reel));
-  console.log(`✓ ${name}: ${url}`);
   await page.close();
+
+  const desk = await browser.newPage({ viewport: DESKTOP });
+  await desk.goto(url, { waitUntil: "networkidle" });
+  await desk.addStyleTag({ content: CLEAN_CSS });
+  await desk.evaluate(() => document.fonts.ready);
+  await desk.waitForTimeout(600);
+  writeFileSync(join(outDir, `${name}-desktop.webp`), await toWebp(encoder, await desk.screenshot()));
+  await desk.close();
+  console.log(`✓ ${name}: ${url}`);
 }
 await browser.close();
