@@ -53,7 +53,7 @@
   .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
   .logo { font-family: Fraunces, Georgia, serif; font-size: 1.6rem; font-weight: 600; color: var(--ink); text-decoration: none; }
   .logo span { color: var(--honey); }
-  @media (max-width: 359px) { header .btn { display: none; } }
+  @media (max-width: 419px) { header .btn { display: none; } }
   @media (max-width: 440px) {
     .logo { font-size: 1.3rem; }
     .logo small { font-size: .6rem !important; margin-left: 4px !important; }
@@ -149,7 +149,23 @@
   .cta { text-align: center; }
   .cta .lead { margin-left: auto; margin-right: auto; }
   .cta .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
-  .placeholder { display: inline-block; margin-top: 18px; font-size: .9rem; color: var(--honey-light); }
+  .contact { max-width: 640px; margin: 32px auto 0; text-align: left; }
+  .contact .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .contact label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; color: var(--cream); font-size: .95rem; }
+  .contact label em { font-style: normal; font-weight: 400; color: var(--on-dark); opacity: .8; }
+  .contact .wide { grid-column: 1 / -1; }
+  .contact input, .contact textarea { font: inherit; font-weight: 400; color: var(--ink); background: var(--cream); border: 2px solid transparent; border-radius: 12px; padding: 12px 14px; min-height: 48px; width: 100%; }
+  .contact input:focus-visible, .contact textarea:focus-visible { outline: none; border-color: var(--honey-light); }
+  .contact [aria-invalid="true"] { border-color: #ff9b8a; }
+  .contact .btn { margin-top: 18px; width: 100%; background: var(--honey-light); color: var(--ink); border: 0; cursor: pointer; font: inherit; font-weight: 700; }
+  .contact .btn:disabled { opacity: .6; cursor: wait; }
+  .contact .email-alt { margin-top: 14px; text-align: center; color: var(--on-dark); font-size: .95rem; }
+  .contact .email-alt a { color: var(--honey-light); }
+  .contact .form-error { margin-top: 14px; color: #ffb4a6; font-weight: 600; }
+  .contact .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .sent { max-width: 560px; margin: 32px auto 0; padding: 28px; border-radius: 18px; background: #3a2d22; outline: none; }
+  .sent p { color: var(--on-dark); margin-top: 8px; }
+  @media (max-width: 600px) { .contact .fields { grid-template-columns: 1fr; } }
   footer { padding: 40px 0; font-size: .9rem; color: var(--muted); border-top: 1px solid var(--line); }
   footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
 
@@ -175,7 +191,7 @@
         <li><a href="#faq">FAQ</a></li>
       </ul>
     </nav>
-    <a class="btn btn-primary" href="#contact">Book a free call</a>
+    <a class="btn btn-primary" href="#contact">Request a free call</a>
   </div>
 </header>
 
@@ -187,7 +203,7 @@
         <h1>More new patients, <em>less hassle.</em></h1>
         <p class="lead">Butterbite builds modern websites and keeps your Google profile and reviews working for you, so new patients find you and pick you.</p>
         <div class="actions">
-          <a class="btn btn-primary" href="#contact">Book a free call</a>
+          <a class="btn btn-primary" href="#contact">Request a free call</a>
           <a class="btn btn-ghost" href="#examples">See example sites</a>
         </div>
         <ul class="points">
@@ -323,11 +339,25 @@
     <div class="wrap">
       <p class="eyebrow">Get started</p>
       <h2 id="contact-title">Let’s build a website your patients can sink their teeth into.</h2>
-      <p class="lead" style="color: var(--on-dark)">Book a free 20-minute call. We’ll show you a demo built for your practice.</p>
-      <div class="actions">
-        <a class="btn btn-primary" style="background: var(--honey-light); color: var(--ink)" href="#contact">Book a free call</a>
+      <p class="lead" style="color: var(--on-dark)">Tell us a little about your practice. We’ll be in touch to find a time that works for you, and we’ll bring a demo built for your practice.</p>
+      <form class="contact" id="contact-form" novalidate>
+        <div class="fields">
+          <label>Your name<input name="name" autocomplete="name" required maxlength="100"></label>
+          <label>Practice name<input name="practice" autocomplete="organization" required maxlength="150"></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+          <label><span class="lt">Phone <em>(optional)</em></span><input name="phone" type="tel" autocomplete="tel" maxlength="30"></label>
+          <label class="wide"><span class="lt">Anything we should know? <em>(optional)</em></span><textarea name="note" rows="3" maxlength="2000" placeholder="Your current website, what you’d like to improve, good times to reach you…"></textarea></label>
+        </div>
+        <!-- Honeypot: hidden from people; bots that fill it are ignored by the server. -->
+        <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
+        <p class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary" type="submit">Request a free call</button>
+        <p class="email-alt">Prefer email? <a href="mailto:prestonflamion@gmail.com">prestonflamion@gmail.com</a></p>
+      </form>
+      <div class="sent" id="contact-sent" tabindex="-1" hidden>
+        <h3>Thanks! We’ll be in touch soon.</h3>
+        <p>We’ll reply by email to find a time that works for you.</p>
       </div>
-      <p class="placeholder">[Booking link and email go here once our free Cal.com account and domain are set up]</p>
     </div>
   </section>
 </main>
@@ -345,6 +375,32 @@
     var m = location.hostname.match(/^(.+)-butterbite-site\.(.+\.workers\.dev)$/);
     if (m) document.querySelectorAll(".example").forEach(function (ex) {
       ex.href = ex.href.replace("demos.butterbite.workers.dev", m[1] + "-demos." + m[2]);
+    });
+  })();
+</script>
+<script>
+  // Contact form: send to /api/contact (worker.ts), which emails us. Nothing is stored.
+  (function () {
+    var form = document.getElementById("contact-form"); if (!form) return;
+    var started = Date.now(), err = form.querySelector(".form-error"), btn = form.querySelector("button[type=submit]");
+    var emailOk = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); };
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var f = form.elements, bad = null;
+      [["name", f.name.value.trim().length >= 2], ["practice", f.practice.value.trim().length >= 2], ["email", emailOk(f.email.value.trim())]].forEach(function (c) {
+        f[c[0]].setAttribute("aria-invalid", c[1] ? "false" : "true"); if (!c[1] && !bad) bad = f[c[0]];
+      });
+      if (bad) { err.textContent = "Please add your name, practice name and a valid email."; err.hidden = false; bad.focus(); return; }
+      err.hidden = true; btn.disabled = true; btn.textContent = "Sending…";
+      try {
+        var res = await fetch("/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({
+          name: f.name.value, practice: f.practice.value, email: f.email.value, phone: f.phone.value, note: f.note.value, company: f.company.value, startedAt: started }) });
+        if (!res.ok) throw new Error(res.status);
+        form.hidden = true; var done = document.getElementById("contact-sent"); done.hidden = false; done.focus();
+      } catch (x) {
+        err.innerHTML = "Sorry, that didn’t send. Please email us at <a href=\"mailto:prestonflamion@gmail.com\">prestonflamion@gmail.com</a>.";
+        err.hidden = false; btn.disabled = false; btn.textContent = "Request a free call";
+      }
     });
   })();
 </script>

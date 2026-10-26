@@ -4,7 +4,9 @@ Our own marketing site (working name "Butterbite"). Plain static files in `publi
 
 **Cloudflare Worker settings:** repo `dental-template`, Path `/business-site`, no build command, deploy command `npx wrangler@4 deploy`.
 
-**Before launch:** set the real name and domain, add the booking link (free Cal.com account) and email in the contact section, and remove `noindex` from `public/index.html` and the `Disallow` from `public/robots.txt`.
+**Contact form:** `worker.ts` handles `POST /api/contact` and emails the request to `CONTACT_TO` from `CONTACT_FROM` (runtime variables set in Cloudflare; the destination must be a verified Email Routing address). Nothing is stored.
+
+**Before launch:** set the real domain, switch the email address shown in the contact section and `CONTACT_TO`/`CONTACT_FROM` to it, and remove `noindex` from `public/index.html` and the `Disallow` from `public/robots.txt`.
 
 Example-site screenshots in `public/img/` show each design (Butter, Honey, Cinnamon) on a fictional demo practice: a desktop screen (`*-desktop.webp`) with a phone screen (`*-top.webp`) over it. Regenerate them with the clean-screenshot tool (it also writes a tall `*.webp` strip, which this site doesn't use; delete those), then the link preview image:
 
