@@ -58,9 +58,9 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
       to: env.CONTACT_TO,
       from: { email: env.CONTACT_FROM, name: "Butterbite Digital website" },
       replyTo: { email, name },
-      subject: `Free call request: ${practice} (${name})`,
+      subject: `Free demo request: ${practice} (${name})`,
       text: [
-        `${name} from ${practice} asked for a free call. Reply to this email to answer them directly.`,
+        `${name} from ${practice} asked for a free demo. Reply to this email to answer them directly.`,
         "",
         `Name:     ${name}`,
         `Practice: ${practice}`,
