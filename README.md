@@ -104,6 +104,17 @@ Four looks share the same sections, content and code, so a change to any section
 
 Palettes live in `config/designs.ts`; each look is in `app/designs.css`. Only Butter uses the theme presets and `theme.accent`.
 
+## Checking every screen size
+
+Before a release, run the responsive check on the pages you changed (any live, preview or local URL). It loads each page at 12 widths from a 320px phone to a 1920px desktop and fails if anything is wider than the screen:
+
+```
+npm run check:responsive -- "https://demos.butterbite.workers.dev/maple-grove/?design=honey"
+npm run check:responsive -- --shots shots/ <url>   # also save a screenshot per width to look through
+```
+
+Then spot-check on a real iPhone and an Android phone (the check runs Chrome, so Safari-only quirks need a real device). Layout rules that keep this passing: let grid and flex children shrink (`min-w-0`), never fix widths in pixels, and let buttons wrap on very narrow screens (already handled in `globals.css`). The full link bar shows from 1280px; below that the menu button takes over.
+
 ## Themes
 
 Three presets are defined in `config/themes.ts` and applied as CSS custom properties on `<html data-theme="…">`:

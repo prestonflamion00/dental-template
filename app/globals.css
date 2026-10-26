@@ -279,6 +279,15 @@
       background-color 0.25s;
     cursor: pointer;
   }
+  /* Very narrow screens (small phones, zoomed text): let long labels wrap rather than overflow. */
+  @media (max-width: 379px) {
+    .btn {
+      white-space: normal;
+      text-align: center;
+      line-height: 1.2;
+      padding-block: 0.6rem;
+    }
+  }
   .btn:active {
     transform: scale(0.98);
   }

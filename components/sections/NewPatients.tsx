@@ -30,7 +30,7 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
       </ol>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_1.3fr]">
-        <div className="glass flex flex-col justify-between rounded-[24px] p-6 sm:p-7" data-reveal>
+        <div className="glass flex min-w-0 flex-col justify-between rounded-[24px] p-6 sm:p-7" data-reveal>
           <div>
             <h3 className="font-sans text-[1.15rem] font-bold text-ink">Save time with forms</h3>
             <p className="mt-2 text-muted">Fill out your paperwork at home so you can spend less time in the waiting room.</p>
@@ -45,7 +45,7 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
           </div>
         </div>
 
-        <div className="glass rounded-[24px] p-6 sm:p-7" data-reveal style={{ ["--d" as string]: "80ms" }}>
+        <div className="glass min-w-0 rounded-[24px] p-6 sm:p-7" data-reveal style={{ ["--d" as string]: "80ms" }}>
           <div className="flex items-center gap-3">
             <ShieldCheck size={22} aria-hidden="true" className="text-accent" />
             <h3 className="font-sans text-[1.15rem] font-bold text-ink">Insurance we accept</h3>

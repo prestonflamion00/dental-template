@@ -49,11 +49,11 @@ export function Nav({
           scrolled ? "py-1.5 shadow-lg" : "py-2.5",
         )}
       >
-        <a href="#top" className="shrink-0 rounded-xl">
+        <a href="#top" className="min-w-0 shrink rounded-xl">
           <span className={cx("block origin-left transition-transform duration-300", scrolled && "scale-[0.94]")}>{logo}</span>
         </a>
 
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="hidden items-center gap-1 xl:flex">
           {links.map((l) => (
             <li key={l.href}>
               <a
@@ -86,7 +86,7 @@ export function Nav({
           <button
             ref={menuBtn}
             type="button"
-            className="grid size-12 place-items-center rounded-full text-ink hover:bg-white/80 lg:hidden"
+            className="grid size-12 place-items-center rounded-full text-ink hover:bg-white/80 xl:hidden"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((o) => !o)}
@@ -100,7 +100,7 @@ export function Nav({
       <div
         id="mobile-menu"
         hidden={!menuOpen}
-        className="glass-strong mx-auto mt-2 max-w-6xl rounded-[24px] p-3 lg:hidden"
+        className="glass-strong mx-auto mt-2 max-w-6xl rounded-[24px] p-3 xl:hidden"
       >
         <ul className="grid gap-1">
           {links.map((l) => (
