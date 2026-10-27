@@ -6,7 +6,12 @@
   "name": "butterbite-site",
   "main": "worker.ts",
   "compatibility_date": "2026-10-01",
-  // Public site: keep the workers.dev address and per-branch preview links on.
+  // Live at butterbitedigital.com (www forwards there through a Cloudflare redirect rule).
+  // The workers.dev address and per-branch preview links stay on.
+  "routes": [
+    { "pattern": "butterbitedigital.com", "custom_domain": true },
+    { "pattern": "www.butterbitedigital.com", "custom_domain": true }
+  ],
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
