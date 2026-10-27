@@ -9,9 +9,10 @@
   body { width: 1200px; height: 630px; overflow: hidden; position: relative; font-family: "Plus Jakarta Sans", sans-serif; color: #2b2118;
     background: radial-gradient(520px 420px at 92% 18%, #f6d58f, transparent 70%), radial-gradient(460px 380px at 8% 105%, #f3ddc8, transparent 70%), #fbf7ee; }
   .text { position: absolute; left: 72px; top: 0; bottom: 0; width: 560px; display: flex; flex-direction: column; justify-content: center; }
-  .logo { font-family: Fraunces, serif; font-weight: 600; font-size: 40px; }
-  .logo span { color: #8a5212; }
-  .logo small { margin-left: 10px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #6b5a4c; vertical-align: middle; }
+  .logo { display: flex; align-items: center; gap: 12px; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; font-size: 40px; letter-spacing: -.035em; }
+  .logo-mark { width: 58px; height: 46px; }
+  .logo b { font-weight: 800; color: #c27c12; }
+  .logo small { margin-left: -4px; font-size: 20px; font-weight: 700; letter-spacing: .02em; color: #6b5a4c; align-self: flex-end; padding-bottom: 8px; }
   h1 { font-family: Fraunces, serif; font-weight: 500; font-size: 66px; line-height: 1.04; letter-spacing: -.02em; margin-top: 34px; }
   h1 em { color: #8a5212; }
   p { font-size: 27px; color: #4a3d33; margin-top: 22px; line-height: 1.35; }
@@ -29,7 +30,7 @@
 </head>
 <body>
   <div class="text">
-    <div class="logo">Butter<span>bite</span><small>Digital</small></div>
+    <div class="logo"><svg class="logo-mark" viewBox="6 18 88 70" aria-hidden="true"><defs><mask id="og-bite"><rect x="-50" y="-50" width="200" height="200" fill="#fff"/><circle cx="81.49" cy="37.78" r="7" fill="#000"/><circle cx="73.37" cy="38.73" r="7" fill="#000"/><circle cx="66.29" cy="34.64" r="7" fill="#000"/><circle cx="63.05" cy="27.13" r="7" fill="#000"/></mask></defs><g mask="url(#og-bite)"><g stroke-linejoin="round" stroke-width="4"><path d="M10 46 50 64 50 80 10 62Z" fill="#f4c45b" stroke="#f4c45b"/><path d="M50 64 90 46 90 62 50 80Z" fill="#e3a234" stroke="#e3a234"/><path d="M10 46 50 28 90 46 50 64Z" fill="#fde49a" stroke="#fde49a"/></g></g></svg><span>butter<b>bite</b></span><small>digital</small></div>
     <h1>More new patients, <em>less hassle.</em></h1>
     <p>Websites that make patients feel at home.</p>
     <div class="tag">Websites · Google · Reviews</div>
