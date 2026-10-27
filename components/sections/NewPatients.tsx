@@ -35,7 +35,7 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
             <h3 className="font-sans text-[1.15rem] font-bold text-ink">Save time with forms</h3>
             <p className="mt-2 text-muted">Fill out your paperwork at home so you can spend less time in the waiting room.</p>
           </div>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             {/* MOCK: points at a sample PDF. Replace with the office's real forms, or an online intake link (e.g. Jotform HIPAA, NexHealth Forms). */}
             <a href={newPatientFormsUrl ? withBase(newPatientFormsUrl) : "#"} className="btn btn-glass" download>
               <FileDown size={18} aria-hidden="true" className="text-accent" />

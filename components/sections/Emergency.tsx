@@ -8,7 +8,7 @@ export function Emergency({ office }: { office: OfficeConfig }) {
   return (
     <section id="emergency" aria-labelledby="emergency-title" className="px-4 py-10 sm:px-6 sm:py-14">
       <div
-        className="glass mx-auto flex max-w-6xl flex-col gap-6 overflow-hidden rounded-[28px] p-6 sm:p-9 md:flex-row md:items-center md:justify-between"
+        className="glass mx-auto flex max-w-6xl flex-col gap-6 overflow-hidden rounded-[28px] p-6 sm:p-9 lg:flex-row lg:items-center lg:justify-between"
         data-reveal
       >
         <div className="flex gap-5">
