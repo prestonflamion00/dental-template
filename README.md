@@ -106,7 +106,7 @@ Palettes live in `config/designs.ts`; each look is in `app/designs.css`. Only Bu
 
 ## Checking every screen size
 
-Before a release, run the responsive check on the pages you changed (any live, preview or local URL). It loads each page at 12 widths from a 320px phone to a 1920px desktop and fails if anything is wider than the screen:
+Before a release, run the responsive check on the pages you changed (any live, preview or local URL). It loads each page at 12 widths from a 320px phone to a 1920px desktop and fails if anything is wider than the screen, or if a button, link or text sticks out of its card:
 
 ```
 npm run check:responsive -- "https://demos.butterbite.workers.dev/maple-grove/?design=honey"

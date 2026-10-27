@@ -1,6 +1,7 @@
 /**
  * Responsive check: loads each page at widths from a small phone to a large desktop and reports
- * anything wider than the screen (the usual cause of sideways scrolling and cut-off content).
+ * anything wider than the screen (the usual cause of sideways scrolling and cut-off content), and
+ * any button, link or text that spills out of its card.
  * Optionally saves a screenshot per width for a quick visual pass.
  *
  *   node scripts/check-responsive.mjs [--shots <dir>] <url> [<url> ...]
@@ -54,6 +55,22 @@ for (const url of args) {
         const where = el.closest("section, header, footer");
         const label = where ? where.id || where.getAttribute("aria-label") || where.tagName.toLowerCase() : "page";
         offenders.push(`${label}: <${el.tagName.toLowerCase()}> "${(el.textContent || "").trim().slice(0, 40)}"`);
+      }
+      // Content poking out of its card fits the screen but still looks broken.
+      for (const el of document.querySelectorAll(".glass :is(a, button, h1, h2, h3, h4, p, li, span)")) {
+        if (el.closest('[aria-hidden="true"]')) continue;
+        const card = el.parentElement.closest(".glass");
+        const r = el.getBoundingClientRect();
+        const c = card.getBoundingClientRect();
+        if (!r.width || !r.height || (r.right <= c.right + 2 && r.left >= c.left - 2)) continue;
+        let clipped = false;
+        for (let a = el.parentElement; a && a !== card; a = a.parentElement) {
+          if (getComputedStyle(a).overflowX !== "visible") { clipped = true; break; }
+        }
+        if (clipped) continue;
+        const where = el.closest("section, header, footer");
+        const label = where ? where.id || where.getAttribute("aria-label") || where.tagName.toLowerCase() : "page";
+        offenders.push(`${label}: <${el.tagName.toLowerCase()}> "${(el.textContent || "").trim().slice(0, 40)}" sticks out of its card`);
       }
       return { overflow: document.documentElement.scrollWidth - vw, offenders: [...new Set(offenders)].slice(0, 3) };
     });
