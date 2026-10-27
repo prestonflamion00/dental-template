@@ -56,7 +56,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   try {
     await env.EMAIL.send({
       to: env.CONTACT_TO,
-      from: { email: env.CONTACT_FROM, name: "Butterbite Digital website" },
+      from: { email: env.CONTACT_FROM, name: "butterbite digital website" },
       replyTo: { email, name },
       subject: `Free demo request: ${practice} (${name})`,
       text: [
@@ -70,7 +70,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
         note || "(No message.)",
         "",
         "—",
-        "Sent by the Butterbite Digital website. The website does not keep a copy of this message.",
+        "Sent by the butterbite digital website. The website does not keep a copy of this message.",
       ].join("\n"),
     });
   } catch {
