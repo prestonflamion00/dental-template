@@ -9,6 +9,7 @@ import { DemoThemeSwitcher } from "@/components/ui/DemoThemeSwitcher";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { QuickInfo } from "@/components/sections/QuickInfo";
+import { RequestSection } from "@/components/sections/RequestSection";
 import { ServicesGrid } from "@/components/sections/Services";
 import { Emergency } from "@/components/sections/Emergency";
 import { NewPatients } from "@/components/sections/NewPatients";
@@ -20,11 +21,13 @@ import { FaqList } from "@/components/sections/Faq";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { MobileBar } from "@/components/sections/MobileBar";
+import { openDays } from "@/lib/hours";
 
 /** Each section id → its component. Order and visibility come from `office.sections`. */
 const SECTIONS: Record<SectionId, () => React.ReactNode> = {
   hero: () => <Hero office={office} />,
   quickInfo: () => <QuickInfo office={office} />,
+  request: () => <RequestSection office={office} />,
   services: () => (
     <Section id="services" eyebrow="Services" title="Care for every smile" intro={office.copy.servicesIntro}>
       <ServicesGrid services={office.services} phone={office.contact.phone} />
@@ -65,10 +68,8 @@ export default function Home() {
     <BookingProvider
       settings={{
         practiceName: office.practice.name,
-        phone: office.contact.phone,
-        services: office.services.map(({ id, name, short, icon, durationMin }) => ({ id, name, short, icon, durationMin })),
-        hours: office.hours,
-        slotMinutes: office.booking.slotMinutes,
+        services: office.services.map(({ id, name }) => ({ id, name })),
+        openDays: openDays(office.hours),
         url: office.booking.url,
       }}
     >

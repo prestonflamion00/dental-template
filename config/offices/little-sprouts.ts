@@ -196,7 +196,7 @@ const littleSprouts: OfficeConfig = {
     },
   ],
 
-  booking: { slotMinutes: 30 },
+  booking: {},
   newPatientFormsUrl: "/forms/new-patient-forms.pdf",
 
   social: {
@@ -209,7 +209,7 @@ const littleSprouts: OfficeConfig = {
   theme: { preset: "sage-blue" },
 
   // No before/after gallery for a pediatric office; emergency card promoted higher.
-  sections: ["hero", "quickInfo", "emergency", "services", "newPatients", "doctors", "reviews", "cta", "faq", "contact"],
+  sections: ["hero", "quickInfo", "request", "emergency", "services", "newPatients", "doctors", "reviews", "cta", "faq", "contact"],
 
   copy: {
     heroEyebrow: "Pediatric dentistry in Austin",
@@ -219,7 +219,7 @@ const littleSprouts: OfficeConfig = {
     servicesIntro: "Kid-sized care, explained in kid-friendly words (and grown-up ones too).",
     newPatientsIntro: "First time with us? Here’s how we make it easy for kids and parents alike.",
     firstVisitSteps: [
-      { title: "Book a happy visit", text: "Schedule online or call. Tell us anything that helps your child feel safe.", icon: "calendar" },
+      { title: "Request a happy visit", text: "Request a time online or call. Tell us anything that helps your child feel safe.", icon: "calendar" },
       { title: "Explore & play", text: "A tour of the office, a ride in the big chair and a peek at our tooth-counting tools.", icon: "smile" },
       { title: "Gentle checkup", text: "A quick, kind exam and cleaning, plus practical tips for parents. Then the prize wall!", icon: "star" },
     ],

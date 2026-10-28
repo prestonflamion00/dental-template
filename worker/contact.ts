@@ -1,7 +1,8 @@
 /**
  * Cloudflare Worker for ONE practice: serves the static site and handles the contact form.
  *
- *   POST /api/contact  →  emails the message to the practice (reply-to = the visitor), then forgets it.
+ *   POST /api/contact  →  emails the appointment request or question to the practice (reply-to = the visitor),
+ *                         then forgets it. Nothing is booked: the office calls or texts to confirm.
  *   everything else    →  the static site in out/ (via the ASSETS binding)
  *
  * Nothing is stored or logged: no database, and the message body never goes to console/logs.
@@ -12,8 +13,7 @@
  *   PRACTICE_NAME optional, used in the subject line and sender name
  */
 
-import { CONTACT_TOPICS } from "../lib/contact-topics";
-import { parsePhone } from "../lib/phone";
+import { DAY_ORDER, LIMITS, TIMES_OF_DAY, requestEmail, validateRequest, type RequestValues } from "../lib/request";
 
 interface EmailAddress {
   email: string;
@@ -36,7 +36,6 @@ interface Env {
   PRACTICE_NAME?: string;
 }
 
-const LIMITS = { name: 100, email: 200, phone: 30, message: 2000 };
 /** Submissions faster than this after the page loaded are almost certainly bots. */
 const MIN_FILL_MS = 2500;
 
@@ -60,36 +59,29 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   const startedAt = Number(body.startedAt);
   if (clean(body.company, 100) || !startedAt || Date.now() - startedAt < MIN_FILL_MS) return json({ ok: true });
 
-  const name = clean(body.name, LIMITS.name);
-  const email = clean(body.email, LIMITS.email);
-  const typedPhone = clean(body.phone, LIMITS.phone);
-  const phone = typedPhone ? parsePhone(typedPhone) : null;
-  const topic = CONTACT_TOPICS.find((t) => t === body.topic) ?? "Other";
-  const message = typeof body.message === "string" ? body.message.trim().slice(0, LIMITS.message) : "";
-  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || message.length < 10 || (phone && !phone.ok)) {
-    return json({ ok: false, error: "invalid" }, 400);
-  }
+  const values: RequestValues = {
+    kind: body.kind === "question" ? "question" : "appointment",
+    name: clean(body.name, LIMITS.name),
+    phone: clean(body.phone, LIMITS.phone),
+    email: clean(body.email, LIMITS.email),
+    patientType: body.patientType === "returning" ? "returning" : "new",
+    reason: clean(body.reason, LIMITS.reason),
+    days: Array.isArray(body.days) ? DAY_ORDER.filter((d) => (body.days as unknown[]).includes(d)) : [],
+    time: TIMES_OF_DAY.find((t) => t === body.time) ?? "",
+    insurance: clean(body.insurance, LIMITS.insurance),
+    message: typeof body.message === "string" ? body.message.trim().slice(0, LIMITS.message) : "",
+  };
+  if (Object.keys(validateRequest(values)).length) return json({ ok: false, error: "invalid" }, 400);
 
   const practice = env.PRACTICE_NAME || "your website";
+  const { subject, text } = requestEmail(values, practice);
   try {
     await env.EMAIL.send({
       to: env.CONTACT_TO,
       from: { email: env.CONTACT_FROM, name: `${practice} website` },
-      replyTo: { email, name },
-      subject: `Website message: ${topic} (${name})`,
-      text: [
-        `New message from the ${practice} website. Reply to this email to answer ${name} directly.`,
-        "",
-        `Name:  ${name}`,
-        `Email: ${email}`,
-        `Phone: ${phone?.ok ? phone.display : "not given"}`,
-        `Topic: ${topic}`,
-        "",
-        message,
-        "",
-        "—",
-        "Sent by the website contact form. The website does not keep a copy of this message.",
-      ].join("\n"),
+      replyTo: { email: values.email, name: values.name },
+      subject,
+      text: `${text}\n\n—\nSent by the website form. The website does not keep a copy of this message.`,
     });
   } catch {
     return json({ ok: false, error: "send_failed" }, 502);

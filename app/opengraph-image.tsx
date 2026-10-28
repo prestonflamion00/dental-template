@@ -47,7 +47,7 @@ export default function OpengraphImage() {
           </div>
           <div style={{ display: "flex", gap: 24, fontSize: 28, color: t.ink }}>
             <div style={{ display: "flex", background: t.accent, color: "#fff", padding: "12px 28px", borderRadius: 999 }}>
-              Book online
+              Request online
             </div>
             <div style={{ display: "flex", padding: "12px 0" }}>{`Rated ${office.rating.value.toFixed(1)} of 5 · ${office.contact.phone}`}</div>
           </div>

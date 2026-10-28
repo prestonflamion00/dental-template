@@ -50,11 +50,11 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
             <MessageCircleQuestion size={28} aria-hidden="true" />
             <h3 className="mt-5 font-sans text-[1.15rem] font-bold leading-snug">Not sure what you need?</h3>
             <p className="mt-2 text-[0.975rem] leading-relaxed text-white/90">
-              Book a regular visit and we’ll figure it out together, or call us at {phone}.
+              Request a regular visit and we’ll figure it out together, or call us at {phone}.
             </p>
           </div>
           <BookButton variant="glass" className="mt-5 self-start !text-ink" icon={false}>
-            Book a visit
+            Request a visit
           </BookButton>
         </li>
       </ul>
@@ -82,7 +82,7 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
               </ul>
             )}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <BookButton serviceId={active.id}>Book {active.name.length > 24 ? "this visit" : active.name}</BookButton>
+              <BookButton serviceId={active.id}>Request {active.name.length > 24 ? "this visit" : active.name}</BookButton>
             </div>
             <p className="mt-5 text-sm text-muted">Every smile is different. We’ll talk through options and costs before any treatment.</p>
           </div>

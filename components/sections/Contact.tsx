@@ -3,7 +3,6 @@ import type { OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
 import { fullAddress, mapsHref, telHref } from "@/lib/format";
 import { HoursTable } from "./OpenStatus";
-import { ContactForm } from "./ContactForm";
 
 /**
  * Illustrated map placeholder (no API key, no third-party requests).
@@ -42,54 +41,49 @@ function MapPlaceholder({ office }: { office: OfficeConfig }) {
   );
 }
 
+/** Map, full weekly hours and ways to reach the office. The form lives higher up (RequestSection). */
 export function Contact({ office }: { office: OfficeConfig }) {
   const { contact, copy } = office;
   return (
     <Section id="contact" eyebrow="Contact & location" title="Come say hello" intro={copy.contactIntro}>
-      <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="glass rounded-[28px] p-3" data-reveal>
-          <MapPlaceholder office={office} />
-          <div className="grid gap-6 p-4 pt-6 sm:grid-cols-[1.1fr_1fr] sm:p-5">
-            <div>
-              <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Hours</h3>
-              <div className="mt-3">
-                <HoursTable timezone={office.timezone} hours={office.hours} />
-              </div>
-            </div>
-            <div>
-              <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Get in touch</h3>
-              <ul className="mt-3 grid gap-3">
-                <li>
-                  <a href={telHref(contact.phone)} className="flex items-center gap-3 font-semibold text-ink hover:text-accent">
-                    <Phone size={18} aria-hidden="true" className="shrink-0 text-accent" />
-                    {contact.phone}
-                  </a>
-                </li>
-                <li>
-                  <a href={`mailto:${contact.email}`} className="flex items-center gap-3 font-semibold [overflow-wrap:anywhere] text-ink hover:text-accent">
-                    <Mail size={18} aria-hidden="true" className="shrink-0 text-accent" />
-                    {contact.email}
-                  </a>
-                </li>
-                <li>
-                  <a href={mapsHref(contact.address)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
-                    <MapPin size={18} aria-hidden="true" className="mt-1 shrink-0 text-accent" />
-                    <address className="not-italic">
-                      {contact.address.street}
-                      <br />
-                      {contact.address.city}, {contact.address.region} {contact.address.postalCode}
-                    </address>
-                    <span className="sr-only"> (opens in maps, new tab)</span>
-                  </a>
-                </li>
-              </ul>
-              {contact.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{contact.directionsNote}</p>}
+      <div className="glass grid gap-6 rounded-[28px] p-3 lg:grid-cols-[1.15fr_1fr] lg:items-center" data-reveal>
+        <MapPlaceholder office={office} />
+        <div className="grid gap-6 p-4 sm:grid-cols-[1.1fr_1fr] sm:p-5">
+          <div>
+            <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Hours</h3>
+            <div className="mt-3">
+              <HoursTable timezone={office.timezone} hours={office.hours} />
             </div>
           </div>
-        </div>
-
-        <div className="glass rounded-[28px] p-6 sm:p-8" data-reveal style={{ ["--d" as string]: "80ms" }}>
-          <ContactForm practiceName={office.practice.name} />
+          <div>
+            <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Get in touch</h3>
+            <ul className="mt-3 grid gap-3">
+              <li>
+                <a href={telHref(contact.phone)} className="flex items-center gap-3 font-semibold text-ink hover:text-accent">
+                  <Phone size={18} aria-hidden="true" className="shrink-0 text-accent" />
+                  {contact.phone}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${contact.email}`} className="flex items-center gap-3 font-semibold [overflow-wrap:anywhere] text-ink hover:text-accent">
+                  <Mail size={18} aria-hidden="true" className="shrink-0 text-accent" />
+                  {contact.email}
+                </a>
+              </li>
+              <li>
+                <a href={mapsHref(contact.address)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
+                  <MapPin size={18} aria-hidden="true" className="mt-1 shrink-0 text-accent" />
+                  <address className="not-italic">
+                    {contact.address.street}
+                    <br />
+                    {contact.address.city}, {contact.address.region} {contact.address.postalCode}
+                  </address>
+                  <span className="sr-only"> (opens in maps, new tab)</span>
+                </a>
+              </li>
+            </ul>
+            {contact.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{contact.directionsNote}</p>}
+          </div>
         </div>
       </div>
     </Section>
