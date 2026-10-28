@@ -4,9 +4,9 @@ import { CalendarDays } from "lucide-react";
 import { useBooking } from "./BookingProvider";
 import { cx } from "@/lib/format";
 
-/** The primary "Book Appointment" CTA. Opens the booking modal, or links to `booking.url` if configured. */
+/** The primary "Request appointment" button. Opens the request form, or links to `booking.url` if configured. */
 export function BookButton({
-  children = "Book Appointment",
+  children = "Request appointment",
   serviceId,
   className,
   size = "md",

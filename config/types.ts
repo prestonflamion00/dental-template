@@ -35,6 +35,7 @@ export type IconName =
 export type SectionId =
   | "hero"
   | "quickInfo"
+  | "request"
   | "services"
   | "emergency"
   | "newPatients"
@@ -74,7 +75,7 @@ export interface Service {
   detail: string;
   /** Optional bullet points in the detail modal. */
   points?: string[];
-  /** Typical visit length in minutes; drives the booking mock. */
+  /** Typical visit length in minutes (for a future online scheduler; not shown yet). */
   durationMin?: number;
 }
 
@@ -165,13 +166,11 @@ export interface OfficeConfig {
 
   booking: {
     /**
-     * If set, every "Book Appointment" button links here (e.g. a Zocdoc,
+     * If set, every "Request appointment" button links here (e.g. a Zocdoc,
      * NexHealth, LocalMed or Dentrix booking page) instead of opening the
-     * built-in booking mock.
+     * site's request form.
      */
     url?: string;
-    /** Slot length for the booking mock. */
-    slotMinutes: number;
   };
 
   /** Link to the downloadable new patient forms (PDF in /public or external). */
@@ -209,6 +208,8 @@ export interface OfficeConfig {
     reviewsIntro: string;
     faqIntro: string;
     contactIntro: string;
+    /** Intro under "Request an appointment"; a friendly default is used when left out. */
+    requestIntro?: string;
     /** Small reassurance chips shown in the hero card. */
     comfortPerks: string[];
   };

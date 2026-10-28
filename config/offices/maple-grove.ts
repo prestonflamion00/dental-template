@@ -216,7 +216,7 @@ const mapleGrove: OfficeConfig = {
     { title: "Clear aligners", caption: "14 months with Invisalign", before: "/gallery/before-3.svg", after: "/gallery/after-3.svg" },
   ],
 
-  booking: { slotMinutes: 30 },
+  booking: {},
   newPatientFormsUrl: "/forms/new-patient-forms.pdf",
 
   social: {
@@ -227,7 +227,7 @@ const mapleGrove: OfficeConfig = {
 
   theme: { preset: "warm-neutral" },
 
-  sections: ["hero", "quickInfo", "services", "newPatients", "doctors", "cta", "reviews", "gallery", "emergency", "faq", "contact"],
+  sections: ["hero", "quickInfo", "request", "services", "newPatients", "doctors", "cta", "reviews", "gallery", "emergency", "faq", "contact"],
 
   copy: {
     heroEyebrow: "Family dentistry in Northeast Portland",
@@ -237,7 +237,7 @@ const mapleGrove: OfficeConfig = {
     servicesIntro: "Everything your family needs under one roof, explained in plain language.",
     newPatientsIntro: "New here? Welcome. Here’s exactly what to expect, so there are no surprises.",
     firstVisitSteps: [
-      { title: "Say hello", text: "Book online or call. We’ll check your insurance and send forms ahead of time.", icon: "calendar" },
+      { title: "Say hello", text: "Request a time online or call. We’ll check your insurance and send forms ahead of time.", icon: "calendar" },
       { title: "Get comfortable", text: "Settle in with a warm drink. We’ll chat about your goals and any worries first.", icon: "coffee" },
       { title: "Leave with a plan", text: "A gentle exam, clear answers, and a plan you can take your time thinking about.", icon: "clipboard" },
     ],

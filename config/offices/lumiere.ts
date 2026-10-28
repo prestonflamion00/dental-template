@@ -191,7 +191,7 @@ const lumiere: OfficeConfig = {
     { title: "Smile makeover", caption: "Aligners, whitening & bonding", before: "/gallery/before-3.svg", after: "/gallery/after-3.svg" },
   ],
 
-  booking: { slotMinutes: 60 },
+  booking: {},
   newPatientFormsUrl: "/forms/new-patient-forms.pdf",
 
   social: {
@@ -204,7 +204,7 @@ const lumiere: OfficeConfig = {
   theme: { preset: "blush-sand" },
 
   // Cosmetic practices lead with results: gallery right after services.
-  sections: ["hero", "quickInfo", "services", "gallery", "doctors", "reviews", "cta", "newPatients", "faq", "emergency", "contact"],
+  sections: ["hero", "quickInfo", "request", "services", "gallery", "doctors", "reviews", "cta", "newPatients", "faq", "emergency", "contact"],
 
   copy: {
     heroEyebrow: "Cosmetic & implant dentistry in Scottsdale",
@@ -214,7 +214,7 @@ const lumiere: OfficeConfig = {
     servicesIntro: "Artful, conservative treatments tailored to your face, your goals and your timeline.",
     newPatientsIntro: "Your first visit is a conversation, not a sales pitch.",
     firstVisitSteps: [
-      { title: "Book a consultation", text: "Reserve online or call our concierge. We’ll send a short questionnaire in advance.", icon: "calendar" },
+      { title: "Request a consultation", text: "Request a time online or call our concierge. We’ll send a short questionnaire in advance.", icon: "calendar" },
       { title: "Design together", text: "Photos, a 3D scan and an honest conversation about what you’d love to change.", icon: "scan" },
       { title: "See your options", text: "A clear plan with transparent pricing. Take all the time you need to decide.", icon: "clipboard" },
     ],
@@ -233,7 +233,7 @@ const lumiere: OfficeConfig = {
     siteUrl: "https://lumieredental.example",
     title: "Lumière Dental Studio | Cosmetic & Implant Dentist in Scottsdale, AZ",
     description:
-      "Boutique cosmetic and implant dentistry in Scottsdale. Porcelain veneers, clear aligners, whitening and dental implants in a calm, spa-like studio. Book a consultation.",
+      "Boutique cosmetic and implant dentistry in Scottsdale. Porcelain veneers, clear aligners, whitening and dental implants in a calm, spa-like studio. Request a consultation.",
     priceRange: "$$$",
   },
 };

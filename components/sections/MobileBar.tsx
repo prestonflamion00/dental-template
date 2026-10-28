@@ -2,7 +2,7 @@ import { Phone } from "lucide-react";
 import { BookButton } from "@/components/booking/BookButton";
 import { telHref } from "@/lib/format";
 
-/** Sticky bottom action bar on phones: Book + Call always one thumb-tap away. */
+/** Sticky bottom action bar on phones: Request + Call always one thumb-tap away. */
 export function MobileBar({ phone }: { phone: string }) {
   return (
     <div data-mobile-bar className="fixed inset-x-0 bottom-0 z-30 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:hidden">
@@ -11,7 +11,7 @@ export function MobileBar({ phone }: { phone: string }) {
           <Phone size={18} aria-hidden="true" className="text-accent" />
           Call
         </a>
-        <BookButton>Book Now</BookButton>
+        <BookButton>Request visit</BookButton>
       </div>
     </div>
   );

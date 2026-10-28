@@ -20,6 +20,11 @@ const SCHEMA_DAYS: Record<Day, string> = {
   sun: "Sunday",
 };
 
+/** Days the office is open, Monday first. */
+export function openDays(hours: Record<Day, DayHours>): Day[] {
+  return DAYS.filter((d) => hours[d]);
+}
+
 const JS_DAY_TO_DAY: Day[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 /** "17:30" → "5:30 PM" ; "09:00" → "9 AM" */

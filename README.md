@@ -153,7 +153,7 @@ The Worker's name in the dashboard must match the name in the deploy command (`d
 
 **Preview builds (standard for every public Worker).** Each Worker has two builds in **Settings → Build**: one for `main` that runs the deploy command above (production), and one for every other branch that runs the same build with `npx wrangler versions upload` instead (`-c`/`--name` flags kept). A push to a branch then gets a preview link named after the branch, `https://<branch>-<worker>.butterbite.workers.dev`, without touching the live site; merging to `main` releases it. Keep `"preview_urls": true` in the Worker's wrangler config. The uptime monitor is the exception: no previews and no public address.
 
-**Real contact form (practice Workers only).** `worker/contact.ts` emails each message to the practice with reply-to set to the visitor, and stores nothing. To turn it on for a practice:
+**Real request form (practice Workers only).** `worker/contact.ts` emails each appointment request or question to the practice with reply-to set to the visitor, and stores nothing. To turn it on for a practice:
 1. Add the build variable `NEXT_PUBLIC_CONTACT_ENDPOINT=/api/contact` (without it the form stays a mock, as on the demos site).
 2. In Cloudflare **Email Routing**, verify the practice's inbox as a destination address (they click a link in an email). Sending to verified addresses is free.
 3. Add runtime variables under the Worker's **Settings → Variables and secrets**: `CONTACT_TO` (that inbox), `CONTACT_FROM` (a sender on a domain with Email Routing enabled) and optionally `PRACTICE_NAME`.
@@ -170,9 +170,7 @@ Every integration lives behind one async function in **`lib/integrations.ts`**. 
 
 | Feature | Mock today | Replace with |
 | --- | --- | --- |
-| Booking availability | `getAvailableSlots()`: fake slots derived from office hours | NexHealth, LocalMed, Zocdoc, Open Dental or Dentrix APIs, called from a server route |
-| Booking submission | `submitBooking()`: returns a fake confirmation | Same provider. Or set `booking.url` to skip the modal and link to a hosted scheduler. |
-| Contact form | `sendContactMessage()`: mock unless `NEXT_PUBLIC_CONTACT_ENDPOINT` is set | Live on practice Workers via `worker/contact.ts` (Cloudflare email; see above) |
+| Appointment requests and questions | One form (`components/booking/RequestForm.tsx`), inline near the top and behind every "Request appointment" button. `sendContactMessage()` is a mock unless `NEXT_PUBLIC_CONTACT_ENDPOINT` is set. Nothing is booked: the office calls or texts to confirm. | Live on practice Workers via `worker/contact.ts` (Cloudflare email; see above). To use a practice's own online scheduler instead, set `booking.url`. |
 | Reviews & rating badge | Read from the config | Google Places API (fetched at build time), Birdeye, Podium or Weave |
 | Map | Illustrated SVG card plus a "Directions" deep link (`components/sections/Contact.tsx`) | Lazy Google Maps Embed or OpenStreetMap iframe |
 | New patient forms | Sample PDF in `/public/forms` | The practice's real PDF, or a HIPAA-compliant online intake link |
@@ -195,13 +193,14 @@ app/
   page.tsx             ← renders sections in config order
   privacy/, accessibility/, sitemap.ts, robots.ts, opengraph-image.tsx, icon.tsx
 components/
-  sections/            ← Nav, Hero, QuickInfo, Services, Emergency, NewPatients, Doctors,
-                         Cta, Reviews, Gallery, Faq, Contact, Footer, MobileBar
-  booking/             ← BookingProvider, BookButton, BookingModal
+  sections/            ← Nav, Hero, QuickInfo, RequestSection, Services, Emergency, NewPatients,
+                         Doctors, Cta, Reviews, Gallery, Faq, Contact, Footer, MobileBar
+  booking/             ← RequestForm, BookingProvider (pop-up), BookButton ("Request appointment")
   ui/                  ← Modal (<dialog>), Icon, Stars, Section, Logo, RevealObserver, DemoThemeSwitcher
 lib/
   hours.ts             ← open-now logic in the office's timezone, schema hours
   integrations.ts      ← all mocks / integration points
+  request.ts           ← request form rules and email text, shared with worker/contact.ts
   schema.ts, format.ts
 scripts/
   build-all.mjs        ← builds every office + the demo index page
