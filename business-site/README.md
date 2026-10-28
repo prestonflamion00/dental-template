@@ -4,7 +4,7 @@ Our own marketing site (working name "Butterbite"). Plain static files in `publi
 
 **Cloudflare Worker settings:** repo `dental-template`, Path `/business-site`, no build command, deploy command `npx wrangler@4 deploy`.
 
-**Contact form:** `worker.ts` handles `POST /api/contact` and emails the request to `CONTACT_TO` from `CONTACT_FROM` (runtime variables set in Cloudflare). Nothing is stored. `CONTACT_TO` must be a verified Email Routing destination, so it is the shared inbox butterbitedigital@gmail.com (where hello@butterbitedigital.com also lands), not hello@ itself. `CONTACT_FROM` is website@butterbitedigital.com.
+**Contact form:** `worker.ts` handles `POST /api/contact` and emails the request to `CONTACT_TO` from `CONTACT_FROM` (runtime variables set in Cloudflare). Nothing is stored. `CONTACT_TO` must be a verified Email Routing destination: hello@butterbitedigital.com is verified (it forwards to the shared Gmail), so replies there default to hello@. `CONTACT_FROM` is website@butterbitedigital.com.
 
 **Domain:** the site is served at butterbitedigital.com (custom domains in `wrangler.jsonc`); a Cloudflare redirect rule sends www.butterbitedigital.com to it. **Before launch:** remove `noindex` from `public/index.html` and the `Disallow` from `public/robots.txt`.
 
