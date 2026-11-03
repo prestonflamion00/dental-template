@@ -535,3 +535,21 @@
 :has(> .sample-tag) {
   position: relative;
 }
+
+/* ── "Your photo here" on real-practice demos (components/ui/PhotoPlaceholder.tsx) ── */
+.photo-placeholder {
+  color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: linear-gradient(110deg, var(--accent-soft) 35%, color-mix(in srgb, var(--accent-soft) 40%, white) 50%, var(--accent-soft) 65%);
+  background-size: 250% 100%;
+  animation: photo-shimmer 2.8s ease-in-out infinite;
+}
+.photo-placeholder > span {
+  color: var(--muted);
+}
+@keyframes photo-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -150% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-placeholder { animation: none; }
+}

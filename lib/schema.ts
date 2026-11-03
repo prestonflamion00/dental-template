@@ -35,5 +35,24 @@ export function dentistJsonLd(o: OfficeConfig) {
     availableService: o.services.map((s) => ({ "@type": "MedicalProcedure", name: s.name, description: s.short })),
     sameAs: Object.values(o.social).filter(Boolean),
     isAcceptingNewPatients: o.practice.acceptingNewPatients,
+    // Other offices, each with its own address, phone and hours.
+    ...(o.locations.length > 1
+      ? {
+          department: o.locations.slice(1).map((l) => ({
+            "@type": "Dentist",
+            name: `${o.practice.name}, ${l.name}`,
+            telephone: telHref(l.phone).replace("tel:", ""),
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: l.address.street,
+              addressLocality: l.address.city,
+              addressRegion: l.address.region,
+              postalCode: l.address.postalCode,
+              addressCountry: l.address.country,
+            },
+            openingHoursSpecification: openingHoursSpecification(l.hours),
+          })),
+        }
+      : {}),
   };
 }

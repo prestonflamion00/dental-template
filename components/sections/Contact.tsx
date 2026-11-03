@@ -1,6 +1,6 @@
 import { Mail, MapPin, Navigation, Phone } from "lucide-react";
 import { SampleTag } from "@/components/ui/SampleTag";
-import type { OfficeConfig } from "@/config/types";
+import type { Location, OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
 import { fullAddress, mapsHref, telHref } from "@/lib/format";
 import { HoursTable } from "./OpenStatus";
@@ -9,8 +9,8 @@ import { HoursTable } from "./OpenStatus";
  * Illustrated map placeholder (no API key, no third-party requests).
  * INTEGRATION POINT: swap for a lazy Google Maps / OpenStreetMap iframe — see lib/integrations.ts §4.
  */
-function MapPlaceholder({ office }: { office: OfficeConfig }) {
-  const a = office.contact.address;
+function MapPlaceholder({ name, location }: { name: string; location: Location }) {
+  const a = location.address;
   return (
     <div className="relative aspect-[16/10] overflow-hidden rounded-[22px] bg-accent-soft">
       <svg viewBox="0 0 400 250" className="absolute inset-0 size-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -30,7 +30,7 @@ function MapPlaceholder({ office }: { office: OfficeConfig }) {
       </div>
       <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-2xl bg-white/90 p-3 pl-4 shadow-lg sm:inset-x-4 sm:bottom-4">
         <p className="text-sm leading-snug text-ink">
-          <strong className="block">{office.practice.name}</strong>
+          <strong className="block">{name}</strong>
           {a.street}
         </p>
         <a href={mapsHref(a)} target="_blank" rel="noopener noreferrer" className="btn btn-primary !min-h-11 shrink-0 !px-4 text-sm">
@@ -42,33 +42,54 @@ function MapPlaceholder({ office }: { office: OfficeConfig }) {
   );
 }
 
-/** Map, full weekly hours and ways to reach the office. The form lives higher up (RequestSection). */
+/** Map, full weekly hours and ways to reach each office. The form lives higher up (RequestSection). */
 export function Contact({ office }: { office: OfficeConfig }) {
-  const { contact, copy } = office;
+  const several = office.locations.length > 1;
   return (
-    <Section id="contact" eyebrow="Contact & location" title="Come say hello" intro={copy.contactIntro}>
-      <div className="glass grid gap-6 rounded-[28px] p-3 lg:grid-cols-[1.15fr_1fr] lg:items-center" data-reveal>
-        <MapPlaceholder office={office} />
-        <div className="grid gap-6 p-4 sm:grid-cols-[1.1fr_1fr] sm:p-5">
+    <Section
+      id="contact"
+      eyebrow={several ? "Our offices" : "Contact & location"}
+      title={several ? `${office.locations.length} offices, one friendly team` : "Come say hello"}
+      intro={office.copy.contactIntro}
+    >
+      <div className="grid gap-6">
+        {office.locations.map((l, i) => (
+          <LocationCard key={l.name} office={office} location={l} main={i === 0} several={several} />
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function LocationCard({ office, location: l, main, several }: { office: OfficeConfig; location: Location; main: boolean; several: boolean }) {
+  const { contact } = office;
+  // With several offices each card has its own heading, so its labels sit one level lower.
+  const Label = several ? "h4" : "h3";
+  return (
+    <div className="glass grid gap-6 rounded-[28px] p-3 lg:grid-cols-[1.15fr_1fr] lg:items-center" data-reveal>
+      <MapPlaceholder name={several ? `${office.practice.logo.text}, ${l.name}` : office.practice.name} location={l} />
+      <div className="p-4 sm:p-5">
+        {several && <h3 className="mb-5 text-2xl text-ink">{l.name}</h3>}
+        <div className="grid gap-6 sm:grid-cols-[1.1fr_1fr]">
           <div>
-            <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
+            <Label className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
               Hours
-              <SampleTag office={office} what="hours" />
-            </h3>
+              {main && <SampleTag office={office} what="hours" />}
+            </Label>
             <div className="mt-3">
-              <HoursTable timezone={office.timezone} hours={office.hours} />
+              <HoursTable timezone={office.timezone} hours={l.hours} />
             </div>
           </div>
           <div>
-            <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Get in touch</h3>
+            <Label className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Get in touch</Label>
             <ul className="mt-3 grid gap-3">
               <li>
-                <a href={telHref(contact.phone)} className="flex items-center gap-3 font-semibold text-ink hover:text-accent">
+                <a href={telHref(l.phone)} className="flex items-center gap-3 font-semibold text-ink hover:text-accent">
                   <Phone size={18} aria-hidden="true" className="shrink-0 text-accent" />
-                  {contact.phone}
+                  {l.phone}
                 </a>
               </li>
-              {contact.email && (
+              {main && contact.email && (
                 <li>
                   <a href={`mailto:${contact.email}`} className="flex items-center gap-3 font-semibold [overflow-wrap:anywhere] text-ink hover:text-accent">
                     <Mail size={18} aria-hidden="true" className="shrink-0 text-accent" />
@@ -77,21 +98,21 @@ export function Contact({ office }: { office: OfficeConfig }) {
                 </li>
               )}
               <li>
-                <a href={mapsHref(contact.address)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
+                <a href={mapsHref(l.address)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
                   <MapPin size={18} aria-hidden="true" className="mt-1 shrink-0 text-accent" />
                   <address className="not-italic">
-                    {contact.address.street}
+                    {l.address.street}
                     <br />
-                    {contact.address.city}, {contact.address.region} {contact.address.postalCode}
+                    {l.address.city}, {l.address.region} {l.address.postalCode}
                   </address>
                   <span className="sr-only"> (opens in maps, new tab)</span>
                 </a>
               </li>
             </ul>
-            {contact.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{contact.directionsNote}</p>}
+            {l.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{l.directionsNote}</p>}
           </div>
         </div>
       </div>
-    </Section>
+    </div>
   );
 }

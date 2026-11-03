@@ -47,6 +47,7 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
             practiceName={practice.name}
             services={office.services.map(({ id, name }) => ({ id, name }))}
             openDays={openDays(office.hours)}
+            locations={office.locations.map((l) => ({ name: l.name, openDays: openDays(l.hours) }))}
             titleId="request-title"
             heading={false}
           />

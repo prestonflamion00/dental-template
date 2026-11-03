@@ -5,7 +5,7 @@
  * PLACEHOLDERS stand in for that practice's real facts: fine on a demo, but buildOffice refuses to
  * build a live site while any remain. Never invent doctors, reviews, ratings or awards here.
  */
-import type { Day, DayHours, Faq, Service, Step } from "./types.ts";
+import type { Day, DayHours, Faq, Service, Specialty, Step } from "./types.ts";
 
 /** Typical office hours, shown when we couldn't find theirs. */
 export const PLACEHOLDER_HOURS: Record<Day, DayHours> = {
@@ -124,3 +124,106 @@ export function genericCopy(name: string, city: string) {
     contactIntro: "Questions, scheduling, or just want to say hi? We’re here.",
   };
 }
+
+/* ── Specialties: orthodontics and pediatric dentistry get their own defaults ── */
+
+export const ORTHO_SERVICES: Service[] = [
+  { id: "braces", name: "Traditional Braces", icon: "smile", short: "Reliable, proven braces for every age.", detail: "Metal braces gently guide teeth into place over time. They work for nearly every kind of bite and crowding." },
+  { id: "invisalign", name: "Clear Aligners", icon: "aligners", short: "Nearly invisible, removable aligners.", detail: "A series of clear, removable aligners straightens teeth without brackets or wires. Take them out to eat and brush." },
+  { id: "early-treatment", name: "Early Treatment", icon: "baby", short: "A head start for growing smiles.", detail: "Some bite and spacing problems are easier to fix while a child is still growing. We’ll tell you if waiting is better." },
+  { id: "adult-treatment", name: "Adult Treatment", icon: "heart", short: "It’s never too late for a straighter smile.", detail: "Braces and clear aligners work for adults too, with options that fit around work and life." },
+  { id: "retainers", name: "Retainers", icon: "shield", short: "Keep your new smile in place.", detail: "After treatment, a retainer keeps teeth from drifting back. We’ll fit one and show you how to care for it." },
+  { id: "emergency", name: "Emergency Care", icon: "siren", short: "Broken bracket or poking wire? Call us.", detail: "Most orthodontic problems aren’t urgent, but they can be uncomfortable. Call and we’ll help you fix it fast." },
+];
+
+export const ORTHO_FAQS: Faq[] = [
+  { q: "When should my child first see an orthodontist?", a: "The American Association of Orthodontists recommends a first check by age 7. Most kids won’t need treatment yet, but it helps spot problems early." },
+  { q: "Braces or clear aligners: which is right for me?", a: "Both work well for most people. At your consultation we’ll look at your teeth and talk through what fits your goals and lifestyle." },
+  { q: "How long does treatment take?", a: "It depends on your teeth, but many treatments take about one to two years. You’ll get a clear timeline before you start." },
+  { q: "Do I need a referral from my dentist?", a: "You don’t usually need one. Just request an appointment or give us a call." },
+  { q: "Do you take my insurance?", a: "Tell us your plan when you request an appointment, or call us, and we’ll check your orthodontic benefits before your visit." },
+];
+
+export const ORTHO_STEPS: Step[] = [
+  { title: "Request a consultation", text: "Request a time online or call. We’ll confirm by phone or text.", icon: "calendar" },
+  { title: "Meet your orthodontist", text: "A friendly exam to see what your smile needs, with time for all your questions.", icon: "smile" },
+  { title: "Your plan", text: "Your options, timeline and costs explained clearly before anything starts.", icon: "clipboard" },
+];
+
+export const PEDIATRIC_SERVICES: Service[] = [
+  { id: "first-visit", name: "First Visits", icon: "baby", short: "A gentle, happy start for little smiles.", detail: "We recommend a first visit by age one. It’s short, friendly and mostly about getting comfortable." },
+  { id: "cleanings", name: "Cleanings & Checkups", icon: "tooth", short: "Fun, gentle cleanings that build good habits.", detail: "A careful cleaning and exam, plus simple brushing tips your child will actually remember." },
+  { id: "sealants", name: "Sealants & Fluoride", icon: "shield", short: "Extra protection against cavities.", detail: "Quick, painless coatings that help protect growing teeth from cavities." },
+  { id: "fillings", name: "Tooth-Colored Fillings", icon: "sparkles", short: "Gentle repairs that blend right in.", detail: "We fix cavities with natural-looking fillings and explain each step in kid-friendly words." },
+  { id: "growth", name: "Growth & Bite Checks", icon: "smile", short: "Keeping an eye on growing smiles.", detail: "We watch how teeth and jaws grow, and let you know early if an orthodontist could help." },
+  { id: "emergency", name: "Emergency Visits", icon: "siren", short: "Bumped or chipped tooth? Call us.", detail: "Kids are busy. If a tooth is hurt, call as soon as you can and we’ll help." },
+];
+
+export const PEDIATRIC_FAQS: Faq[] = [
+  { q: "When should my child first see a dentist?", a: "The American Academy of Pediatric Dentistry recommends a first visit by age one, or within six months of the first tooth." },
+  { q: "Can I stay with my child during the visit?", a: "Of course. Most parents stay close by, and we’ll explain everything as we go." },
+  { q: "My child is nervous. What can I do?", a: "Tell us when you request the visit. We go slowly, use kid-friendly words and keep things fun." },
+  { q: "Do you take my insurance?", a: "Tell us your plan when you request an appointment, or call us, and we’ll check your benefits before your visit." },
+  { q: "What should I do if my child knocks out a tooth?", a: "Call us right away. For an adult tooth, keep it moist in milk and come in as quickly as you can." },
+];
+
+export const PEDIATRIC_STEPS: Step[] = [
+  { title: "Request a visit", text: "Request a time online or call. We’ll confirm by phone or text.", icon: "calendar" },
+  { title: "Meet the team", text: "A quick tour and a gentle hello, so your child feels at home.", icon: "heart" },
+  { title: "A happy checkup", text: "A gentle look and cleaning, plus simple tips for healthy habits at home.", icon: "tooth" },
+];
+
+/** Everything a specialty changes. `copy` takes the practice name and city. */
+export const SPECIALTY: Record<
+  Specialty,
+  { label: string; services: Service[]; faqs: Faq[]; steps: Step[]; perks: string[]; copy: (name: string, city: string) => ReturnType<typeof genericCopy> }
+> = {
+  general: { label: "Dentist", services: GENERIC_SERVICES, faqs: GENERIC_FAQS, steps: GENERIC_STEPS, perks: GENERIC_PERKS, copy: genericCopy },
+  orthodontics: {
+    label: "Orthodontist",
+    services: ORTHO_SERVICES,
+    faqs: ORTHO_FAQS,
+    steps: ORTHO_STEPS,
+    perks: ["Clear options, no pressure", "Care for kids, teens and adults", "Questions welcome, always"],
+    copy: (name, city) => ({
+      ...genericCopy(name, city),
+      heroEyebrow: `Orthodontics in ${city}`,
+      heroHeadline: "Straighter smiles for the whole family.",
+      heroHighlight: "the whole family",
+      heroSubhead: "Braces, clear aligners and early treatment for kids, teens and adults, with clear answers at every step.",
+      servicesIntro: "Options for every age and every smile.",
+      newPatientsIntro: "Thinking about braces or aligners? Here’s how getting started works.",
+      doctorsIntro: "Experienced orthodontic care, close to home.",
+      ctaHeadline: "Ready to start your smile?",
+      ctaText: "Request a consultation online or give us a call, and we’ll find a time that works for you.",
+      emergencyHeadline: "Broken bracket or poking wire?",
+      emergencyText: "Call us and we’ll help you get comfortable fast. Most fixes are quick and simple.",
+      reviewsIntro: "What families say about their smiles.",
+      faqIntro: "Answers to the questions families ask us most.",
+      contactIntro: "Questions about braces or aligners? We’re happy to help.",
+    }),
+  },
+  pediatric: {
+    label: "Pediatric dentist",
+    services: PEDIATRIC_SERVICES,
+    faqs: PEDIATRIC_FAQS,
+    steps: PEDIATRIC_STEPS,
+    perks: ["Kid-friendly, never rushed", "Parents always welcome", "Questions welcome, always"],
+    copy: (name, city) => ({
+      ...genericCopy(name, city),
+      heroEyebrow: `Pediatric dentistry in ${city}`,
+      heroHeadline: "Happy visits for growing smiles.",
+      heroHighlight: "growing smiles",
+      heroSubhead: `Gentle, fun dental care for babies, kids and teens at ${name}.`,
+      servicesIntro: "Everything little smiles need, explained in kid-friendly words.",
+      newPatientsIntro: "First visit? Here’s what to expect, step by step.",
+      doctorsIntro: "The friendly faces your kids will get to know.",
+      ctaHeadline: "Ready for a happy checkup?",
+      emergencyHeadline: "Bumped or chipped tooth?",
+      emergencyText: "Call us right away and we’ll help. Kids’ dental emergencies are our everyday.",
+      reviewsIntro: "What parents say about their visits.",
+      faqIntro: "Answers to the questions parents ask us most.",
+      contactIntro: "Questions about your child’s smile? We’d love to help.",
+    }),
+  },
+};

@@ -74,8 +74,9 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    The build stops with a clear message if a file in `config/offices/` isn't registered.
 3. **Fill in what you know** (5 min). Only `id`, `practice.name`, `contact.phone`, `contact.address` and `timezone` are required. Everything else is filled in by `buildOffice` (`config/build.ts`) when left out (see "Missing details" below).
    - `stage`: `"demo"` for a prospect preview, `"live"` (the default) for a client's real site
-   - `practice`: tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
+   - `practice`: `specialty` (`"general"`, `"orthodontics"` or `"pediatric"`: sets the default wording, services and FAQs), tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
    - `contact`: email, `hours` (24h `"HH:MM"`, `null` = closed)
+   - `otherLocations`: more offices, each with a `name`, phone, address and hours. The quick-info strip, contact section and request form ("Which office?") adapt automatically; name the main office with `contact.locationName`.
    - `doctors`, `services` (pick an `icon` from the `IconName` list in `config/types.ts`), `insurances`, `reviews`, `rating`, `faqs`
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`
@@ -95,8 +96,9 @@ So a demo never looks broken when we couldn't find something, `buildOffice` fill
 | `services` | Everyday general dentistry | placeholder |
 | `practice.acceptingNewPatients` | "Accepting new patients" | placeholder |
 | `seo.siteUrl` | The demos address | placeholder |
-| `copy`, first-visit steps, `faqs` | Friendly generic wording (`config/generic.ts`) | generic, fine to ship |
+| `copy`, first-visit steps, `faqs` | Friendly wording for the practice's specialty (`config/generic.ts`) | generic, fine to ship |
 | `doctors` | Team section hidden; "the {name} team" elsewhere | hidden |
+| Doctor `photo` | Initials. On a demo of a real practice, every doctor shows a "Your photo here" placeholder (we never use their photos) | — |
 | `rating`, `reviews` | Rating badges hidden; reviews section shows what exists | hidden |
 | `yearsInPractice`, `email`, `newPatientFormsUrl` | Left out | hidden |
 

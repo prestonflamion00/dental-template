@@ -3,11 +3,12 @@
  * site renders, so a missing detail never leaves a broken section.
  *
  *   Missing detail          What the site shows
- *   hours                   typical hours                        (placeholder)
+ *   hours (any office)      typical hours                        (placeholder)
  *   insurances              made-up plan names                   (placeholder)
  *   services                everyday general dentistry           (placeholder)
  *   acceptingNewPatients    "Accepting new patients"             (placeholder until confirmed)
- *   copy, steps, FAQs       friendly generic wording             (generic, fine to ship)
+ *   copy, steps, FAQs       friendly generic wording for the      (generic, fine to ship)
+ *                           practice's specialty (general, orthodontics, pediatric)
  *   doctors                 team section hidden; "the {name} team" elsewhere
  *   rating / reviews        rating badges hidden; reviews section shows what exists (demo: playful
  *                           sample cards that are obviously not real reviews)
@@ -18,8 +19,8 @@
  *
  * Section order is partly fixed (`resolveSections`), whatever the office file lists.
  */
-import { GENERIC_FAQS, GENERIC_PERKS, GENERIC_SERVICES, GENERIC_STEPS, PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, genericCopy } from "./generic.ts";
-import type { OfficeConfig, OfficeInput, SectionId } from "./types.ts";
+import { PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, SPECIALTY } from "./generic.ts";
+import type { Location, OfficeConfig, OfficeInput, SectionId } from "./types.ts";
 
 /** Always open the page, in this order: who you are, when you're open, how to request a visit. */
 export const TOP_SECTIONS: SectionId[] = ["hero", "quickInfo", "request"];
@@ -57,13 +58,20 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
   const placeholders: PlaceholderKey[] = [];
   const stand = <T,>(value: T | undefined, fallback: T, key: PlaceholderKey): T => {
     if (value !== undefined) return value;
-    placeholders.push(key);
+    if (!placeholders.includes(key)) placeholders.push(key);
     return fallback;
   };
   const { name } = input.practice;
   const { city, region } = input.contact.address;
   const stage = input.stage ?? "live";
+  const specialty = input.practice.specialty ?? "general";
+  const defaults = SPECIALTY[specialty];
   const description = input.practice.description ?? `${name} is a dental practice in ${city}, ${region}.`;
+  const hours = stand(input.hours, PLACEHOLDER_HOURS, "hours");
+  const locations: Location[] = [
+    { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo },
+    ...(input.otherLocations ?? []).map((l) => ({ ...l, hours: stand(l.hours, PLACEHOLDER_HOURS, "hours") })),
+  ];
 
   const base: Omit<OfficeConfig, "sections"> = {
     ...input,
@@ -76,27 +84,29 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
       yearsInPractice: input.practice.yearsInPractice,
       acceptingNewPatients: stand(input.practice.acceptingNewPatients, true, "acceptingNewPatients"),
       description,
+      specialty,
     },
     contact: input.contact,
-    hours: stand(input.hours, PLACEHOLDER_HOURS, "hours"),
+    hours,
+    locations,
     doctors: input.doctors ?? [],
-    services: stand(input.services?.length ? input.services : undefined, GENERIC_SERVICES, "services"),
+    services: stand(input.services?.length ? input.services : undefined, defaults.services, "services"),
     insurances: stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurances"),
     rating: input.rating?.value && input.rating.count ? { value: input.rating.value, count: input.rating.count, source: input.rating.source ?? "Google" } : undefined,
     reviews: input.reviews ?? [],
-    faqs: input.faqs?.length ? input.faqs : GENERIC_FAQS,
+    faqs: input.faqs?.length ? input.faqs : defaults.faqs,
     booking: input.booking ?? {},
     social: input.social ?? {},
     theme: { preset: "warm-neutral", ...input.theme },
     copy: {
-      ...genericCopy(name, city),
-      firstVisitSteps: GENERIC_STEPS,
-      comfortPerks: GENERIC_PERKS,
+      ...defaults.copy(name, city),
+      firstVisitSteps: defaults.steps,
+      comfortPerks: defaults.perks,
       ...input.copy,
     },
     seo: {
       siteUrl: stand(input.seo?.siteUrl, `https://demos.butterbite.workers.dev/${input.id}`, "siteUrl"),
-      title: `${name} | Dentist in ${city}, ${region}`,
+      title: `${name} | ${defaults.label} in ${city}, ${region}`,
       description,
       ...input.seo,
     },

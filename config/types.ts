@@ -54,6 +54,28 @@ export type Day = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 /** 24h "HH:MM" strings in the office's local timezone. `null` = closed all day. */
 export type DayHours = { open: string; close: string } | null;
 
+export interface Address {
+  street: string;
+  city: string;
+  region: string; // state / province
+  postalCode: string;
+  country: string; // ISO code, e.g. "US"
+}
+
+/** One office. `locations[0]` is the main office (from `contact` and `hours`). */
+export interface Location {
+  /** Short name used when a practice has several offices, e.g. "Hudson". */
+  name: string;
+  phone: string;
+  address: Address;
+  hours: Record<Day, DayHours>;
+  directionsNote?: string;
+  geo?: { lat: number; lng: number };
+}
+
+/** Sets the default wording, services and FAQs for details an office file leaves out (config/generic.ts). */
+export type Specialty = "general" | "orthodontics" | "pediatric";
+
 export interface Doctor {
   name: string;
   /** Credentials shown after the name, e.g. "DDS" or "DMD, FAGD". */
@@ -146,19 +168,16 @@ export interface OfficeConfig {
     acceptingNewPatients: boolean;
     /** Optional short description used for meta + footer. */
     description: string;
+    specialty: Specialty;
   };
 
   contact: {
     phone: string; // display format, e.g. "(503) 555-0142"
     /** Shown only when known. */
     email?: string;
-    address: {
-      street: string;
-      city: string;
-      region: string; // state / province
-      postalCode: string;
-      country: string; // ISO code, e.g. "US"
-    };
+    address: Address;
+    /** Name of the main office when there are several (default: its city). */
+    locationName?: string;
     /** Optional lat/lng used by the JSON-LD schema. */
     geo?: { lat: number; lng: number };
     /** Free-text parking / access notes shown under the map. */
@@ -168,6 +187,9 @@ export interface OfficeConfig {
   /** IANA timezone of the office, used for the "Open now" indicator. */
   timezone: string;
   hours: Record<Day, DayHours>;
+
+  /** Every office, main office first (built from `contact`, `hours` and `otherLocations`). */
+  locations: Location[];
 
   doctors: Doctor[];
   services: Service[];
@@ -249,11 +271,13 @@ type DeepPartial<T> = { [K in keyof T]?: T[K] extends (infer U)[] ? U[] : T[K] e
  * What an office file provides. Only `id`, the practice name, phone, address and timezone are
  * required; buildOffice fills everything else (see config/build.ts for what gets filled how).
  */
-export type OfficeInput = DeepPartial<Omit<OfficeConfig, "placeholders" | "practice" | "contact" | "hours">> & {
+export type OfficeInput = DeepPartial<Omit<OfficeConfig, "placeholders" | "practice" | "contact" | "hours" | "locations">> & {
   id: string;
   practice: DeepPartial<OfficeConfig["practice"]> & { name: string };
   contact: Omit<OfficeConfig["contact"], "email"> & { email?: string };
   timezone: string;
   /** Leave out to show placeholder hours (marked as a placeholder). */
   hours?: Record<Day, DayHours>;
+  /** More offices, if the practice has several. Each without `hours` gets placeholder hours. */
+  otherLocations?: (Omit<Location, "hours"> & { hours?: Record<Day, DayHours> })[];
 };

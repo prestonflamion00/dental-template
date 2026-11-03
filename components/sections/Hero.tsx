@@ -3,6 +3,7 @@ import { BadgeCheck, CalendarDays, Check, Phone, Smile } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Stars } from "@/components/ui/Stars";
 import { initials, telHref, withBase } from "@/lib/format";
 
@@ -10,6 +11,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
   const { practice, copy, rating, contact, doctors } = office;
   // With no doctors listed, the practice speaks as a team.
   const team = `the ${practice.logo.text} team`;
+  const samplePhotos = office.stage === "demo" && !office.fictional;
   return (
     <section id="top" aria-labelledby="hero-title" className="relative overflow-x-clip pb-10 pt-10 sm:pt-16 lg:pb-16 lg:pt-20">
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-1)", width: 520, height: 520, top: -80, left: "-12%" }} />
@@ -81,7 +83,9 @@ export function Hero({ office }: { office: OfficeConfig }) {
               )}
               <div className="flex -space-x-3">
                 {doctors.slice(0, 3).map((d) =>
-                  d.photo ? (
+                  samplePhotos ? (
+                    <PhotoPlaceholder key={d.name} small className="size-12 overflow-hidden rounded-full border-2 border-white" />
+                  ) : d.photo ? (
                     <Image
                       key={d.name}
                       src={withBase(d.photo)}

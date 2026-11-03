@@ -17,7 +17,7 @@ export type TimeOfDay = (typeof TIMES_OF_DAY)[number];
 /** Last choice in the "reason for visit" list, after the practice's own services. */
 export const OTHER_REASON = "Something else";
 
-export const LIMITS = { name: 100, email: 200, phone: 30, reason: 100, insurance: 100, message: 2000 };
+export const LIMITS = { name: 100, email: 200, phone: 30, reason: 100, insurance: 100, message: 2000, location: 60 };
 
 export interface RequestValues {
   kind: RequestKind;
@@ -30,14 +30,18 @@ export interface RequestValues {
   time: TimeOfDay | "";
   insurance: string;
   message: string;
+  /** Which office, for practices with several (empty otherwise). */
+  location: string;
 }
 
-export type RequestErrors = Partial<Record<"name" | "phone" | "email" | "reason" | "message", string>>;
+export type RequestErrors = Partial<Record<"name" | "phone" | "email" | "reason" | "message" | "location", string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export function validateRequest(v: RequestValues): RequestErrors {
+/** `needLocation`: the practice has several offices, so an appointment request must pick one. */
+export function validateRequest(v: RequestValues, opts: { needLocation?: boolean } = {}): RequestErrors {
   const e: RequestErrors = {};
+  if (opts.needLocation && v.kind === "appointment" && !v.location) e.location = "Please choose an office.";
   if (v.name.trim().length < 2) e.name = "Please tell us your name.";
   const phone = v.phone.trim();
   if (v.kind === "appointment" && !phone) e.phone = "Please add a phone number so the office can confirm a time.";
@@ -62,6 +66,7 @@ export function requestEmail(v: RequestValues, practice: string): { subject: str
         `Name:  ${v.name}`,
         `Email: ${v.email}`,
         `Phone: ${phone}`,
+        ...(v.location ? [`Office: ${v.location}`] : []),
         "",
         v.message,
       ].join("\n"),
@@ -77,6 +82,7 @@ export function requestEmail(v: RequestValues, practice: string): { subject: str
       `Name:       ${v.name}`,
       `Phone:      ${phone}`,
       `Email:      ${v.email}`,
+      ...(v.location ? [`Office:     ${v.location}`] : []),
       `Patient:    ${who}`,
       `Reason:     ${v.reason}`,
       `Best days:  ${days}`,
