@@ -9,8 +9,8 @@
  *   acceptingNewPatients    "Accepting new patients"             (placeholder until confirmed)
  *   copy, steps, FAQs       friendly generic wording             (generic, fine to ship)
  *   doctors                 team section hidden; "the {name} team" elsewhere
- *   rating / reviews        rating badges hidden; reviews section shows what exists (demo: a note
- *                           that Google reviews appear there)
+ *   rating / reviews        rating badges hidden; reviews section shows what exists (demo: playful
+ *                           sample cards that are obviously not real reviews)
  *   yearsInPractice, email  left out
  *
  * Placeholders are recorded in `placeholders`. A "live" office (the default) refuses to build while
@@ -32,7 +32,8 @@ export const BOTTOM_SECTIONS: SectionId[] = ["faq", "contact"];
 export function resolveSections(o: Omit<OfficeConfig, "sections">, wanted?: SectionId[]): SectionId[] {
   const hasContent: Partial<Record<SectionId, boolean>> = {
     doctors: o.doctors.length > 0,
-    reviews: o.reviews.length > 0 || !!o.rating,
+    // Demos always show it: real reviews, or obviously-sample cards marking where theirs will go.
+    reviews: o.reviews.length > 0 || !!o.rating || o.stage === "demo",
     gallery: !!o.gallery?.length,
   };
   let middle = (wanted ?? MIDDLE_SECTIONS).filter((s) => MIDDLE_SECTIONS.includes(s) && hasContent[s] !== false);

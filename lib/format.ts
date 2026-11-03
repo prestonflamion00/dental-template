@@ -15,14 +15,10 @@ export function mapsHref(a: OfficeConfig["contact"]["address"]): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress(a))}`;
 }
 
+/** "Dr. Lakshmi P. Thalanki" -> "LT": shown where a doctor has no photo. */
 export function initials(name: string): string {
-  return name
-    .replace(/^Dr\.?\s+/i, "")
-    .split(/\s+/)
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const words = name.replace(/^dr\.?\s+/i, "").split(/\s+/).filter(Boolean);
+  return ((words[0]?.[0] ?? "") + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase();
 }
 
 export function cx(...classes: (string | false | null | undefined)[]): string {

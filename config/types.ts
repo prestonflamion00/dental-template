@@ -60,9 +60,9 @@ export interface Doctor {
   credentials: string;
   /** Role line, e.g. "Founder & General Dentist". */
   title: string;
-  bio: string;
-  /** Path under /public, e.g. "/doctors/dr-lee.svg". Use a ~4:5 portrait. */
-  photo: string;
+  bio?: string;
+  /** Path under /public, e.g. "/doctors/dr-lee.svg". Use a ~4:5 portrait. Without one, initials are shown. */
+  photo?: string;
   /** Optional short facts shown as chips, e.g. ["UCSF graduate", "Speaks Spanish"]. */
   highlights?: string[];
 }

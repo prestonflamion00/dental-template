@@ -4,9 +4,16 @@ import { Section } from "@/components/ui/Section";
 import { Stars } from "@/components/ui/Stars";
 import { SocialIcon } from "@/components/ui/Icon";
 
+/** Demo-only stand-ins: clearly samples, never mistaken for real patients. */
+const SAMPLE_REVIEWS = [
+  { name: "Your next happy patient", text: "Your Google reviews here! This is where patients rave about their visits.", meta: "Sample review" },
+  { name: "A future five-star fan", text: "Imagine a glowing review right here. We pull your newest ones in automatically.", meta: "Sample review" },
+  { name: "Probably your mom", text: "Best practice in town, obviously. (Your real reviews will be much more convincing.)", meta: "Sample review" },
+];
+
 /**
  * Testimonials + rating badge, each shown only when the office has it (never invented).
- * A demo without reviews shows where their Google reviews will appear instead.
+ * A demo without reviews shows playful sample cards, so it's obvious they aren't real reviews.
  * MOCK: data comes from the office config. INTEGRATION POINT: see lib/integrations.ts §3.
  */
 export function Reviews({ office }: { office: OfficeConfig }) {
@@ -40,9 +47,21 @@ export function Reviews({ office }: { office: OfficeConfig }) {
       )}
 
       {reviews.length === 0 && stage === "demo" && (
-        <p className="glass mx-auto max-w-xl rounded-[24px] p-6 text-center text-muted" data-reveal>
-          Your latest Google reviews appear here automatically, refreshed every day.
-        </p>
+        <>
+          <ul className="grid gap-4 md:grid-cols-3" aria-label="Sample reviews">
+            {SAMPLE_REVIEWS.map((r, i) => (
+              <li key={r.name} className="glass flex flex-col rounded-[24px] border-2 border-dashed border-ink/15 p-6" data-reveal style={{ ["--d" as string]: `${i * 80}ms` }}>
+                <Stars rating={5} className="text-ink/40" />
+                <p className="mt-4 flex-1 text-ink">“{r.text}”</p>
+                <p className="mt-5 border-t border-ink/10 pt-4">
+                  <span className="block font-semibold text-ink">{r.name}</span>
+                  <span className="text-sm text-muted">{r.meta}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 text-center text-sm text-muted">Sample reviews. Your real Google reviews appear here automatically, refreshed every day.</p>
+        </>
       )}
 
       {/* Mobile: swipeable carousel. Desktop: grid. */}

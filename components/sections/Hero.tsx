@@ -4,7 +4,7 @@ import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
 import { Stars } from "@/components/ui/Stars";
-import { telHref, withBase } from "@/lib/format";
+import { initials, telHref, withBase } from "@/lib/format";
 
 export function Hero({ office }: { office: OfficeConfig }) {
   const { practice, copy, rating, contact, doctors } = office;
@@ -80,16 +80,26 @@ export function Hero({ office }: { office: OfficeConfig }) {
                 </span>
               )}
               <div className="flex -space-x-3">
-                {doctors.slice(0, 3).map((d) => (
-                  <Image
-                    key={d.name}
-                    src={withBase(d.photo)}
-                    alt=""
-                    width={48}
-                    height={48}
-                    className="size-12 rounded-full border-2 border-white object-cover"
-                  />
-                ))}
+                {doctors.slice(0, 3).map((d) =>
+                  d.photo ? (
+                    <Image
+                      key={d.name}
+                      src={withBase(d.photo)}
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="size-12 rounded-full border-2 border-white object-cover"
+                    />
+                  ) : (
+                    <span
+                      key={d.name}
+                      className="grid size-12 place-items-center rounded-full border-2 border-white bg-accent-soft font-bold text-accent"
+                      aria-hidden="true"
+                    >
+                      {initials(d.name)}
+                    </span>
+                  ),
+                )}
               </div>
               <p className="text-[0.95rem] leading-snug text-muted">
                 Care from{" "}

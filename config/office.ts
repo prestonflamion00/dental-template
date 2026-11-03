@@ -16,12 +16,14 @@ import { buildOffice } from "./build";
 import mapleGrove from "./offices/maple-grove";
 import lumiere from "./offices/lumiere";
 import littleSprouts from "./offices/little-sprouts";
+import familyOrthodonticsHudson from "./offices/family-orthodontics-hudson";
 
 /** Registry: key = file name in config/offices/ = URL slug. */
 export const offices = {
   "maple-grove": mapleGrove,
   lumiere: lumiere,
   "little-sprouts": littleSprouts,
+  "family-orthodontics-hudson": familyOrthodonticsHudson,
 } satisfies Record<string, OfficeInput>;
 export type OfficeKey = keyof typeof offices;
 
