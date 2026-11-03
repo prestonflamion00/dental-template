@@ -35,12 +35,17 @@ export function Section({
 }
 
 /** Renders `text` with `highlight` (if present) wrapped in an italic serif accent. */
-export function Highlighted({ text, highlight }: { text: string; highlight?: string }) {
+export function Highlighted({ text, highlight, ownLine = false }: { text: string; highlight?: string; ownLine?: boolean }) {
   if (!highlight || !text.includes(highlight)) return <>{text}</>;
   const [before, after] = text.split(highlight);
+  // `ownLine`: a phrase that ends the headline starts its own line, so the switch to the accent
+  // style never lands mid-line.
+  const breakBefore = ownLine && /^[\s.!?,]*$/.test(after) && before.trim().length > 0;
   return (
     <>
-      {before}
+      {/* The last two words stay together, so a short word like "for" never sits alone on a line. */}
+      {breakBefore ? before.trimEnd().replace(/ (\S+)$/, "\u00a0$1") : before}
+      {breakBefore && <br />}
       <span className="highlight">{highlight}</span>
       {after}
     </>

@@ -26,7 +26,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
             id="hero-title"
             className="mt-4 text-[2.75rem] leading-[1.04] text-ink sm:text-6xl lg:text-[4.5rem]"
           >
-            <Highlighted text={copy.heroHeadline} highlight={copy.heroHighlight} />
+            <Highlighted text={copy.heroHeadline} highlight={copy.heroHighlight} ownLine />
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted sm:text-xl">
             {copy.heroSubhead}

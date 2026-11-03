@@ -85,7 +85,9 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
                 rel="noopener noreferrer"
                 className="mt-3 block font-semibold leading-snug text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-accent"
               >
-                {l.address.street}, {l.address.city}
+                {l.address.street}
+                <br />
+                {l.address.city}, {l.address.region} {l.address.postalCode}
                 <span className="sr-only"> (open in maps, new tab)</span>
               </a>
               <a href={telHref(l.phone)} className="mt-1 inline-flex items-center gap-2 font-semibold text-ink hover:text-accent">

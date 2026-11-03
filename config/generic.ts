@@ -24,8 +24,6 @@ export const PLACEHOLDER_INSURANCES = [
   "Summit Smile Plan",
   "Harbor Dental Network",
   "Evergreen Dental Care",
-  "Northstar Dental HMO",
-  "Cornerstone Dental Benefits",
 ];
 
 /** Everyday general dentistry, used when we don't know their services. */
