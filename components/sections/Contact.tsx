@@ -64,12 +64,14 @@ export function Contact({ office }: { office: OfficeConfig }) {
                   {contact.phone}
                 </a>
               </li>
-              <li>
-                <a href={`mailto:${contact.email}`} className="flex items-center gap-3 font-semibold [overflow-wrap:anywhere] text-ink hover:text-accent">
-                  <Mail size={18} aria-hidden="true" className="shrink-0 text-accent" />
-                  {contact.email}
-                </a>
-              </li>
+              {contact.email && (
+                <li>
+                  <a href={`mailto:${contact.email}`} className="flex items-center gap-3 font-semibold [overflow-wrap:anywhere] text-ink hover:text-accent">
+                    <Mail size={18} aria-hidden="true" className="shrink-0 text-accent" />
+                    {contact.email}
+                  </a>
+                </li>
+              )}
               <li>
                 <a href={mapsHref(contact.address)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
                   <MapPin size={18} aria-hidden="true" className="mt-1 shrink-0 text-accent" />

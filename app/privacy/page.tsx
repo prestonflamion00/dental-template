@@ -31,7 +31,7 @@ export default function PrivacyPage() {
       <p>This site does not use advertising cookies. Any analytics are aggregate and do not identify you personally.</p>
       <h2>Contact</h2>
       <p>
-        Questions? Call {contact.phone} or email {contact.email}.
+        Questions? Call {contact.phone}{contact.email ? ` or email ${contact.email}` : ""}.
       </p>
     </SimplePage>
   );

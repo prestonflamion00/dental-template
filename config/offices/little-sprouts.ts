@@ -1,8 +1,9 @@
-import type { OfficeConfig } from "../types";
+import type { OfficeInput } from "../types";
 
 /** Demo 3 — a cheerful pediatric practice. Theme: soft blue-sage. */
-const littleSprouts: OfficeConfig = {
+const littleSprouts: OfficeInput = {
   id: "little-sprouts",
+  stage: "demo",
   showcase: true, // fictional demo practice: shown on the public examples page
   fictional: true, // shows the demo banner
 
@@ -230,6 +231,7 @@ const littleSprouts: OfficeConfig = {
     emergencyText: "Kids are adventurous. We save same-day emergency spots every day, so call us right away.",
     reviewsIntro: "From the parents (and kids!) who visit us.",
     faqIntro: "Answers for parents, from first teeth to braces.",
+    phoneNote: "Same-day emergency visits",
     contactIntro: "Have a question about your child’s smile? We’d love to help.",
     comfortPerks: ["Ceiling TVs", "Prize wall", "Parents chairside"],
   },

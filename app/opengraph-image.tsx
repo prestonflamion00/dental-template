@@ -49,7 +49,7 @@ export default function OpengraphImage() {
             <div style={{ display: "flex", background: t.accent, color: "#fff", padding: "12px 28px", borderRadius: 999 }}>
               Request online
             </div>
-            <div style={{ display: "flex", padding: "12px 0" }}>{`Rated ${office.rating.value.toFixed(1)} of 5 · ${office.contact.phone}`}</div>
+            <div style={{ display: "flex", padding: "12px 0" }}>{office.rating ? `Rated ${office.rating.value.toFixed(1)} of 5 · ${office.contact.phone}` : office.contact.phone}</div>
           </div>
         </div>
       </div>

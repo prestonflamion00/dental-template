@@ -5,14 +5,16 @@ import { Stars } from "@/components/ui/Stars";
 import { SocialIcon } from "@/components/ui/Icon";
 
 /**
- * Testimonials + rating badge.
- * MOCK: data comes from the office config. INTEGRATION POINT: see lib/integrations.ts §3 (Google Places API).
+ * Testimonials + rating badge, each shown only when the office has it (never invented).
+ * A demo without reviews shows where their Google reviews will appear instead.
+ * MOCK: data comes from the office config. INTEGRATION POINT: see lib/integrations.ts §3.
  */
 export function Reviews({ office }: { office: OfficeConfig }) {
-  const { reviews, rating, copy, social } = office;
+  const { reviews, rating, copy, social, stage } = office;
   return (
-    <Section id="reviews" eyebrow="Patient stories" title="Smiles, in their own words" intro={copy.reviewsIntro}>
+    <Section id="reviews" eyebrow="Patient stories" title={reviews.length ? "Smiles, in their own words" : "What patients say"} intro={copy.reviewsIntro}>
       {/* Rating badge */}
+      {rating && (
       <div className="mb-8 flex justify-center" data-reveal>
         <a
           href={social.google ?? "#reviews"}
@@ -35,8 +37,16 @@ export function Reviews({ office }: { office: OfficeConfig }) {
           </span>
         </a>
       </div>
+      )}
+
+      {reviews.length === 0 && stage === "demo" && (
+        <p className="glass mx-auto max-w-xl rounded-[24px] p-6 text-center text-muted" data-reveal>
+          Your latest Google reviews appear here automatically, refreshed every day.
+        </p>
+      )}
 
       {/* Mobile: swipeable carousel. Desktop: grid. */}
+      {reviews.length > 0 && (
       <div
         className="snap-row -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3"
         role="region"
@@ -69,6 +79,7 @@ export function Reviews({ office }: { office: OfficeConfig }) {
           </figure>
         ))}
       </div>
+      )}
     </Section>
   );
 }

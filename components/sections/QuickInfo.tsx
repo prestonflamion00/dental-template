@@ -49,7 +49,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
             <a href={telHref(contact.phone)} className="text-xl font-semibold text-ink hover:text-accent">
               {contact.phone}
             </a>
-            <p className="text-[0.95rem] text-muted">Same-day emergency visits</p>
+            {office.copy.phoneNote && <p className="text-[0.95rem] text-muted">{office.copy.phoneNote}</p>}
           </div>
         </div>
       </div>

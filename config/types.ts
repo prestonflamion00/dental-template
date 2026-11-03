@@ -1,9 +1,9 @@
 /**
- * OfficeConfig — the complete schema for one dental practice.
+ * OfficeConfig — the complete schema for one dental practice, as the site renders it.
  *
- * Every piece of practice-specific content on the site comes from an object of
- * this type. To launch a new office, copy one of the files in /config/offices,
- * edit the values, and point /config/office.ts at it. No component code changes.
+ * Office files in /config/offices are written as `OfficeInput` (only the name, phone, address
+ * and timezone are required) and completed by `buildOffice` (config/build.ts): missing details
+ * get generic dental content or a marked placeholder, so no section breaks when a fact is missing.
  */
 
 import type { ThemePreset } from "./themes";
@@ -31,7 +31,10 @@ export type IconName =
   | "scan"
   | "wand";
 
-/** Homepage sections. Order in `sections` = order on the page. Omit one to hide it. */
+/**
+ * Homepage sections. Some have fixed places (config/build.ts): hero, quick info and the request
+ * form always open the page; FAQ and contact always close it. `sections` orders the rest.
+ */
 export type SectionId =
   | "hero"
   | "quickInfo"
@@ -106,9 +109,20 @@ export interface GalleryItem {
   after: string;
 }
 
+/**
+ * "demo": a preview for a prospect (placeholders allowed; real practices get a "Private preview" line).
+ * "live": a client's real site; the build refuses to run while any placeholder remains.
+ */
+export type Stage = "demo" | "live";
+
 export interface OfficeConfig {
   /** Short slug, used for keys and analytics. */
   id: string;
+
+  stage: Stage;
+
+  /** Details filled with a stand-in because we didn't have them (e.g. "hours"). Set by buildOffice. */
+  placeholders: string[];
 
   /**
    * List this practice on the PUBLIC examples page. Leave it off for real
@@ -127,7 +141,8 @@ export interface OfficeConfig {
     tagline: string;
     /** Text logo is the default. Set `image` (path under /public) to use an image logo instead. */
     logo: { text: string; mark?: string; image?: string };
-    yearsInPractice: number;
+    /** Shown only when known. */
+    yearsInPractice?: number;
     acceptingNewPatients: boolean;
     /** Optional short description used for meta + footer. */
     description: string;
@@ -135,7 +150,8 @@ export interface OfficeConfig {
 
   contact: {
     phone: string; // display format, e.g. "(503) 555-0142"
-    email: string;
+    /** Shown only when known. */
+    email?: string;
     address: {
       street: string;
       city: string;
@@ -157,7 +173,8 @@ export interface OfficeConfig {
   services: Service[];
   insurances: string[];
 
-  rating: { value: number; count: number; source: string };
+  /** Google rating; the rating badges and reviews section hide without it. */
+  rating?: { value: number; count: number; source: string };
   reviews: Review[];
   faqs: Faq[];
 
@@ -208,6 +225,8 @@ export interface OfficeConfig {
     reviewsIntro: string;
     faqIntro: string;
     contactIntro: string;
+    /** Small line under the phone number in the quick-info strip, e.g. "Same-day emergency visits". */
+    phoneNote?: string;
     /** Intro under "Request an appointment"; a friendly default is used when left out. */
     requestIntro?: string;
     /** Small reassurance chips shown in the hero card. */
@@ -223,3 +242,18 @@ export interface OfficeConfig {
     priceRange?: string;
   };
 }
+
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends (infer U)[] ? U[] : T[K] extends object ? DeepPartial<T[K]> : T[K] };
+
+/**
+ * What an office file provides. Only `id`, the practice name, phone, address and timezone are
+ * required; buildOffice fills everything else (see config/build.ts for what gets filled how).
+ */
+export type OfficeInput = DeepPartial<Omit<OfficeConfig, "placeholders" | "practice" | "contact" | "hours">> & {
+  id: string;
+  practice: DeepPartial<OfficeConfig["practice"]> & { name: string };
+  contact: Omit<OfficeConfig["contact"], "email"> & { email?: string };
+  timezone: string;
+  /** Leave out to show placeholder hours (marked as a placeholder). */
+  hours?: Record<Day, DayHours>;
+};

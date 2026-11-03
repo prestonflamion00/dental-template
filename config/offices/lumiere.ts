@@ -1,8 +1,9 @@
-import type { OfficeConfig } from "../types";
+import type { OfficeInput } from "../types";
 
 /** Demo 2 — a boutique cosmetic & implant studio. Theme: blush sand. */
-const lumiere: OfficeConfig = {
+const lumiere: OfficeInput = {
   id: "lumiere",
+  stage: "demo",
   showcase: true, // fictional demo practice: shown on the public examples page
   fictional: true, // shows the demo banner
 
@@ -225,6 +226,7 @@ const lumiere: OfficeConfig = {
     emergencyText: "Chipped veneer, lost crown or sudden pain: call and we’ll do everything we can to see you today.",
     reviewsIntro: "What our patients say after they leave the studio.",
     faqIntro: "Thoughtful answers to common questions.",
+    phoneNote: "Same-day emergency visits",
     contactIntro: "Our concierge team is happy to help with scheduling, financing and questions.",
     comfortPerks: ["Warm towels", "Weighted blankets", "Digital previews"],
   },

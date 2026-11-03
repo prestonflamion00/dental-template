@@ -11,7 +11,8 @@
  */
 const ACTIVE_OFFICE: OfficeKey = "maple-grove";
 
-import type { OfficeConfig } from "./types";
+import type { OfficeConfig, OfficeInput } from "./types";
+import { buildOffice } from "./build";
 import mapleGrove from "./offices/maple-grove";
 import lumiere from "./offices/lumiere";
 import littleSprouts from "./offices/little-sprouts";
@@ -21,7 +22,7 @@ export const offices = {
   "maple-grove": mapleGrove,
   lumiere: lumiere,
   "little-sprouts": littleSprouts,
-} satisfies Record<string, OfficeConfig>;
+} satisfies Record<string, OfficeInput>;
 export type OfficeKey = keyof typeof offices;
 
 // NEXT_PUBLIC_OFFICE picks the office at build time (set by build-all, or per Vercel project).
@@ -31,7 +32,8 @@ if (envKey && !(envKey in offices)) {
     `NEXT_PUBLIC_OFFICE="${envKey}" is not registered in config/office.ts. Add it to the \`offices\` list.`,
   );
 }
-const office: OfficeConfig = offices[(envKey as OfficeKey) || ACTIVE_OFFICE];
+// buildOffice fills anything the office file leaves out and fixes the section order (config/build.ts).
+const office: OfficeConfig = buildOffice(offices[(envKey as OfficeKey) || ACTIVE_OFFICE]);
 
 export default office;
 export type { OfficeConfig } from "./types";

@@ -51,11 +51,13 @@ export function Footer({ office }: { office: OfficeConfig }) {
                   {contact.phone}
                 </a>
               </li>
-              <li>
-                <a href={`mailto:${contact.email}`} className="inline-block py-1 [overflow-wrap:anywhere] hover:text-accent">
-                  {contact.email}
-                </a>
-              </li>
+              {contact.email && (
+                <li>
+                  <a href={`mailto:${contact.email}`} className="inline-block py-1 [overflow-wrap:anywhere] hover:text-accent">
+                    {contact.email}
+                  </a>
+                </li>
+              )}
               <li>
                 <a href={withBase("/#contact")} className="inline-block py-1 hover:text-accent">
                   Hours &amp; directions
@@ -77,6 +79,13 @@ export function Footer({ office }: { office: OfficeConfig }) {
           <p>© {year} {practice.name}. All rights reserved.</p>
           <p>The information on this site is general and not a substitute for professional dental advice.</p>
         </div>
+        {office.stage === "demo" && !office.fictional && (
+          <p className="mt-4 text-sm text-muted">
+            This is a private sample design made for {practice.name} by butterbite digital, using public business
+            information and stock images. It isn’t affiliated with or endorsed by the practice and isn’t listed on search
+            engines. Want it taken down? Email hello@butterbitedigital.com.
+          </p>
+        )}
       </div>
     </footer>
   );

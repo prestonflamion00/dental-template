@@ -28,12 +28,9 @@ export function dentistJsonLd(o: OfficeConfig) {
       ? { geo: { "@type": "GeoCoordinates", latitude: o.contact.geo.lat, longitude: o.contact.geo.lng } }
       : {}),
     openingHoursSpecification: openingHoursSpecification(o.hours),
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: o.rating.value,
-      reviewCount: o.rating.count,
-      bestRating: 5,
-    },
+    ...(o.rating
+      ? { aggregateRating: { "@type": "AggregateRating", ratingValue: o.rating.value, reviewCount: o.rating.count, bestRating: 5 } }
+      : {}),
     employee: o.doctors.map((d) => ({ "@type": "Person", name: d.name, jobTitle: d.title, honorificSuffix: d.credentials })),
     availableService: o.services.map((s) => ({ "@type": "MedicalProcedure", name: s.name, description: s.short })),
     sameAs: Object.values(o.social).filter(Boolean),

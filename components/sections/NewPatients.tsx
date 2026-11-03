@@ -33,14 +33,20 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
         <div className="glass flex min-w-0 flex-col justify-between rounded-[24px] p-6 sm:p-7" data-reveal>
           <div>
             <h3 className="font-sans text-[1.15rem] font-bold text-ink">Save time with forms</h3>
-            <p className="mt-2 text-muted">Fill out your paperwork at home so you can spend less time in the waiting room.</p>
+            <p className="mt-2 text-muted">
+              {newPatientFormsUrl
+                ? "Fill out your paperwork at home so you can spend less time in the waiting room."
+                : "We’ll send your paperwork before your visit, so you can fill it out at home."}
+            </p>
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             {/* MOCK: points at a sample PDF. Replace with the office's real forms, or an online intake link (e.g. Jotform HIPAA, NexHealth Forms). */}
-            <a href={newPatientFormsUrl ? withBase(newPatientFormsUrl) : "#"} className="btn btn-glass" download>
-              <FileDown size={18} aria-hidden="true" className="text-accent" />
-              Download new patient forms
-            </a>
+            {newPatientFormsUrl && (
+              <a href={withBase(newPatientFormsUrl)} className="btn btn-glass" download>
+                <FileDown size={18} aria-hidden="true" className="text-accent" />
+                Download new patient forms
+              </a>
+            )}
             <BookButton />
           </div>
         </div>

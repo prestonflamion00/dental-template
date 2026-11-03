@@ -133,6 +133,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Demo website: {office.practice.name} is a fictional practice, not a real dental office.
           </p>
         )}
+        {office.stage === "demo" && !office.fictional && (
+          <p className="demo-banner">Private preview for {office.practice.name} · made by butterbite digital</p>
+        )}
         <a href="#main" className="skip-link">
           Skip to main content
         </a>
