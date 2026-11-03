@@ -43,11 +43,21 @@ export function resolveSections(o: Omit<OfficeConfig, "sections">, wanted?: Sect
   return [...TOP_SECTIONS, ...middle, ...(faq ? (["faq"] as SectionId[]) : []), "contact"];
 }
 
+/** Placeholder keys (OfficeConfig.placeholders) and how the live-site error names them. */
+export const PLACEHOLDER_LABELS = {
+  acceptingNewPatients: "accepting new patients",
+  hours: "hours",
+  services: "services",
+  insurances: "insurance plans",
+  siteUrl: "site address",
+} as const;
+export type PlaceholderKey = keyof typeof PLACEHOLDER_LABELS;
+
 export function buildOffice(input: OfficeInput): OfficeConfig {
-  const placeholders: string[] = [];
-  const stand = <T,>(value: T | undefined, fallback: T, label: string): T => {
+  const placeholders: PlaceholderKey[] = [];
+  const stand = <T,>(value: T | undefined, fallback: T, key: PlaceholderKey): T => {
     if (value !== undefined) return value;
-    placeholders.push(label);
+    placeholders.push(key);
     return fallback;
   };
   const { name } = input.practice;
@@ -64,14 +74,14 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
       tagline: input.practice.tagline ?? `Dental care in ${city}`,
       logo: { text: name, ...input.practice.logo },
       yearsInPractice: input.practice.yearsInPractice,
-      acceptingNewPatients: stand(input.practice.acceptingNewPatients, true, "accepting new patients"),
+      acceptingNewPatients: stand(input.practice.acceptingNewPatients, true, "acceptingNewPatients"),
       description,
     },
     contact: input.contact,
     hours: stand(input.hours, PLACEHOLDER_HOURS, "hours"),
     doctors: input.doctors ?? [],
     services: stand(input.services?.length ? input.services : undefined, GENERIC_SERVICES, "services"),
-    insurances: stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurance plans"),
+    insurances: stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurances"),
     rating: input.rating?.value && input.rating.count ? { value: input.rating.value, count: input.rating.count, source: input.rating.source ?? "Google" } : undefined,
     reviews: input.reviews ?? [],
     faqs: input.faqs?.length ? input.faqs : GENERIC_FAQS,
@@ -85,7 +95,7 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
       ...input.copy,
     },
     seo: {
-      siteUrl: stand(input.seo?.siteUrl, `https://demos.butterbite.workers.dev/${input.id}`, "site address"),
+      siteUrl: stand(input.seo?.siteUrl, `https://demos.butterbite.workers.dev/${input.id}`, "siteUrl"),
       title: `${name} | Dentist in ${city}, ${region}`,
       description,
       ...input.seo,
@@ -94,7 +104,7 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
 
   if (stage === "live" && placeholders.length) {
     throw new Error(
-      `${input.id} is a live site but still has placeholder ${placeholders.join(", ")}. ` +
+      `${input.id} is a live site but still has placeholder ${placeholders.map((k) => PLACEHOLDER_LABELS[k]).join(", ")}. ` +
         `Add the real details to config/offices/${input.id}.ts, or set stage: "demo".`,
     );
   }

@@ -121,8 +121,8 @@ export interface OfficeConfig {
 
   stage: Stage;
 
-  /** Details filled with a stand-in because we didn't have them (e.g. "hours"). Set by buildOffice. */
-  placeholders: string[];
+  /** Details filled with a stand-in because we didn't have them (keys in config/build.ts). Set by buildOffice. */
+  placeholders: ("acceptingNewPatients" | "hours" | "services" | "insurances" | "siteUrl")[];
 
   /**
    * List this practice on the PUBLIC examples page. Leave it off for real

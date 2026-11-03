@@ -1,4 +1,5 @@
 import { FileDown, ShieldCheck } from "lucide-react";
+import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
 import { Icon } from "@/components/ui/Icon";
 import { Section } from "@/components/ui/Section";
@@ -54,7 +55,10 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
         <div className="glass min-w-0 rounded-[24px] p-6 sm:p-7" data-reveal style={{ ["--d" as string]: "80ms" }}>
           <div className="flex items-center gap-3">
             <ShieldCheck size={22} aria-hidden="true" className="text-accent" />
-            <h3 className="font-sans text-[1.15rem] font-bold text-ink">Insurance we accept</h3>
+            <h3 className="font-sans text-[1.15rem] font-bold text-ink">
+              Insurance we accept
+              <SampleTag office={office} what="insurances" />
+            </h3>
           </div>
           <ul className="mt-5 flex flex-wrap gap-2" aria-label="Accepted insurance and financing">
             {insurances.map((ins) => (

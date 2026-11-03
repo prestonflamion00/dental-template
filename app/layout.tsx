@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import office from "@/config/office";
-import { allThemesCss, resolveTheme, themeToCssVars, THEME_PRESETS } from "@/config/themes";
+import { allThemesCss, themes, themeToCssVars, THEME_PRESETS, withAccent } from "@/config/themes";
 import { allDesignsCss, designPalettes, DESIGNS } from "@/config/designs";
 import { dentistJsonLd } from "@/lib/schema";
 import { withBase } from "@/lib/format";
@@ -68,8 +68,9 @@ const figtree = localFont({
 const fontVars = [body, display, honeyDisplay, honeyBody, peachDisplay, warmSans, cinnamonDisplay, handwriting, figtree].map((f) => f.variable).join(" ");
 
 const design = office.design ?? "butter";
-// Butter takes its colours from the theme preset (plus any accent override); the other designs bring their own.
-const theme = design === "butter" ? resolveTheme(office.theme.preset, office.theme.accent) : designPalettes[design];
+// Butter takes its colours from the theme preset, the other designs bring their own; in every design the
+// practice's brand colour (`theme.accent`) replaces the accent, darkened if needed to stay readable.
+const theme = withAccent(design === "butter" ? themes[office.theme.preset] : designPalettes[design], office.theme.accent);
 
 export const metadata: Metadata = {
   metadataBase: new URL(office.seo.siteUrl),
@@ -109,7 +110,7 @@ const bootScript = `(function(){var d=document.documentElement;d.classList.add('
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Accent overrides are applied inline so they win over the preset stylesheet.
-  const inlineVars = design === "butter" && office.theme.accent ? (themeToCssVars(theme) as React.CSSProperties) : undefined;
+  const inlineVars = office.theme.accent ? (themeToCssVars(theme) as React.CSSProperties) : undefined;
   return (
     <html
       lang="en"

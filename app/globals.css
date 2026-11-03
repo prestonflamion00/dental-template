@@ -487,3 +487,51 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ── "Sample" tag on demo placeholders (components/ui/SampleTag.tsx) ──
+   The note opens under the tag's heading (headings holding a tag are position: relative), never
+   wider than it, and takes no space while closed, so it can't push the page sideways. */
+.sample-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px dashed currentColor;
+  border-radius: 999px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  color: var(--muted);
+  cursor: help;
+}
+.sample-tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 40;
+  width: max-content;
+  max-width: min(300px, 100%);
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.35);
+}
+.sample-tag:hover .sample-tip,
+.sample-tag:focus .sample-tip {
+  display: block;
+}
+:has(> .sample-tag) {
+  position: relative;
+}

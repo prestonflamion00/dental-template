@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import office from "@/config/office";
-import { resolveTheme } from "@/config/themes";
+import { themes, withAccent } from "@/config/themes";
 import { designPalettes } from "@/config/designs";
 
 // Generated at build time from the office config: no design tool needed per practice.
@@ -12,7 +12,7 @@ export const contentType = "image/png";
 export default function OpengraphImage() {
   // Match the site's design, so the link preview looks like the page it opens.
   const design = office.design ?? "butter";
-  const t = design === "butter" ? resolveTheme(office.theme.preset, office.theme.accent) : designPalettes[design];
+  const t = withAccent(design === "butter" ? themes[office.theme.preset] : designPalettes[design], office.theme.accent);
   const a = office.contact.address;
   return new ImageResponse(
     (

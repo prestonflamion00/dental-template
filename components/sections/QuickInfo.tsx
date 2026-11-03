@@ -1,4 +1,5 @@
 import { Clock, MapPin, Phone } from "lucide-react";
+import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
 import { mapsHref, telHref } from "@/lib/format";
 import { OpenBadge } from "./OpenStatus";
@@ -15,7 +16,10 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
             <Clock size={22} />
           </span>
           <div>
-            <h2 className="mb-1.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Today’s hours</h2>
+            <h2 className="mb-1.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
+              Today’s hours
+              <SampleTag office={office} what="hours" />
+            </h2>
             <OpenBadge timezone={office.timezone} hours={office.hours} />
           </div>
         </div>

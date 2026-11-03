@@ -5,6 +5,7 @@ import { BookingProvider } from "@/components/booking/BookingProvider";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { Logo } from "@/components/ui/Logo";
 import { Section } from "@/components/ui/Section";
+import { SampleTag } from "@/components/ui/SampleTag";
 import { DemoThemeSwitcher } from "@/components/ui/DemoThemeSwitcher";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
@@ -29,7 +30,17 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
   quickInfo: () => <QuickInfo office={office} />,
   request: () => <RequestSection office={office} />,
   services: () => (
-    <Section id="services" eyebrow="Services" title="Care for every smile" intro={office.copy.servicesIntro}>
+    <Section
+      id="services"
+      eyebrow="Services"
+      title={
+        <>
+          Care for every smile
+          <SampleTag office={office} what="services" />
+        </>
+      }
+      intro={office.copy.servicesIntro}
+    >
       <ServicesGrid services={office.services} phone={office.contact.phone} />
     </Section>
   ),

@@ -1,4 +1,5 @@
 import { Mail, MapPin, Navigation, Phone } from "lucide-react";
+import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
 import { fullAddress, mapsHref, telHref } from "@/lib/format";
@@ -50,7 +51,10 @@ export function Contact({ office }: { office: OfficeConfig }) {
         <MapPlaceholder office={office} />
         <div className="grid gap-6 p-4 sm:grid-cols-[1.1fr_1fr] sm:p-5">
           <div>
-            <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Hours</h3>
+            <h3 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
+              Hours
+              <SampleTag office={office} what="hours" />
+            </h3>
             <div className="mt-3">
               <HoursTable timezone={office.timezone} hours={office.hours} />
             </div>
