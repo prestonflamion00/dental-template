@@ -22,7 +22,7 @@ interface Env {
   CONTACT_FROM?: string;
 }
 
-const LIMITS = { name: 100, practice: 150, email: 200, phone: 30, note: 2000 };
+const LIMITS = { name: 100, practice: 150, email: 200, phone: 30, note: 2000, source: 40 };
 /** Submissions faster than this after the page loaded are almost certainly bots. */
 const MIN_FILL_MS = 2500;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -50,6 +50,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   const practice = clean(body.practice, LIMITS.practice);
   const email = clean(body.email, LIMITS.email);
   const phone = clean(body.phone, LIMITS.phone);
+  const source = clean(body.source, LIMITS.source);
   const note = typeof body.note === "string" ? body.note.trim().slice(0, LIMITS.note) : "";
   if (name.length < 2 || practice.length < 2 || !EMAIL_RE.test(email)) return json({ ok: false, error: "invalid" }, 400);
 
@@ -58,14 +59,15 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
       to: env.CONTACT_TO,
       from: { email: env.CONTACT_FROM, name: "butterbite digital website" },
       replyTo: { email, name },
-      subject: `Free demo request: ${practice} (${name})`,
+      subject: `${source === "home page" ? "New inquiry" : "Free demo request"}: ${practice} (${name})`,
       text: [
-        `${name} from ${practice} asked for a free demo. Reply to this email to answer them directly.`,
+        `${name} from ${practice} got in touch through the website. Reply to this email to answer them directly.`,
         "",
         `Name:     ${name}`,
-        `Practice: ${practice}`,
+        `Business: ${practice}`,
         `Email:    ${email}`,
         `Phone:    ${phone || "not given"}`,
+        `Page:     ${source || "website"}`,
         "",
         note || "(No message.)",
         "",
