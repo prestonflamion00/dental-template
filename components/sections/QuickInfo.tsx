@@ -57,7 +57,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
               {contact.phone}
             </a>
             {office.copy.phoneNote && <p className="text-[0.95rem] text-muted">{office.copy.phoneNote}</p>}
-            <EmergencyLink className="mt-3" />
+            <EmergencyLink className="mt-1" />
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
             </div>
           </div>
         ))}
-        <div className="sm:col-span-full sm:mt-5 sm:border-t sm:border-ink/10 sm:pt-5">
+        <div className="sm:col-span-full sm:-mt-2 sm:text-right">
           <EmergencyLink />
         </div>
       </div>
@@ -114,9 +114,9 @@ function EmergencyLink({ className }: { className?: string }) {
   return (
     <a
       href="#emergency"
-      className={`inline-flex min-h-10 items-center gap-2 rounded-full border border-danger/40 px-4 text-sm font-bold text-danger hover:bg-danger/5 ${className ?? ""}`}
+      className={`inline-flex min-h-10 items-center gap-1.5 text-[0.95rem] font-semibold text-danger underline decoration-danger/30 underline-offset-4 hover:decoration-danger ${className ?? ""}`}
     >
-      <Siren size={16} aria-hidden="true" />
+      <Siren size={16} aria-hidden="true" className="shrink-0" />
       Dental emergency?
     </a>
   );

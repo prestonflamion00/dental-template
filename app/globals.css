@@ -566,7 +566,7 @@
   .reveal-in { animation: none; }
 }
 
-/* ── Expanding-form trial (office.experiments.expandingForm; RequestSection + RequestForm) ──
+/* ── Expanding request form (RequestSection + RequestForm) ──
    Large screens: the reassurance cards fade out and the form glides to full width while it's in use. */
 @media (min-width: 1024px) {
   [data-request-layout] {

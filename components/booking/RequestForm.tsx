@@ -39,7 +39,7 @@ export interface RequestFormProps {
   titleId?: string;
   /** Show the form's own heading. Off when the surrounding section already says "Request an appointment". */
   heading?: boolean;
-  /** Expanding-form trial (office.experiments.expandingForm): extra fields slide open, and the
+  /** Expanding form (on in RequestSection): extra fields slide open, and the
    * surrounding [data-request-layout] widens the form to full width on larger screens. */
   animate?: boolean;
 }
@@ -85,7 +85,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   const [showPrefs, setShowPrefs] = useState(false);
   // The form starts compact (name, phone, email) and opens up once someone starts filling it in.
   const [engaged, setEngaged] = useState(false);
-  // Expanding-form trial: tell the surrounding layout (RequestSection) to give the form the full width.
+  // Expanding form: tell the surrounding layout (RequestSection) to give the form the full width.
   useEffect(() => {
     if (animate) formRef.current?.closest("[data-request-layout]")?.toggleAttribute("data-engaged", engaged);
   }, [animate, engaged]);
@@ -115,7 +115,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
     return () => window.removeEventListener(REQUEST_EVENT, onStart);
   }, [services, animate]);
 
-  // Expanding-form trial: open up only once name, phone and email all have something typed in.
+  // Expanding form: open up only once name, phone and email all have something typed in.
   const basicsStarted = !!(values.name.trim() && values.phone.trim() && values.email.trim());
   useEffect(() => {
     if (animate && basicsStarted) setEngaged(true);
@@ -277,7 +277,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
         {text("email", "Email", { type: "email", auto: "email", max: LIMITS.email })}
 
         {/* Everything past name, phone and email appears once someone starts filling the form in.
-            `animate` (the expanding-form trial): it's always rendered and slides open smoothly;
+            `animate` (the expanding form): it's always rendered and slides open smoothly;
             otherwise it simply appears. */}
         {animate ? (
           <div

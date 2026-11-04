@@ -223,10 +223,7 @@ export interface OfficeConfig {
   social: Partial<Record<"facebook" | "instagram" | "google" | "youtube" | "tiktok" | "yelp", string>>;
 
   /** Features being tried on one practice before they go to every site. */
-  experiments?: {
-    /** The request form widens to full width and its extra fields slide open once it's in use. */
-    expandingForm?: boolean;
-  };
+  experiments?: Record<string, boolean>;
 
   /** Overall look (config/designs.ts). Defaults to "butter", which uses `theme` for its colours. */
   design?: Design;

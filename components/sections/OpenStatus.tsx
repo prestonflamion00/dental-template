@@ -32,7 +32,7 @@ export function OpenBadge({ timezone, hours, className }: { timezone: string; ho
       <span
         className={cx(
           "inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-sm font-bold",
-          open ? "bg-success/10 text-success" : "bg-danger/10 text-danger",
+          open ? "bg-success/10 text-success" : "bg-ink/[0.06] text-ink/75",
         )}
       >
         <span className={cx("status-dot", open && "live")} aria-hidden="true" />
@@ -105,9 +105,9 @@ export function HeroStatus({ timezone, offices }: { timezone: string; offices: {
       : "see hours";
   return (
     <a href="#contact" className="inline-flex items-center gap-2 rounded-lg underline-offset-4 hover:underline">
-      <span className={cx("status-dot shrink-0", open ? "live text-success" : "text-danger")} aria-hidden="true" />
+      <span className={cx("status-dot shrink-0", open ? "live text-success" : "text-ink/35")} aria-hidden="true" />
       <span>
-        <strong className={open ? "text-success" : "text-danger"}>{open ? "Open now" : "Closed"}</strong>
+        <strong className={open ? "text-success" : "text-ink"}>{open ? "Open now" : "Closed"}</strong>
         <span className="text-muted">
           {" "}
           · {when}

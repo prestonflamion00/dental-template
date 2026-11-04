@@ -111,9 +111,6 @@ const familyOrthodonticsHudson: OfficeInput = {
   // Their Google rating, as shown on Google Maps (Nov 2026).
   rating: { value: 4.7, count: 93, source: "Google" },
 
-  // Trying the expanding request form here before it goes to every site.
-  experiments: { expandingForm: true },
-
   design: "butter",
   // Their brand: blue lettering and pink teeth in the logo (bracerus.com). Pink-toned set + their blue.
   theme: { preset: "blush-sand", accent: "#066aab" },
