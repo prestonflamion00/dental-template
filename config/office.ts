@@ -17,6 +17,7 @@ import mapleGrove from "./offices/maple-grove";
 import lumiere from "./offices/lumiere";
 import littleSprouts from "./offices/little-sprouts";
 import familyOrthodonticsHudson from "./offices/family-orthodontics-hudson";
+import copelinDental from "./offices/copelin-dental";
 
 /** Registry: key = file name in config/offices/ = URL slug. */
 export const offices = {
@@ -24,6 +25,7 @@ export const offices = {
   lumiere: lumiere,
   "little-sprouts": littleSprouts,
   "family-orthodontics-hudson": familyOrthodonticsHudson,
+  "copelin-dental": copelinDental,
 } satisfies Record<string, OfficeInput>;
 export type OfficeKey = keyof typeof offices;
 
