@@ -11,7 +11,8 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
   return (
     <Section id="request" eyebrow="Appointments" title="Request an appointment" intro={office.copy.requestIntro ?? "Tell us a little about you and the team will call or text to find a time that works."}>
       <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-        <ul className="grid content-start gap-4" data-reveal>
+        {/* Phones skip the reassurance cards: the form says the same, and the sticky bar has Call. */}
+        <ul className="grid content-start gap-4 max-sm:hidden" data-reveal>
           <li className="glass flex gap-4 rounded-[24px] p-5">
             <span className="icon-tile shrink-0" aria-hidden="true">
               <Clock size={22} />
@@ -47,6 +48,7 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
             practiceName={practice.name}
             services={office.services.map(({ id, name }) => ({ id, name }))}
             openDays={openDays(office.hours)}
+            locations={office.locations.map((l) => ({ name: l.name, openDays: openDays(l.hours) }))}
             titleId="request-title"
             heading={false}
           />

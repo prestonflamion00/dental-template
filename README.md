@@ -72,20 +72,41 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    export const offices = { "maple-grove": mapleGrove, lumiere, "little-sprouts": littleSprouts, "smith-dental": smithDental } …
    ```
    The build stops with a clear message if a file in `config/offices/` isn't registered.
-3. **Edit the essentials** (5 min). TypeScript flags anything missing or mistyped:
-   - `practice`: name, tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
-   - `contact`: phone, email, address, `timezone`, `hours` (24h `"HH:MM"`, `null` = closed)
+3. **Fill in what you know** (5 min). Only `id`, `practice.name`, `contact.phone`, `contact.address` and `timezone` are required. Everything else is filled in by `buildOffice` (`config/build.ts`) when left out (see "Missing details" below).
+   - `stage`: `"demo"` for a prospect preview, `"live"` (the default) for a client's real site
+   - `practice`: `specialty` (`"general"`, `"orthodontics"` or `"pediatric"`: sets the default wording, services and FAQs), tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
+   - `contact`: email, `hours` (24h `"HH:MM"`, `null` = closed)
+   - `otherLocations`: more offices, each with a `name`, phone, address and hours. The quick-info strip, contact section and request form ("Which office?") adapt automatically; name the main office with `contact.locationName`.
    - `doctors`, `services` (pick an `icon` from the `IconName` list in `config/types.ts`), `insurances`, `reviews`, `rating`, `faqs`
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`
-4. **Brand it** (1 min). Set `theme: { preset: "blush-sand", accent: "#7a4bd1" }` (accent is optional).
-5. **Choose sections** (30 sec). Reorder or remove ids in `sections`:
-   `hero, quickInfo, services, emergency, newPatients, doctors, cta, reviews, gallery, faq, contact`.
-   The nav links follow automatically. The nav, footer and mobile action bar are always shown.
+4. **Brand it** (1 min). Set `design` and `theme: { preset: "blush-sand", accent: "#7a4bd1" }`. Use the practice's own brand colour as `accent` when they have one (from their logo or current site): it works in every design and is darkened automatically if needed to stay readable.
+5. **Order the middle sections** (30 sec). Some sections have fixed places: `hero` and `quickInfo` open the page; `request` (the form), `faq` and `contact` close it. `sections` orders the rest (default `services, reviews, doctors, newPatients, gallery`), and leaving one out hides it. Sections with nothing to show hide themselves. Every "Request appointment" button scrolls to the form (picking the service when it belongs to one). Emergency info is a pop-up opened by the "Dental emergency?" button in the quick-info strip, the phone menu, or any link ending in `#emergency`. The nav links follow automatically.
 6. **Swap images** (1 min). Put doctor portraits (~4:5) in `/public/doctors/`, before/after images in `/public/gallery/`, and the forms PDF in `/public/forms/`. Then update the paths in the config.
 7. Run `npm run dev` to preview (set `ACTIVE_OFFICE` to the new key), then push to `main`. The new practice goes live at `/smith-dental/`.
 
+### Missing details
+
+So a demo never looks broken when we couldn't find something, `buildOffice` fills it in:
+
+| Left out | The site shows | Kind |
+| --- | --- | --- |
+| `hours` | Typical hours (Mon–Thu 8–5, Fri 8–2) | placeholder |
+| `insurances` | Made-up plan names, so we never claim a real insurer | placeholder |
+| `services` | Everyday general dentistry | placeholder |
+| `practice.acceptingNewPatients` | "Accepting new patients" | placeholder |
+| `seo.siteUrl` | The demos address | placeholder |
+| `copy`, first-visit steps, `faqs` | Friendly wording for the practice's specialty (`config/generic.ts`) | generic, fine to ship |
+| `doctors` | Team section hidden; "the {name} team" elsewhere | hidden |
+| Doctor `photo` | Initials. On a demo of a real practice, every doctor shows a "Your photo here" placeholder (we never use their photos) | — |
+| `rating`, `reviews` | Rating badges hidden; reviews section shows what exists | hidden |
+| `yearsInPractice`, `email`, `newPatientFormsUrl` | Left out | hidden |
+
+On a demo, hours, insurance plans and services that are placeholders get a small dotted **"Sample"** tag; hovering or tapping it explains that it's a stand-in. Reviews show as playful, clearly marked sample cards. Doctors, reviews, ratings and awards are never invented. **A `"live"` office refuses to build while any placeholder remains**, and the error lists what's missing (those become the onboarding questions). A `"demo"` of a real practice (not `fictional`) shows a small "Private preview for …" line at the top and privacy fine print in the footer.
+
 A fill-in **client intake form** (Google Doc) covers every field above in plain language. Use it as a call script for white-glove onboarding, or send it to the practice.
+
+**On phones** the page is kept short (about 10 screens): the decorative hero card, the request section's reassurance cards and the forms card are hidden; services are compact tiles; reviews swipe sideways; doctors are compact rows with "Read bio"; the gallery, extra insurance plans and the form's optional details open from buttons; FAQs start closed; offices are tabs; the map gives way to a Directions button. The sticky Request/Call bar appears once the hero's own buttons scroll away. In the hero, the rating links to reviews, years in practice to the team, and "Accepting new patients" to the form.
 
 The page title, meta description, OpenGraph image, favicon colour, JSON-LD `Dentist` schema, sitemap and robots.txt are all generated from the config.
 
@@ -185,7 +206,9 @@ Every integration lives behind one async function in **`lib/integrations.ts`**. 
 ```
 config/
   office.ts            ← registry of offices + the active one for local dev
-  types.ts             ← OfficeConfig schema (fully typed)
+  types.ts             ← OfficeConfig (what renders) and OfficeInput (what an office file provides)
+  build.ts             ← buildOffice: fills missing details, fixes section order, blocks placeholders on live sites
+  generic.ts           ← generic dental content and placeholders
   themes.ts            ← presets, contrast helpers, accent override logic
   offices/             ← maple-grove.ts, lumiere.ts, little-sprouts.ts (file name = URL)
 app/

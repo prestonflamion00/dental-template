@@ -27,7 +27,7 @@ export default function AccessibilityPage() {
       <p>{contact.directionsNote ?? "Please let us know about any access needs before your visit."}</p>
       <h2>Feedback</h2>
       <p>
-        If anything on this site is hard to use, please call {contact.phone} or email {contact.email}. We’ll help you directly
+        If anything on this site is hard to use, please call {contact.phone}{contact.email ? ` or email ${contact.email}` : ""}. We’ll help you directly
         and work to fix the issue.
       </p>
     </SimplePage>

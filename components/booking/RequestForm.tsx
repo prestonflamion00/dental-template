@@ -23,6 +23,7 @@ import {
   type RequestValues,
 } from "@/lib/request";
 import { cx } from "@/lib/format";
+import { REQUEST_EVENT, type RequestEventDetail } from "./BookingProvider";
 
 export interface RequestFormProps {
   practiceName: string;
@@ -30,6 +31,8 @@ export interface RequestFormProps {
   services: { id: string; name: string }[];
   /** Days the office is open; only these are offered as preferred days. */
   openDays: Day[];
+  /** Practices with several offices: an appointment request picks one, and its open days are offered. */
+  locations?: { name: string; openDays: Day[] }[];
   /** Service to preselect, e.g. when opened from a service's "Request" button. */
   initialServiceId?: string;
   /** id of the heading that names the form (its own, or the surrounding section's when `heading` is false). */
@@ -46,7 +49,7 @@ const inputCls = (err?: string) =>
 const chipCls =
   "relative inline-flex min-h-11 cursor-pointer select-none items-center rounded-full border border-ink/15 bg-white/70 px-4 font-semibold text-ink transition hover:border-ink/40 has-checked:border-ink has-checked:bg-ink has-checked:text-bg has-focus-visible:ring-2 has-focus-visible:ring-accent has-focus-visible:ring-offset-2";
 
-export function RequestForm({ practiceName, services, openDays, initialServiceId, titleId, heading = true }: RequestFormProps) {
+export function RequestForm({ practiceName, services, openDays, locations = [], initialServiceId, titleId, heading = true }: RequestFormProps) {
   const uid = useId();
   const initialReason = services.find((s) => s.id === initialServiceId)?.name ?? "";
   const empty: RequestValues = {
@@ -60,6 +63,7 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
     time: "",
     insurance: "",
     message: "",
+    location: "",
   };
   const [values, setValues] = useState<RequestValues>(empty);
   const [errors, setErrors] = useState<RequestErrors>({});
@@ -73,6 +77,23 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
   const formRef = useRef<HTMLFormElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
   const isAppt = values.kind === "appointment";
+  const needLocation = locations.length > 1;
+  const daysOffered = locations.find((l) => l.name === values.location)?.openDays ?? openDays;
+  const [showPrefs, setShowPrefs] = useState(false);
+
+  // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
+  // pick that button's service, and put the cursor in the first field.
+  useEffect(() => {
+    const onStart = (e: Event) => {
+      const id = (e as CustomEvent<RequestEventDetail>).detail?.serviceId;
+      const name = services.find((s) => s.id === id)?.name;
+      setStatus((st) => (st === "sent" ? "idle" : st));
+      setValues((v) => ({ ...v, kind: "appointment", reason: name ?? v.reason }));
+      setTimeout(() => formRef.current?.querySelector<HTMLInputElement>('[name="name"]')?.focus({ preventScroll: true }), 50);
+    };
+    window.addEventListener(REQUEST_EVENT, onStart);
+    return () => window.removeEventListener(REQUEST_EVENT, onStart);
+  }, [services]);
 
   const update = <K extends keyof RequestValues>(k: K, v: RequestValues[K]) => {
     setValues((s) => ({ ...s, [k]: v }));
@@ -86,9 +107,9 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const errs = validateRequest(values);
+    const errs = validateRequest(values, { needLocation });
     setErrors(errs);
-    const first = (["name", "phone", "email", "reason", "message"] as const).find((k) => errs[k]);
+    const first = (["name", "phone", "email", "location", "reason", "message"] as const).find((k) => errs[k]);
     if (first) {
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
@@ -221,6 +242,38 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
 
         {isAppt && (
           <>
+            {needLocation && (
+              <fieldset className="sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
+                <legend className="mb-1.5 font-semibold text-ink">
+                  Which office? <span className="text-danger" aria-hidden="true">*</span>
+                </legend>
+                <div className="flex flex-wrap gap-2">
+                  {locations.map((l) => (
+                    <label key={l.name} className={chipCls}>
+                      <input
+                        type="radio"
+                        name="location"
+                        value={l.name}
+                        checked={values.location === l.name}
+                        onChange={() => {
+                          update("location", l.name);
+                          // Keep only days this office is open.
+                          setValues((s) => ({ ...s, location: l.name, days: s.days.filter((d) => l.openDays.includes(d)) }));
+                        }}
+                        className="sr-only"
+                      />
+                      {l.name}
+                    </label>
+                  ))}
+                </div>
+                {errors.location && (
+                  <p id={`${uid}-location-err`} className="mt-1.5 text-sm font-medium text-danger">
+                    {errors.location}
+                  </p>
+                )}
+              </fieldset>
+            )}
+
             <fieldset className="sm:col-span-2">
               <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
               <div className="flex flex-wrap gap-2">
@@ -272,12 +325,22 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
               )}
             </div>
 
-            <fieldset className="sm:col-span-2">
+            {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
+            {!showPrefs && (
+              <button
+                type="button"
+                onClick={() => setShowPrefs(true)}
+                className="justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+              >
+                + Add more details (days, times, insurance)
+              </button>
+            )}
+            <fieldset className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               <legend className="mb-1.5 font-semibold text-ink">
                 Best days for you <span className="font-normal text-muted">(optional)</span>
               </legend>
               <div className="flex flex-wrap gap-2">
-                {DAY_ORDER.filter((d) => openDays.includes(d)).map((d) => (
+                {DAY_ORDER.filter((d) => daysOffered.includes(d)).map((d) => (
                   <label key={d} className={chipCls}>
                     <input type="checkbox" checked={values.days.includes(d)} onChange={() => toggleDay(d)} className="sr-only" />
                     {DAY_LABELS[d]}
@@ -286,7 +349,7 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
               </div>
             </fieldset>
 
-            <fieldset className="sm:col-span-2">
+            <fieldset className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               <legend className="mb-1.5 font-semibold text-ink">
                 Best time of day <span className="font-normal text-muted">(optional)</span>
               </legend>
@@ -307,11 +370,13 @@ export function RequestForm({ practiceName, services, openDays, initialServiceId
               </div>
             </fieldset>
 
-            <div className="sm:col-span-2">{text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}</div>
+            <div className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+              {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
+            </div>
           </>
         )}
 
-        <div className="sm:col-span-2">
+        <div className={cx("sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
           <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
             {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
             {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}

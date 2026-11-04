@@ -8,7 +8,7 @@
  *
  * Run: npm run check:contrast   (Node 22+, uses built-in TypeScript stripping)
  */
-import { THEME_PRESETS, themes, resolveTheme, contrast, textSurfaces, type ThemeTokens } from "../config/themes.ts";
+import { THEME_PRESETS, themes, resolveTheme, withAccent, contrast, textSurfaces, type ThemeTokens } from "../config/themes.ts";
 import { designPalettes } from "../config/designs.ts";
 
 const AA = 4.5;
@@ -48,17 +48,22 @@ const designCards: Record<keyof typeof designPalettes, (t: ThemeTokens) => strin
   peach: () => "#fffaf6",
   cinnamon: () => "#fffdf9",
 };
-for (const [d, t] of Object.entries(designPalettes) as [keyof typeof designPalettes, ThemeTokens][]) {
+function auditDesign(name: string, d: keyof typeof designPalettes, t: ThemeTokens) {
   const onAccent = "#ffffff";
   let worst = Infinity;
   for (const s of [t.bg, t.bg2, t.bg3, t.accentSoft, designCards[d](t)]) {
     for (const [k, fg] of [["ink", t.ink], ["muted", t.muted], ["accent text", t.accent], ["success", t.success], ["danger", t.danger]]) {
-      const c = check(`design ${d} ${k}`, fg, s);
+      const c = check(`${name} ${k}`, fg, s);
       if (k !== "success" && k !== "danger") worst = Math.min(worst, c);
     }
   }
-  const btn = check(`design ${d} button`, onAccent, t.accent);
-  console.log(`${("design " + d).padEnd(28)} worst text-on-surface ${worst.toFixed(2)}:1 · button ${btn.toFixed(2)}:1`);
+  const btn = check(`${name} button`, onAccent, t.accent);
+  console.log(`${name.padEnd(28)} worst text-on-surface ${worst.toFixed(2)}:1 · button ${btn.toFixed(2)}:1`);
+}
+for (const [d, t] of Object.entries(designPalettes) as [keyof typeof designPalettes, ThemeTokens][]) {
+  auditDesign(`design ${d}`, d, t);
+  // A practice's brand colour can replace any design's accent (app/layout.tsx).
+  for (const accent of ["#f59fb0", "#7dd3c0", "#ffcc00", "#3b82f6", "#066aab"]) auditDesign(`design ${d} + ${accent}`, d, withAccent(t, accent));
 }
 
 if (failures) {

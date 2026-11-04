@@ -40,6 +40,7 @@ if (missing.length) {
 }
 
 const { themes } = await import(pathToFileURL(join(root, "config/themes.ts")).href);
+const { buildOffice } = await import(pathToFileURL(join(root, "config/build.ts")).href);
 
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
@@ -61,7 +62,7 @@ for (const slug of slugs) {
   });
   if (res.status !== 0) process.exit(res.status ?? 1);
   cpSync(join(root, "out"), join(outDir, slug), { recursive: true });
-  const office = (await import(pathToFileURL(join(root, "config/offices", `${slug}.ts`)).href)).default;
+  const office = buildOffice((await import(pathToFileURL(join(root, "config/offices", `${slug}.ts`)).href)).default);
   built.push({ slug, office });
 }
 

@@ -70,6 +70,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     time: TIMES_OF_DAY.find((t) => t === body.time) ?? "",
     insurance: clean(body.insurance, LIMITS.insurance),
     message: typeof body.message === "string" ? body.message.trim().slice(0, LIMITS.message) : "",
+    location: clean(body.location, LIMITS.location),
   };
   if (Object.keys(validateRequest(values)).length) return json({ ok: false, error: "invalid" }, 400);
 

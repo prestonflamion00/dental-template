@@ -5,23 +5,23 @@ import { BookingProvider } from "@/components/booking/BookingProvider";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { Logo } from "@/components/ui/Logo";
 import { Section } from "@/components/ui/Section";
+import { SampleTag } from "@/components/ui/SampleTag";
+import { MobileReveal } from "@/components/ui/MobileReveal";
 import { DemoThemeSwitcher } from "@/components/ui/DemoThemeSwitcher";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { QuickInfo } from "@/components/sections/QuickInfo";
 import { RequestSection } from "@/components/sections/RequestSection";
 import { ServicesGrid } from "@/components/sections/Services";
-import { Emergency } from "@/components/sections/Emergency";
 import { NewPatients } from "@/components/sections/NewPatients";
 import { Doctors } from "@/components/sections/Doctors";
-import { Cta } from "@/components/sections/Cta";
 import { Reviews } from "@/components/sections/Reviews";
 import { GalleryGrid } from "@/components/sections/Gallery";
 import { FaqList } from "@/components/sections/Faq";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { MobileBar } from "@/components/sections/MobileBar";
-import { openDays } from "@/lib/hours";
+import { EmergencyDialog } from "@/components/sections/EmergencyDialog";
 
 /** Each section id → its component. Order and visibility come from `office.sections`. */
 const SECTIONS: Record<SectionId, () => React.ReactNode> = {
@@ -29,19 +29,30 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
   quickInfo: () => <QuickInfo office={office} />,
   request: () => <RequestSection office={office} />,
   services: () => (
-    <Section id="services" eyebrow="Services" title="Care for every smile" intro={office.copy.servicesIntro}>
+    <Section
+      id="services"
+      eyebrow="Services"
+      title={
+        <>
+          Care for every smile
+          <SampleTag office={office} what="services" />
+        </>
+      }
+      intro={office.copy.servicesIntro}
+    >
       <ServicesGrid services={office.services} phone={office.contact.phone} />
     </Section>
   ),
-  emergency: () => <Emergency office={office} />,
   newPatients: () => <NewPatients office={office} />,
   doctors: () => <Doctors office={office} />,
-  cta: () => <Cta office={office} />,
   reviews: () => <Reviews office={office} />,
   gallery: () =>
     office.gallery?.length ? (
       <Section id="gallery" eyebrow="Smile gallery" title="Before & after" intro="Slide to compare. Every plan is designed around the person.">
-        <GalleryGrid items={office.gallery} />
+        {/* Phones: the gallery opens from a button, so it doesn't add screens of scrolling. */}
+        <MobileReveal label="See smile gallery" className="w-full">
+          <GalleryGrid items={office.gallery} />
+        </MobileReveal>
       </Section>
     ) : null,
   faq: () => (
@@ -62,16 +73,14 @@ const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string }>> = {
 };
 
 export default function Home() {
-  const links = office.sections.map((s) => NAV_LINKS[s]).filter((l): l is { href: string; label: string } => !!l);
+  const links = [
+    ...office.sections.map((s) => NAV_LINKS[s]).filter((l): l is { href: string; label: string } => !!l),
+    { href: "#emergency", label: "Emergency", mobileOnly: true },
+  ];
 
   return (
     <BookingProvider
-      settings={{
-        practiceName: office.practice.name,
-        services: office.services.map(({ id, name }) => ({ id, name })),
-        openDays: openDays(office.hours),
-        url: office.booking.url,
-      }}
+      settings={{ url: office.booking.url }}
     >
       <Nav logo={<Logo practice={office.practice} />} practiceName={office.practice.name} phone={office.contact.phone} links={links} />
       <main id="main">
@@ -81,6 +90,7 @@ export default function Home() {
       </main>
       <Footer office={office} />
       <MobileBar phone={office.contact.phone} />
+      <EmergencyDialog headline={office.copy.emergencyHeadline} text={office.copy.emergencyText} locations={office.locations} />
       <RevealObserver />
       <DemoThemeSwitcher />
     </BookingProvider>

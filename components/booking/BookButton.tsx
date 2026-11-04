@@ -4,7 +4,7 @@ import { CalendarDays } from "lucide-react";
 import { useBooking } from "./BookingProvider";
 import { cx } from "@/lib/format";
 
-/** The primary "Request appointment" button. Opens the request form, or links to `booking.url` if configured. */
+/** The primary "Request appointment" button. Goes to the request form, or links to `booking.url` if configured. */
 export function BookButton({
   children = "Request appointment",
   serviceId,
@@ -36,9 +36,17 @@ export function BookButton({
       </a>
     );
   }
+  // A real link to the form, so it works before scripts load; with scripts it also picks the service.
   return (
-    <button type="button" className={cls} onClick={() => open(serviceId)} aria-haspopup="dialog">
+    <a
+      href="#request"
+      className={cls}
+      onClick={(e) => {
+        e.preventDefault();
+        open(serviceId);
+      }}
+    >
       {content}
-    </button>
+    </a>
   );
 }

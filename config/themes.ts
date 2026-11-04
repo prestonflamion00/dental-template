@@ -157,7 +157,11 @@ function darkest(colors: string[]): string {
  * needed so white button text and accent-coloured text on glass stay AA.
  */
 export function resolveTheme(preset: ThemePreset, accentOverride?: string): ThemeTokens {
-  const base = themes[preset];
+  return withAccent(themes[preset], accentOverride);
+}
+
+/** Any palette (a theme preset or a design's own) with the practice's brand colour as its accent. */
+export function withAccent(base: ThemeTokens, accentOverride?: string): ThemeTokens {
   if (!accentOverride) return base;
   // Button text is white and accent text sits on tinted glass: darken until both are ≥4.5:1.
   const accentSoft = mix(accentOverride, "#ffffff", 0.13);

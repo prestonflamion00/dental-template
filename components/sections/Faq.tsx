@@ -1,13 +1,17 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Plus } from "lucide-react";
 import type { Faq } from "@/config/types";
 import { cx } from "@/lib/format";
 
 /** Accessible accordion (WAI-ARIA disclosure pattern): buttons with aria-expanded controlling regions. */
 export function FaqList({ faqs }: { faqs: Faq[] }) {
+  // The first answer starts open on larger screens; on phones every question starts closed.
   const [open, setOpen] = useState<number | null>(0);
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 639px)").matches) setOpen(null);
+  }, []);
   const uid = useId();
   return (
     <div className="glass mx-auto max-w-3xl divide-y divide-ink/10 rounded-[28px] px-2 sm:px-4" data-reveal>

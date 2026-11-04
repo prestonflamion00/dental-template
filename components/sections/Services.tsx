@@ -13,12 +13,13 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
 
   return (
     <>
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:gap-5">
+      {/* Phones: compact two-column tiles (icon and name); tapping one opens its details. */}
+      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4 sm:gap-5">
         {services.map((s, i) => (
           <li
             key={s.id}
             id={`service-${s.id}`}
-            className="glass glass-hover group relative flex gap-4 rounded-[24px] p-5 sm:flex-col sm:gap-0 sm:p-6"
+            className="glass glass-hover group relative flex flex-col rounded-[24px] p-4 sm:p-6"
             data-reveal
             style={{ ["--d" as string]: `${(i % 4) * 60}ms` }}
           >
@@ -26,13 +27,13 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
               <Icon name={s.icon} size={24} />
             </span>
             <div className="flex flex-1 flex-col">
-            <h3 className="font-sans text-[1.15rem] font-bold leading-snug tracking-tight text-ink sm:mt-5">{s.name}</h3>
-            <p className="mt-1.5 flex-1 text-[0.975rem] leading-relaxed text-muted sm:mt-2">{s.short}</p>
+            <h3 className="mt-3 font-sans text-base font-bold leading-snug tracking-tight text-ink sm:mt-5 sm:text-[1.15rem]">{s.name}</h3>
+            <p className="mt-2 flex-1 text-[0.975rem] leading-relaxed text-muted max-sm:hidden">{s.short}</p>
             <button
               type="button"
               onClick={() => setActive(s)}
               aria-haspopup="dialog"
-              className="mt-2 inline-flex min-h-11 items-center gap-1.5 self-start sm:mt-5 rounded-full text-[0.95rem] font-bold text-accent after:absolute after:inset-0 after:rounded-[24px] after:content-['']"
+              className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-1 sm:mt-5 rounded-full text-sm font-bold text-accent sm:text-[0.95rem] after:absolute after:inset-0 after:rounded-[24px] after:content-['']"
             >
               Learn more<span className="sr-only"> about {s.name}</span>
               <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
@@ -40,9 +41,9 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
             </div>
           </li>
         ))}
-        {/* Helper card fills the grid and catches undecided visitors. */}
+        {/* Helper card fills the grid and catches undecided visitors (phones have the sticky Request bar instead). */}
         <li
-          className="relative flex flex-col justify-between rounded-[24px] bg-gradient-to-br from-accent to-accent-2 p-6 text-white shadow-xl"
+          className="relative flex flex-col justify-between rounded-[24px] bg-gradient-to-br from-accent to-accent-2 p-6 text-white shadow-xl max-sm:hidden"
           data-reveal
           style={{ ["--d" as string]: `${(services.length % 4) * 60}ms` }}
         >

@@ -1,8 +1,9 @@
-import type { OfficeConfig } from "../types";
+import type { OfficeInput } from "../types";
 
 /** Demo 1 — a warm, general family practice. Theme: warm neutral. */
-const mapleGrove: OfficeConfig = {
+const mapleGrove: OfficeInput = {
   id: "maple-grove",
+  stage: "demo",
   showcase: true, // fictional demo practice: shown on the public examples page
   fictional: true, // shows the demo banner
 
@@ -227,7 +228,7 @@ const mapleGrove: OfficeConfig = {
 
   theme: { preset: "warm-neutral" },
 
-  sections: ["hero", "quickInfo", "request", "services", "newPatients", "doctors", "cta", "reviews", "gallery", "emergency", "faq", "contact"],
+  sections: ["services", "reviews", "doctors", "newPatients", "gallery", "faq"],
 
   copy: {
     heroEyebrow: "Family dentistry in Northeast Portland",
@@ -248,6 +249,7 @@ const mapleGrove: OfficeConfig = {
     emergencyText: "Toothache, broken tooth or swelling: we keep same-day spots open and will get you out of pain quickly.",
     reviewsIntro: "Kind words from the families we’re lucky to care for.",
     faqIntro: "Quick answers to the questions we hear most.",
+    phoneNote: "Same-day emergency visits",
     contactIntro: "Questions, scheduling, or just want to say hi? We’re here.",
     comfortPerks: ["Cozy blankets", "Noise-canceling headphones", "Breaks anytime"],
   },
