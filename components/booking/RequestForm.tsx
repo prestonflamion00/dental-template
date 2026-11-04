@@ -374,16 +374,15 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                     )}
                   </div>
 
-                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
-                  {!showPrefs && (
-                    <button
-                      type="button"
-                      onClick={() => setShowPrefs(true)}
-                      className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
-                    >
-                      + Add more details (days, times, insurance)
-                    </button>
-                  )}
+                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button; tap again to fold them back (what's filled in is kept). */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPrefs((v) => !v)}
+                    aria-expanded={showPrefs}
+                    className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+                  >
+                    {showPrefs ? "− Hide extra details" : "+ Add more details (days, times, insurance)"}
+                  </button>
                   <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
                     <legend className="mb-1.5 font-semibold text-ink">
                       Best days for you <span className="font-normal text-muted">(optional)</span>
@@ -539,16 +538,15 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                     )}
                   </div>
 
-                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
-                  {!showPrefs && (
-                    <button
-                      type="button"
-                      onClick={() => setShowPrefs(true)}
-                      className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
-                    >
-                      + Add more details (days, times, insurance)
-                    </button>
-                  )}
+                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button; tap again to fold them back (what's filled in is kept). */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPrefs((v) => !v)}
+                    aria-expanded={showPrefs}
+                    className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+                  >
+                    {showPrefs ? "− Hide extra details" : "+ Add more details (days, times, insurance)"}
+                  </button>
                   <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
                     <legend className="mb-1.5 font-semibold text-ink">
                       Best days for you <span className="font-normal text-muted">(optional)</span>
