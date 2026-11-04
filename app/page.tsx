@@ -76,7 +76,7 @@ const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string; wideOn
 export default function Home() {
   const links = [
     ...office.sections.map((s) => NAV_LINKS[s]).filter((l): l is NonNullable<(typeof NAV_LINKS)[SectionId]> => !!l),
-    { href: "#emergency", label: "Emergency", mobileOnly: true },
+    { href: "#emergency", label: "Emergency", mobileOnly: true, urgent: true },
   ];
 
   return (

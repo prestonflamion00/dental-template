@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Menu, Phone, X } from "lucide-react";
+import { Menu, Phone, Siren, X } from "lucide-react";
 import { BookButton } from "@/components/booking/BookButton";
 import { cx, telHref } from "@/lib/format";
 
@@ -15,8 +15,8 @@ export function Nav({
   logo: React.ReactNode;
   practiceName: string;
   phone: string;
-  /** `mobileOnly` links appear in the phone menu only (e.g. Emergency). */
-  links: { href: string; label: string; mobileOnly?: boolean; wideOnly?: boolean }[];
+  /** `mobileOnly` links appear in the phone menu only (e.g. Emergency); `urgent` ones are red, with a siren. */
+  links: { href: string; label: string; mobileOnly?: boolean; wideOnly?: boolean; urgent?: boolean }[];
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -111,8 +111,12 @@ export function Nav({
               <a
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="flex min-h-12 items-center rounded-2xl px-4 text-lg font-semibold text-ink hover:bg-white/80"
+                className={cx(
+                  "flex min-h-12 items-center gap-2.5 rounded-2xl px-4 text-lg font-semibold hover:bg-white/80",
+                  l.urgent ? "text-danger" : "text-ink",
+                )}
               >
+                {l.urgent && <Siren size={20} aria-hidden="true" className="shrink-0" />}
                 {l.label}
               </a>
             </li>
