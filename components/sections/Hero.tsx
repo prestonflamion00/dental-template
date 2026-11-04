@@ -174,18 +174,21 @@ export function Hero({ office }: { office: OfficeConfig }) {
             </div>
           </div>
 
-          {/* Floating accent (decorative duplicate of the rating stated below) */}
+          {/* Floating rating badge: jumps to the reviews section. */}
           {rating && (
-          <div
-            aria-hidden="true"
-            className="glass absolute -right-2 -top-6 hidden rounded-2xl px-4 py-3 sm:block lg:-right-6"
-          >
-            <div className="flex items-center gap-2">
-              <span className="font-serif text-2xl text-ink">{rating.value.toFixed(1)}</span>
-              <Stars rating={rating.value} size={14} className="text-ink" />
-            </div>
-            <p className="text-xs font-semibold text-muted">{rating.count.toLocaleString()} reviews</p>
-          </div>
+            <a
+              href={has("reviews") ? "#reviews" : undefined}
+              aria-label={`Rated ${rating.value.toFixed(1)} out of 5 from ${rating.count.toLocaleString()} ${rating.source} reviews, see reviews`}
+              className="glass glass-hover absolute -right-2 -top-6 hidden rounded-2xl px-4 py-3 sm:block lg:-right-6"
+            >
+              <span className="flex items-center gap-2" aria-hidden="true">
+                <span className="font-serif text-2xl text-ink">{rating.value.toFixed(1)}</span>
+                <Stars rating={rating.value} size={14} className="text-ink" />
+              </span>
+              <span className="block text-xs font-semibold text-muted" aria-hidden="true">
+                {rating.count.toLocaleString()} reviews
+              </span>
+            </a>
           )}
         </div>
       </div>
