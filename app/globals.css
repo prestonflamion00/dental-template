@@ -450,6 +450,8 @@
   /* Horizontal scroll-snap carousel (reviews on mobile). */
   .snap-row {
     scroll-snap-type: x mandatory;
+    /* Snap cards to the row's side padding (px-4), not the screen edge. */
+    scroll-padding-inline: 1rem;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
