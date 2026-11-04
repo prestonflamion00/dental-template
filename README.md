@@ -135,7 +135,7 @@ npm run check:responsive -- "https://demos.butterbite.workers.dev/maple-grove/?d
 npm run check:responsive -- --shots shots/ <url>   # also save a screenshot per width to look through
 ```
 
-**The first screen (above the fold) is a rule, not a nice-to-have.** The same check opens each page on a small iPhone (375×667), an iPhone (390×844), a large iPhone (430×932), an iPad (768×1024), a laptop (1280×800) and a desktop (1440×900). It fails unless, before any scrolling, the page shows the practice name, the headline, Request appointment, Call, the open/closed status and the red Emergency button. Anything else earns a place up there only if it doesn't push those down. On phones that's why the eyebrow and trust strip are hidden: the rating sits above the headline, and "Accepting new patients" moves to the info strip.
+**The first screen (above the fold) is a rule, not a nice-to-have.** The same check opens each page on a small iPhone (375×667), an iPhone (390×844), a large iPhone (430×932), an iPad (768×1024), a laptop (1280×800) and a desktop (1440×900). It fails unless, before any scrolling, the page shows the practice name, the headline, Request appointment, Call, the open/closed status and the red Emergency button. Anything else earns a place up there only if it doesn't push those down. On phones the hero fills the whole first screen (with a small "Hours & location" cue at the bottom), so the next section never half-peeks in; that is also why the eyebrow and trust strip are hidden there: the rating sits above the headline, and "Accepting new patients" moves to the info strip.
 
 **Emergency is always a red button** (`components/ui/EmergencyButton.tsx`), and red is used for nothing else. "Closed" is neutral gray; green means open.
 

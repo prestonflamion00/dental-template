@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck, CalendarDays, Check, ChevronRight, Phone, Smile } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, ChevronDown, ChevronRight, Phone, Smile } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
@@ -21,7 +21,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-1)", width: 520, height: 520, top: -80, left: "-12%" }} />
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-3)", width: 460, height: 460, top: 120, right: "-6%" }} />
 
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10">
+      <div className="hero-main mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10">
         <div>
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}
           {rating && (
@@ -42,7 +42,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
           >
             <Highlighted text={copy.heroHeadline} highlight={copy.heroHighlight} ownLine />
           </h1>
-          <p className="mt-3 max-w-xl text-[1.05rem] text-muted sm:mt-5 sm:text-xl">
+          <p className="hero-sub mt-3 max-w-xl text-[1.05rem] text-muted sm:mt-5 sm:text-xl">
             {copy.heroSubhead}
           </p>
 
@@ -195,6 +195,11 @@ export function Hero({ office }: { office: OfficeConfig }) {
           )}
         </div>
       </div>
+      {/* Phones: a quiet hint that hours and location are just below (the hero fills the first screen). */}
+      <a href="#hours-glance" className="hero-cue mx-auto mb-3 flex min-h-11 items-center gap-1.5 px-4 text-sm font-semibold text-muted sm:hidden">
+        Hours &amp; location
+        <ChevronDown size={16} aria-hidden="true" />
+      </a>
     </section>
   );
 }

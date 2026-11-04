@@ -4,7 +4,7 @@
  * any button, link or text that spills out of its card.
  * It also checks the first screen ("above the fold") on common devices: before any scrolling, every
  * site must show the practice name, what they do (the headline), Request appointment, Call, the
- * open/closed status and the Emergency button.
+ * open/closed status and the Emergency button, and on phones nothing of the next section.
  * Optionally saves a screenshot per width for a quick visual pass.
  *
  *   node scripts/check-responsive.mjs [--shots <dir>] <url> [<url> ...]
@@ -110,6 +110,9 @@ for (const url of args) {
         const r = el?.getBoundingClientRect();
         if (!r || r.top < 0 || r.bottom > innerHeight) out.push(r ? `${name} (ends at ${Math.round(r.bottom)}px)` : `${name} (not shown)`);
       }
+      // Phones: the hero fills the first screen, so the next section must not peek in.
+      const next = document.querySelector("#top")?.nextElementSibling;
+      if (innerWidth < 640 && next && next.getBoundingClientRect().top < innerHeight - 1) out.push("next section peeks in");
       return out;
     }, FOLD_MUST_SHOW);
     if (missing.length) {

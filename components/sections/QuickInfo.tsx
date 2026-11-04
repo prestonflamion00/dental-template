@@ -10,7 +10,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
   const { contact } = office;
   const a = contact.address;
   return (
-    <section aria-label="Hours and location at a glance" className="relative z-10 px-4 sm:px-6">
+    <section id="hours-glance" aria-label="Hours and location at a glance" className="relative z-10 px-4 sm:px-6">
       <div className="glass mx-auto grid max-w-6xl gap-6 rounded-[28px] p-6 sm:p-7 sm:grid-cols-2 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-ink/10" data-reveal>
         <AcceptingNote office={office} />
         <div className="flex gap-4 lg:pr-6">
@@ -69,7 +69,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
 function QuickInfoLocations({ office }: { office: OfficeConfig }) {
   const cols = office.locations.length >= 3 ? "lg:grid-cols-3" : "sm:grid-cols-2";
   return (
-    <section aria-label="Our offices at a glance" className="relative z-10 px-4 sm:px-6">
+    <section id="hours-glance" aria-label="Our offices at a glance" className="relative z-10 px-4 sm:px-6">
       <div className={`glass mx-auto grid max-w-6xl gap-6 rounded-[28px] p-6 sm:p-7 ${cols} sm:gap-0`} data-reveal>
         <AcceptingNote office={office} />
         {office.locations.map((l, i) => (

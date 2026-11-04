@@ -598,3 +598,29 @@
     transition: none;
   }
 }
+
+/* Phones: the hero fills the first screen, so the next section (today's hours) starts just below it
+   instead of half-peeking in; a small cue at the bottom says there's more. 82px = the sticky nav;
+   demo sites add the 39px preview banner. Taller phones get a little more breathing room between the parts. */
+@media (max-width: 639.98px) {
+  #top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 82px);
+    padding-bottom: 0;
+  }
+  body:has(> .demo-banner) #top {
+    min-height: calc(100svh - 121px);
+  }
+  #top > .hero-cue {
+    margin-top: auto;
+  }
+  #top > .hero-main {
+    margin-top: auto;
+  }
+}
+@media (max-width: 639.98px) and (min-height: 740px) {
+  #top .hero-sub { margin-top: 1rem; font-size: 1.15rem; }
+  #top #hero-actions { margin-top: 2rem; }
+}
