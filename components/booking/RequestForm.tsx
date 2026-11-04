@@ -39,6 +39,9 @@ export interface RequestFormProps {
   titleId?: string;
   /** Show the form's own heading. Off when the surrounding section already says "Request an appointment". */
   heading?: boolean;
+  /** Expanding-form trial (office.experiments.expandingForm): extra fields slide open, and the
+   * surrounding [data-request-layout] widens the form to full width on larger screens. */
+  animate?: boolean;
 }
 
 const inputCls = (err?: string) =>
@@ -49,7 +52,7 @@ const inputCls = (err?: string) =>
 const chipCls =
   "relative inline-flex min-h-11 cursor-pointer select-none items-center rounded-full border border-ink/15 bg-white/70 px-4 font-semibold text-ink transition hover:border-ink/40 has-checked:border-ink has-checked:bg-ink has-checked:text-bg has-focus-visible:ring-2 has-focus-visible:ring-accent has-focus-visible:ring-offset-2";
 
-export function RequestForm({ practiceName, services, openDays, locations = [], initialServiceId, titleId, heading = true }: RequestFormProps) {
+export function RequestForm({ practiceName, services, openDays, locations = [], initialServiceId, titleId, heading = true, animate = false }: RequestFormProps) {
   const uid = useId();
   const initialReason = services.find((s) => s.id === initialServiceId)?.name ?? "";
   const empty: RequestValues = {
@@ -82,6 +85,20 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   const [showPrefs, setShowPrefs] = useState(false);
   // The form starts compact (name, phone, email) and opens up once someone starts filling it in.
   const [engaged, setEngaged] = useState(false);
+  // Expanding-form trial: tell the surrounding layout (RequestSection) to give the form the full width.
+  useEffect(() => {
+    if (animate) formRef.current?.closest("[data-request-layout]")?.toggleAttribute("data-engaged", engaged);
+  }, [animate, engaged]);
+  // ...and a click or tap anywhere outside the form's card folds it back (what's typed is kept).
+  useEffect(() => {
+    if (!animate || !engaged) return;
+    const card = formRef.current?.closest("[data-request-card]") ?? formRef.current;
+    const onDown = (e: PointerEvent) => {
+      if (card && !card.contains(e.target as Node)) setEngaged(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [animate, engaged]);
 
   // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
   // pick that button's service, and put the cursor in the first field.
@@ -91,12 +108,18 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
       const name = services.find((s) => s.id === id)?.name;
       setStatus((st) => (st === "sent" ? "idle" : st));
       setValues((v) => ({ ...v, kind: "appointment", reason: name ?? v.reason }));
-      setEngaged(true);
+      if (!animate) setEngaged(true);
       setTimeout(() => formRef.current?.querySelector<HTMLInputElement>('[name="name"]')?.focus({ preventScroll: true }), 50);
     };
     window.addEventListener(REQUEST_EVENT, onStart);
     return () => window.removeEventListener(REQUEST_EVENT, onStart);
-  }, [services]);
+  }, [services, animate]);
+
+  // Expanding-form trial: open up only once name, phone and email all have something typed in.
+  const basicsStarted = !!(values.name.trim() && values.phone.trim() && values.email.trim());
+  useEffect(() => {
+    if (animate && basicsStarted) setEngaged(true);
+  }, [animate, basicsStarted]);
 
   const update = <K extends keyof RequestValues>(k: K, v: RequestValues[K]) => {
     setValues((s) => ({ ...s, [k]: v }));
@@ -203,7 +226,9 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
     <form
       ref={formRef}
       onSubmit={onSubmit}
-      onFocusCapture={() => setEngaged(true)}
+      onFocusCapture={() => {
+        if (!animate || basicsStarted) setEngaged(true);
+      }}
       noValidate
       aria-labelledby={titleId}
       aria-describedby={`${uid}-note`}
@@ -251,166 +276,345 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
         {text("phone", "Phone", { type: "tel", auto: "tel", optional: !isAppt, max: LIMITS.phone })}
         {text("email", "Email", { type: "email", auto: "email", max: LIMITS.email })}
 
-        {engaged && isAppt && (
-          <>
-            {needLocation && (
-              <fieldset className="reveal-in sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
-                <legend className="mb-1.5 font-semibold text-ink">
-                  Which office? <span className="text-danger" aria-hidden="true">*</span>
-                </legend>
-                <div className="flex flex-wrap gap-2">
-                  {locations.map((l) => (
-                    <label key={l.name} className={chipCls}>
-                      <input
-                        type="radio"
-                        name="location"
-                        value={l.name}
-                        checked={values.location === l.name}
-                        onChange={() => {
-                          update("location", l.name);
-                          // Keep only days this office is open.
-                          setValues((s) => ({ ...s, location: l.name, days: s.days.filter((d) => l.openDays.includes(d)) }));
-                        }}
-                        className="sr-only"
-                      />
-                      {l.name}
+        {/* Everything past name, phone and email appears once someone starts filling the form in.
+            `animate` (the expanding-form trial): it's always rendered and slides open smoothly;
+            otherwise it simply appears. */}
+        {animate ? (
+          <div
+            className={cx(
+              "grid transition-[grid-template-rows,opacity] duration-500 ease-[var(--ease-soft)] motion-reduce:transition-none sm:col-span-2",
+              engaged ? "grid-rows-[1fr] opacity-100" : "-mt-4 grid-rows-[0fr] opacity-0",
+            )}
+            inert={!engaged}
+          >
+            <div className="-mx-1 min-h-0 overflow-hidden px-1 pt-1">
+              <div className="grid gap-4 pb-1 sm:grid-cols-2">
+              {isAppt && (
+                <>
+                  {needLocation && (
+                    <fieldset className="reveal-in sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
+                      <legend className="mb-1.5 font-semibold text-ink">
+                        Which office? <span className="text-danger" aria-hidden="true">*</span>
+                      </legend>
+                      <div className="flex flex-wrap gap-2">
+                        {locations.map((l) => (
+                          <label key={l.name} className={chipCls}>
+                            <input
+                              type="radio"
+                              name="location"
+                              value={l.name}
+                              checked={values.location === l.name}
+                              onChange={() => {
+                                update("location", l.name);
+                                // Keep only days this office is open.
+                                setValues((s) => ({ ...s, location: l.name, days: s.days.filter((d) => l.openDays.includes(d)) }));
+                              }}
+                              className="sr-only"
+                            />
+                            {l.name}
+                          </label>
+                        ))}
+                      </div>
+                      {errors.location && (
+                        <p id={`${uid}-location-err`} className="mt-1.5 text-sm font-medium text-danger">
+                          {errors.location}
+                        </p>
+                      )}
+                    </fieldset>
+                  )}
+
+                  <fieldset className="reveal-in sm:col-span-2">
+                    <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
+                    <div className="flex flex-wrap gap-2">
+                      {(
+                        [
+                          ["new", "I’m a new patient"],
+                          ["returning", "I’ve been here before"],
+                        ] as const
+                      ).map(([k, label]) => (
+                        <label key={k} className={chipCls}>
+                          <input
+                            type="radio"
+                            name="patientType"
+                            value={k}
+                            checked={values.patientType === k}
+                            onChange={() => update("patientType", k)}
+                            className="sr-only"
+                          />
+                          {label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <div className="reveal-in sm:col-span-2">
+                    <label htmlFor={reasonId} className="mb-1.5 block font-semibold text-ink">
+                      Reason for your visit <span className="text-danger" aria-hidden="true">*</span>
                     </label>
-                  ))}
-                </div>
-                {errors.location && (
-                  <p id={`${uid}-location-err`} className="mt-1.5 text-sm font-medium text-danger">
-                    {errors.location}
+                    <select
+                      id={reasonId}
+                      name="reason"
+                      value={values.reason}
+                      onChange={(e) => update("reason", e.target.value)}
+                      aria-invalid={!!errors.reason}
+                      aria-required
+                      aria-describedby={errors.reason ? `${reasonId}-err` : undefined}
+                      className={inputCls(errors.reason)}
+                    >
+                      <option value="">Choose one</option>
+                      {services.map((s) => (
+                        <option key={s.id}>{s.name}</option>
+                      ))}
+                      <option>{OTHER_REASON}</option>
+                    </select>
+                    {errors.reason && (
+                      <p id={`${reasonId}-err`} className="mt-1.5 text-sm font-medium text-danger">
+                        {errors.reason}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
+                  {!showPrefs && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPrefs(true)}
+                      className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+                    >
+                      + Add more details (days, times, insurance)
+                    </button>
+                  )}
+                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+                    <legend className="mb-1.5 font-semibold text-ink">
+                      Best days for you <span className="font-normal text-muted">(optional)</span>
+                    </legend>
+                    <div className="flex flex-wrap gap-2">
+                      {DAY_ORDER.filter((d) => daysOffered.includes(d)).map((d) => (
+                        <label key={d} className={chipCls}>
+                          <input type="checkbox" checked={values.days.includes(d)} onChange={() => toggleDay(d)} className="sr-only" />
+                          {DAY_LABELS[d]}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+                    <legend className="mb-1.5 font-semibold text-ink">
+                      Best time of day <span className="font-normal text-muted">(optional)</span>
+                    </legend>
+                    <div className="flex flex-wrap gap-2">
+                      {TIMES_OF_DAY.map((t) => (
+                        <label key={t} className={chipCls}>
+                          <input
+                            type="radio"
+                            name="time"
+                            value={t}
+                            checked={values.time === t}
+                            onChange={() => update("time", t)}
+                            className="sr-only"
+                          />
+                          {t}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <div className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+                    {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
+                  </div>
+                </>
+              )}
+
+              <div className={cx("reveal-in sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
+                <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
+                  {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
+                  {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
+                </label>
+                <textarea
+                  id={messageId}
+                  name="message"
+                  rows={isAppt ? 3 : 4}
+                  maxLength={LIMITS.message}
+                  value={values.message}
+                  onChange={(e) => update("message", e.target.value)}
+                  aria-invalid={!!errors.message}
+                  aria-required={!isAppt}
+                  aria-describedby={errors.message ? `${messageId}-err` : undefined}
+                  className={cx(inputCls(errors.message), "py-3")}
+                />
+                {errors.message && (
+                  <p id={`${messageId}-err`} className="mt-1.5 text-sm font-medium text-danger">
+                    {errors.message}
                   </p>
                 )}
-              </fieldset>
-            )}
-
-            <fieldset className="reveal-in sm:col-span-2">
-              <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
-              <div className="flex flex-wrap gap-2">
-                {(
-                  [
-                    ["new", "I’m a new patient"],
-                    ["returning", "I’ve been here before"],
-                  ] as const
-                ).map(([k, label]) => (
-                  <label key={k} className={chipCls}>
-                    <input
-                      type="radio"
-                      name="patientType"
-                      value={k}
-                      checked={values.patientType === k}
-                      onChange={() => update("patientType", k)}
-                      className="sr-only"
-                    />
-                    {label}
-                  </label>
-                ))}
               </div>
-            </fieldset>
+              </div>
+            </div>
+          </div>
+        ) : (
+          engaged && (
+            <>
+              {isAppt && (
+                <>
+                  {needLocation && (
+                    <fieldset className="reveal-in sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
+                      <legend className="mb-1.5 font-semibold text-ink">
+                        Which office? <span className="text-danger" aria-hidden="true">*</span>
+                      </legend>
+                      <div className="flex flex-wrap gap-2">
+                        {locations.map((l) => (
+                          <label key={l.name} className={chipCls}>
+                            <input
+                              type="radio"
+                              name="location"
+                              value={l.name}
+                              checked={values.location === l.name}
+                              onChange={() => {
+                                update("location", l.name);
+                                // Keep only days this office is open.
+                                setValues((s) => ({ ...s, location: l.name, days: s.days.filter((d) => l.openDays.includes(d)) }));
+                              }}
+                              className="sr-only"
+                            />
+                            {l.name}
+                          </label>
+                        ))}
+                      </div>
+                      {errors.location && (
+                        <p id={`${uid}-location-err`} className="mt-1.5 text-sm font-medium text-danger">
+                          {errors.location}
+                        </p>
+                      )}
+                    </fieldset>
+                  )}
 
-            <div className="reveal-in sm:col-span-2">
-              <label htmlFor={reasonId} className="mb-1.5 block font-semibold text-ink">
-                Reason for your visit <span className="text-danger" aria-hidden="true">*</span>
-              </label>
-              <select
-                id={reasonId}
-                name="reason"
-                value={values.reason}
-                onChange={(e) => update("reason", e.target.value)}
-                aria-invalid={!!errors.reason}
-                aria-required
-                aria-describedby={errors.reason ? `${reasonId}-err` : undefined}
-                className={inputCls(errors.reason)}
-              >
-                <option value="">Choose one</option>
-                {services.map((s) => (
-                  <option key={s.id}>{s.name}</option>
-                ))}
-                <option>{OTHER_REASON}</option>
-              </select>
-              {errors.reason && (
-                <p id={`${reasonId}-err`} className="mt-1.5 text-sm font-medium text-danger">
-                  {errors.reason}
-                </p>
+                  <fieldset className="reveal-in sm:col-span-2">
+                    <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
+                    <div className="flex flex-wrap gap-2">
+                      {(
+                        [
+                          ["new", "I’m a new patient"],
+                          ["returning", "I’ve been here before"],
+                        ] as const
+                      ).map(([k, label]) => (
+                        <label key={k} className={chipCls}>
+                          <input
+                            type="radio"
+                            name="patientType"
+                            value={k}
+                            checked={values.patientType === k}
+                            onChange={() => update("patientType", k)}
+                            className="sr-only"
+                          />
+                          {label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <div className="reveal-in sm:col-span-2">
+                    <label htmlFor={reasonId} className="mb-1.5 block font-semibold text-ink">
+                      Reason for your visit <span className="text-danger" aria-hidden="true">*</span>
+                    </label>
+                    <select
+                      id={reasonId}
+                      name="reason"
+                      value={values.reason}
+                      onChange={(e) => update("reason", e.target.value)}
+                      aria-invalid={!!errors.reason}
+                      aria-required
+                      aria-describedby={errors.reason ? `${reasonId}-err` : undefined}
+                      className={inputCls(errors.reason)}
+                    >
+                      <option value="">Choose one</option>
+                      {services.map((s) => (
+                        <option key={s.id}>{s.name}</option>
+                      ))}
+                      <option>{OTHER_REASON}</option>
+                    </select>
+                    {errors.reason && (
+                      <p id={`${reasonId}-err`} className="mt-1.5 text-sm font-medium text-danger">
+                        {errors.reason}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
+                  {!showPrefs && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPrefs(true)}
+                      className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+                    >
+                      + Add more details (days, times, insurance)
+                    </button>
+                  )}
+                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+                    <legend className="mb-1.5 font-semibold text-ink">
+                      Best days for you <span className="font-normal text-muted">(optional)</span>
+                    </legend>
+                    <div className="flex flex-wrap gap-2">
+                      {DAY_ORDER.filter((d) => daysOffered.includes(d)).map((d) => (
+                        <label key={d} className={chipCls}>
+                          <input type="checkbox" checked={values.days.includes(d)} onChange={() => toggleDay(d)} className="sr-only" />
+                          {DAY_LABELS[d]}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+                    <legend className="mb-1.5 font-semibold text-ink">
+                      Best time of day <span className="font-normal text-muted">(optional)</span>
+                    </legend>
+                    <div className="flex flex-wrap gap-2">
+                      {TIMES_OF_DAY.map((t) => (
+                        <label key={t} className={chipCls}>
+                          <input
+                            type="radio"
+                            name="time"
+                            value={t}
+                            checked={values.time === t}
+                            onChange={() => update("time", t)}
+                            className="sr-only"
+                          />
+                          {t}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <div className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+                    {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
+                  </div>
+                </>
               )}
-            </div>
 
-            {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
-            {!showPrefs && (
-              <button
-                type="button"
-                onClick={() => setShowPrefs(true)}
-                className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
-              >
-                + Add more details (days, times, insurance)
-              </button>
-            )}
-            <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-              <legend className="mb-1.5 font-semibold text-ink">
-                Best days for you <span className="font-normal text-muted">(optional)</span>
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {DAY_ORDER.filter((d) => daysOffered.includes(d)).map((d) => (
-                  <label key={d} className={chipCls}>
-                    <input type="checkbox" checked={values.days.includes(d)} onChange={() => toggleDay(d)} className="sr-only" />
-                    {DAY_LABELS[d]}
-                  </label>
-                ))}
+              <div className={cx("reveal-in sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
+                <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
+                  {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
+                  {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
+                </label>
+                <textarea
+                  id={messageId}
+                  name="message"
+                  rows={isAppt ? 3 : 4}
+                  maxLength={LIMITS.message}
+                  value={values.message}
+                  onChange={(e) => update("message", e.target.value)}
+                  aria-invalid={!!errors.message}
+                  aria-required={!isAppt}
+                  aria-describedby={errors.message ? `${messageId}-err` : undefined}
+                  className={cx(inputCls(errors.message), "py-3")}
+                />
+                {errors.message && (
+                  <p id={`${messageId}-err`} className="mt-1.5 text-sm font-medium text-danger">
+                    {errors.message}
+                  </p>
+                )}
               </div>
-            </fieldset>
-
-            <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-              <legend className="mb-1.5 font-semibold text-ink">
-                Best time of day <span className="font-normal text-muted">(optional)</span>
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {TIMES_OF_DAY.map((t) => (
-                  <label key={t} className={chipCls}>
-                    <input
-                      type="radio"
-                      name="time"
-                      value={t}
-                      checked={values.time === t}
-                      onChange={() => update("time", t)}
-                      className="sr-only"
-                    />
-                    {t}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-              {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
-            </div>
-          </>
-        )}
-
-        {engaged && (
-        <div className={cx("reveal-in sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
-          <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
-            {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
-            {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
-          </label>
-          <textarea
-            id={messageId}
-            name="message"
-            rows={isAppt ? 3 : 4}
-            maxLength={LIMITS.message}
-            value={values.message}
-            onChange={(e) => update("message", e.target.value)}
-            aria-invalid={!!errors.message}
-            aria-required={!isAppt}
-            aria-describedby={errors.message ? `${messageId}-err` : undefined}
-            className={cx(inputCls(errors.message), "py-3")}
-          />
-          {errors.message && (
-            <p id={`${messageId}-err`} className="mt-1.5 text-sm font-medium text-danger">
-              {errors.message}
-            </p>
-          )}
-        </div>
+            </>
+          )
         )}
       </div>
       {!engaged && <p className="mt-3 text-sm text-muted">Takes about a minute. More options appear as you go.</p>}

@@ -77,6 +77,7 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    - `practice`: `specialty` (`"general"`, `"orthodontics"` or `"pediatric"`: sets the default wording, services and FAQs), tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
    - `contact`: email, `hours` (24h `"HH:MM"`, `null` = closed)
    - `otherLocations`: more offices, each with a `name`, phone, address and hours. The quick-info strip, contact section and request form ("Which office?") adapt automatically; name the main office with `contact.locationName`.
+   - `practice.area`: how the hero names where they are ("Orthodontics in ___"). Left out, it names every office when there are 3 or fewer ("Hudson & North Cambridge"), or the state with more. With 4+ offices across states it must be set: borrow their own wording if they have it.
    - `doctors`, `services` (pick an `icon` from the `IconName` list in `config/types.ts`), `insurances`, `reviews`, `rating`, `faqs`
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`

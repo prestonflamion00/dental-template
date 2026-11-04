@@ -103,7 +103,7 @@ export const GENERIC_FAQS: Faq[] = [
   },
 ];
 
-/** Friendly wording that fits any practice; `city` and `name` personalize it. */
+/** Friendly wording that fits any practice; `city` (the town, or the offices' towns) and `name` personalize it. */
 export function genericCopy(name: string, city: string) {
   return {
     heroEyebrow: `Dental care in ${city}`,

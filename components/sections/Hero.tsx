@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck, CalendarDays, Check, Phone, Smile } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, ChevronRight, Phone, Smile } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
@@ -60,10 +60,10 @@ export function Hero({ office }: { office: OfficeConfig }) {
           <p className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-[0.95rem]">
             <HeroStatus
               timezone={office.timezone}
-              hours={office.locations[0].hours}
-              label={office.locations.length > 1 ? office.locations[0].name : undefined}
+              offices={office.locations}
             />
-            <a href="#emergency" className="font-semibold text-danger underline-offset-4 hover:underline">
+            {/* Phones only: on bigger screens the info strip right below already has "Dental emergency?". */}
+            <a href="#emergency" className="font-semibold text-danger underline-offset-4 hover:underline sm:hidden">
               Emergency?
             </a>
           </p>
@@ -179,14 +179,15 @@ export function Hero({ office }: { office: OfficeConfig }) {
             <a
               href={has("reviews") ? "#reviews" : undefined}
               aria-label={`Rated ${rating.value.toFixed(1)} out of 5 from ${rating.count.toLocaleString()} ${rating.source} reviews, see reviews`}
-              className="glass glass-hover absolute -right-2 -top-6 hidden rounded-2xl px-4 py-3 sm:block lg:-right-6"
+              className="group glass glass-hover absolute -right-2 -top-6 hidden rounded-2xl px-4 py-3 transition-transform duration-200 hover:-translate-y-0.5 sm:block lg:-right-6"
             >
               <span className="flex items-center gap-2" aria-hidden="true">
                 <span className="font-serif text-2xl text-ink">{rating.value.toFixed(1)}</span>
                 <Stars rating={rating.value} size={14} className="text-ink" />
               </span>
-              <span className="block text-xs font-semibold text-muted" aria-hidden="true">
+              <span className="flex items-center gap-1 text-xs font-semibold text-muted group-hover:text-accent" aria-hidden="true">
                 {rating.count.toLocaleString()} reviews
+                <ChevronRight size={14} className="transition-transform group-hover:translate-x-0.5" />
               </span>
             </a>
           )}

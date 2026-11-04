@@ -565,3 +565,34 @@
 @media (prefers-reduced-motion: reduce) {
   .reveal-in { animation: none; }
 }
+
+/* ── Expanding-form trial (office.experiments.expandingForm; RequestSection + RequestForm) ──
+   Large screens: the reassurance cards fade out and the form glides to full width while it's in use. */
+@media (min-width: 1024px) {
+  [data-request-layout] {
+    grid-template-columns: 0.8fr 1.2fr;
+    transition:
+      grid-template-columns 0.55s var(--ease-soft, ease),
+      column-gap 0.55s var(--ease-soft, ease);
+  }
+  [data-request-layout][data-engaged] {
+    grid-template-columns: 0fr 1fr;
+    column-gap: 0;
+  }
+  [data-request-layout] > ul {
+    min-width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s 0.15s, visibility 0s 0s;
+  }
+  [data-request-layout][data-engaged] > ul {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0s 0.2s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-request-layout],
+  [data-request-layout] > ul {
+    transition: none;
+  }
+}

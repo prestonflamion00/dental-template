@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Day, DayHours } from "@/config/types";
-import { DAY_LABELS, formatRange, getOpenStatus, nowInTimezone, type OpenStatus } from "@/lib/hours";
+import { DAY_LABELS, formatRange, getOpenStatus, minutesUntilOpen, nowInTimezone, type OpenStatus } from "@/lib/hours";
 import { cx } from "@/lib/format";
 
 /**
@@ -76,11 +76,25 @@ export function HoursTable({ timezone, hours }: { timezone: string; hours: Recor
   );
 }
 
-/** One-line status for the hero: "Open now · until 5 PM" or "Closed · opens Thu 9 AM". Tapping it jumps to the hours. */
-export function HeroStatus({ timezone, hours, label }: { timezone: string; hours: Record<Day, DayHours>; label?: string }) {
-  const now = useNow(timezone, hours);
-  if (!now) return <span className="text-muted">Checking hours…</span>;
-  const { status } = now;
+/**
+ * One-line status for the hero: "Open now · until 5 PM" or "Closed · opens Thu 9 AM". With several
+ * offices it shows whichever is open (or opens soonest) and names it quietly. Tapping it jumps to the hours.
+ */
+export function HeroStatus({ timezone, offices }: { timezone: string; offices: { name: string; hours: Record<Day, DayHours> }[] }) {
+  const [pick, setPick] = useState<{ status: OpenStatus; name?: string } | null>(null);
+  useEffect(() => {
+    const tick = () => {
+      const best = offices
+        .map((o) => ({ o, wait: minutesUntilOpen({ hours: o.hours, timezone }) }))
+        .reduce((a, b) => (b.wait < a.wait ? b : a));
+      setPick({ status: getOpenStatus({ hours: best.o.hours, timezone }), name: offices.length > 1 ? best.o.name : undefined });
+    };
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, [timezone, offices]);
+  if (!pick) return <span className="text-muted">Checking hours…</span>;
+  const { status, name } = pick;
   const open = status.state === "open";
   const when = open
     ? status.closingSoon
@@ -93,9 +107,12 @@ export function HeroStatus({ timezone, hours, label }: { timezone: string; hours
     <a href="#contact" className="inline-flex items-center gap-2 rounded-lg underline-offset-4 hover:underline">
       <span className={cx("status-dot shrink-0", open ? "live text-success" : "text-danger")} aria-hidden="true" />
       <span>
-        {label && <span className="text-muted">{label}: </span>}
         <strong className={open ? "text-success" : "text-danger"}>{open ? "Open now" : "Closed"}</strong>
-        <span className="text-muted"> · {when}</span>
+        <span className="text-muted">
+          {" "}
+          · {when}
+          {name && ` in ${name}`}
+        </span>
         <span className="sr-only">, see all hours</span>
       </span>
     </a>
