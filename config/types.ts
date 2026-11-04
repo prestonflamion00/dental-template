@@ -32,18 +32,17 @@ export type IconName =
   | "wand";
 
 /**
- * Homepage sections. Some have fixed places (config/build.ts): hero, quick info and the request
- * form always open the page; FAQ and contact always close it. `sections` orders the rest.
+ * Homepage sections. Some have fixed places (config/build.ts): hero and quick info open the page;
+ * the request form, FAQ and contact close it. `sections` orders the rest. Emergency info is a
+ * pop-up (the "Emergency?" button), not a section.
  */
 export type SectionId =
   | "hero"
   | "quickInfo"
   | "request"
   | "services"
-  | "emergency"
   | "newPatients"
   | "doctors"
-  | "cta"
   | "reviews"
   | "gallery"
   | "faq"

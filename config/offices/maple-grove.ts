@@ -228,7 +228,7 @@ const mapleGrove: OfficeInput = {
 
   theme: { preset: "warm-neutral" },
 
-  sections: ["hero", "quickInfo", "request", "services", "newPatients", "doctors", "cta", "reviews", "gallery", "emergency", "faq", "contact"],
+  sections: ["services", "reviews", "doctors", "newPatients", "gallery", "faq"],
 
   copy: {
     heroEyebrow: "Family dentistry in Northeast Portland",

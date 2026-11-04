@@ -15,7 +15,8 @@ export function Nav({
   logo: React.ReactNode;
   practiceName: string;
   phone: string;
-  links: { href: string; label: string }[];
+  /** `mobileOnly` links appear in the phone menu only (e.g. Emergency). */
+  links: { href: string; label: string; mobileOnly?: boolean }[];
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -54,11 +55,11 @@ export function Nav({
         </a>
 
         <ul className="hidden items-center gap-1 xl:flex">
-          {links.map((l) => (
+          {links.filter((l) => !l.mobileOnly).map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
-                className="whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink/90 transition-colors hover:bg-white/80 hover:text-ink"
+                className="whitespace-nowrap rounded-full px-2.5 py-2.5 text-[0.95rem] font-semibold text-ink/90 transition-colors hover:bg-white/80 hover:text-ink"
               >
                 {l.label}
               </a>
@@ -69,15 +70,15 @@ export function Nav({
         <div className="flex items-center gap-1.5">
           <a
             href={telHref(phone)}
-            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink hover:bg-white/80 xl:inline-flex"
+            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink hover:bg-white/80 2xl:inline-flex"
           >
             <Phone size={17} aria-hidden="true" className="text-accent" />
             {phone}
           </a>
-          {/* Tap-to-call icon (number shown in full on wide screens) */}
+          {/* Tap-to-call icon (number shown in full on extra-wide screens) */}
           <a
             href={telHref(phone)}
-            className="grid size-12 place-items-center rounded-full text-accent hover:bg-white/80 xl:hidden"
+            className="grid size-12 place-items-center rounded-full text-accent hover:bg-white/80 2xl:hidden"
             aria-label={`Call ${practiceName} at ${phone}`}
           >
             <Phone size={21} aria-hidden="true" />

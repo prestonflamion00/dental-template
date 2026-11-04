@@ -205,7 +205,7 @@ const lumiere: OfficeInput = {
   theme: { preset: "blush-sand" },
 
   // Cosmetic practices lead with results: gallery right after services.
-  sections: ["hero", "quickInfo", "request", "services", "gallery", "doctors", "reviews", "cta", "newPatients", "faq", "emergency", "contact"],
+  sections: ["services", "gallery", "reviews", "doctors", "newPatients", "faq"],
 
   copy: {
     heroEyebrow: "Cosmetic & implant dentistry in Scottsdale",

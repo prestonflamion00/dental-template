@@ -81,7 +81,7 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`
 4. **Brand it** (1 min). Set `design` and `theme: { preset: "blush-sand", accent: "#7a4bd1" }`. Use the practice's own brand colour as `accent` when they have one (from their logo or current site): it works in every design and is darkened automatically if needed to stay readable.
-5. **Order the middle sections** (30 sec). Some sections have fixed places: `hero`, `quickInfo` and `request` always open the page; `faq` and `contact` always close it. `sections` orders the rest (`services, newPatients, doctors, reviews, cta, gallery, emergency`), and leaving one out hides it. Sections with nothing to show hide themselves, and the `cta` band never sits right under the request form. The nav links follow automatically.
+5. **Order the middle sections** (30 sec). Some sections have fixed places: `hero` and `quickInfo` open the page; `request` (the form), `faq` and `contact` close it. `sections` orders the rest (default `services, reviews, doctors, newPatients, gallery`), and leaving one out hides it. Sections with nothing to show hide themselves. Every "Request appointment" button scrolls to the form (picking the service when it belongs to one). Emergency info is a pop-up opened by the "Dental emergency?" button in the quick-info strip, the phone menu, or any link ending in `#emergency`. The nav links follow automatically.
 6. **Swap images** (1 min). Put doctor portraits (~4:5) in `/public/doctors/`, before/after images in `/public/gallery/`, and the forms PDF in `/public/forms/`. Then update the paths in the config.
 7. Run `npm run dev` to preview (set `ACTIVE_OFFICE` to the new key), then push to `main`. The new practice goes live at `/smith-dental/`.
 
@@ -105,6 +105,8 @@ So a demo never looks broken when we couldn't find something, `buildOffice` fill
 On a demo, hours, insurance plans and services that are placeholders get a small dotted **"Sample"** tag; hovering or tapping it explains that it's a stand-in. Reviews show as playful, clearly marked sample cards. Doctors, reviews, ratings and awards are never invented. **A `"live"` office refuses to build while any placeholder remains**, and the error lists what's missing (those become the onboarding questions). A `"demo"` of a real practice (not `fictional`) shows a small "Private preview for …" line at the top and privacy fine print in the footer.
 
 A fill-in **client intake form** (Google Doc) covers every field above in plain language. Use it as a call script for white-glove onboarding, or send it to the practice.
+
+**On phones** the page is kept short (about 10 screens): the decorative hero card, the request section's reassurance cards and the forms card are hidden; services are compact tiles; reviews swipe sideways; doctors are compact rows with "Read bio"; the gallery, extra insurance plans and the form's optional details open from buttons; FAQs start closed; offices are tabs; the map gives way to a Directions button. The sticky Request/Call bar appears once the hero's own buttons scroll away. In the hero, the rating links to reviews, years in practice to the team, and "Accepting new patients" to the form.
 
 The page title, meta description, OpenGraph image, favicon colour, JSON-LD `Dentist` schema, sitemap and robots.txt are all generated from the config.
 

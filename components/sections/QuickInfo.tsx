@@ -1,4 +1,4 @@
-import { Clock, MapPin, Phone } from "lucide-react";
+import { Clock, MapPin, Phone, Siren } from "lucide-react";
 import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
 import { mapsHref, telHref } from "@/lib/format";
@@ -18,7 +18,9 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
           </span>
           <div>
             <h2 className="mb-1.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
-              Today’s hours
+              <a href="#contact" className="underline decoration-ink/20 underline-offset-4 hover:decoration-accent">
+                Today’s hours<span className="sr-only">, see all hours</span>
+              </a>
               <SampleTag office={office} what="hours" />
             </h2>
             <OpenBadge timezone={office.timezone} hours={office.hours} />
@@ -55,6 +57,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
               {contact.phone}
             </a>
             {office.copy.phoneNote && <p className="text-[0.95rem] text-muted">{office.copy.phoneNote}</p>}
+            <EmergencyLink className="mt-3" />
           </div>
         </div>
       </div>
@@ -69,6 +72,7 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
     <section aria-label="Our offices at a glance" className="relative z-10 px-4 sm:px-6">
       <div className={`glass mx-auto grid max-w-6xl gap-6 rounded-[28px] p-6 sm:p-7 ${cols} sm:gap-0 sm:divide-x sm:divide-ink/10`} data-reveal>
         {office.locations.map((l, i) => (
+
           <div key={l.name} className={i === 0 ? "flex gap-4 sm:pr-6" : "flex gap-4 sm:px-6"}>
             <span className="icon-tile shrink-0" aria-hidden="true">
               <MapPin size={22} />
@@ -97,7 +101,23 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
             </div>
           </div>
         ))}
+        <div className="sm:col-span-full sm:mt-5 sm:border-t sm:border-ink/10 sm:pt-5">
+          <EmergencyLink />
+        </div>
       </div>
     </section>
+  );
+}
+
+/** Opens the emergency pop-up (components/sections/EmergencyDialog.tsx). */
+function EmergencyLink({ className }: { className?: string }) {
+  return (
+    <a
+      href="#emergency"
+      className={`inline-flex min-h-10 items-center gap-2 rounded-full border border-danger/40 px-4 text-sm font-bold text-danger hover:bg-danger/5 ${className ?? ""}`}
+    >
+      <Siren size={16} aria-hidden="true" />
+      Dental emergency?
+    </a>
   );
 }

@@ -4,6 +4,7 @@ import type { Location, OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
 import { fullAddress, mapsHref, telHref } from "@/lib/format";
 import { HoursTable } from "./OpenStatus";
+import { OfficeTabs } from "./OfficeTabs";
 
 /**
  * Illustrated map placeholder (no API key, no third-party requests).
@@ -52,11 +53,15 @@ export function Contact({ office }: { office: OfficeConfig }) {
       title={several ? `${office.locations.length} offices, one friendly team` : "Come say hello"}
       intro={office.copy.contactIntro}
     >
-      <div className="grid gap-6">
-        {office.locations.map((l, i) => (
-          <LocationCard key={l.name} office={office} location={l} main={i === 0} several={several} />
-        ))}
-      </div>
+      {several ? (
+        <OfficeTabs names={office.locations.map((l) => l.name)}>
+          {office.locations.map((l, i) => (
+            <LocationCard key={l.name} office={office} location={l} main={i === 0} several />
+          ))}
+        </OfficeTabs>
+      ) : (
+        <LocationCard office={office} location={office.locations[0]} main several={false} />
+      )}
     </Section>
   );
 }
@@ -67,9 +72,12 @@ function LocationCard({ office, location: l, main, several }: { office: OfficeCo
   const Label = several ? "h4" : "h3";
   return (
     <div className="glass grid gap-6 rounded-[28px] p-3 lg:grid-cols-[1.15fr_1fr] lg:items-center" data-reveal>
-      <MapPlaceholder name={several ? `${office.practice.logo.text}, ${l.name}` : office.practice.name} location={l} />
+      {/* Phones skip the illustrated map; the Directions button below does the same job. */}
+      <div className="max-sm:hidden">
+        <MapPlaceholder name={several ? `${office.practice.logo.text}, ${l.name}` : office.practice.name} location={l} />
+      </div>
       <div className="p-4 sm:p-5">
-        {several && <h3 className="mb-5 text-2xl text-ink">{l.name}</h3>}
+        {several && <h3 className="mb-5 text-2xl text-ink max-sm:sr-only">{l.name}</h3>}
         <div className="grid gap-6 sm:grid-cols-[1.1fr_1fr]">
           <div>
             <Label className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
@@ -110,6 +118,10 @@ function LocationCard({ office, location: l, main, several }: { office: OfficeCo
               </li>
             </ul>
             {l.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{l.directionsNote}</p>}
+            <a href={mapsHref(l.address)} target="_blank" rel="noopener noreferrer" className="btn btn-primary mt-5 w-full sm:hidden">
+              <Navigation size={16} aria-hidden="true" />
+              Directions<span className="sr-only"> to {fullAddress(l.address)} (opens in a new tab)</span>
+            </a>
           </div>
         </div>
       </div>

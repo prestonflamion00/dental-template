@@ -23,6 +23,7 @@ import {
   type RequestValues,
 } from "@/lib/request";
 import { cx } from "@/lib/format";
+import { REQUEST_EVENT, type RequestEventDetail } from "./BookingProvider";
 
 export interface RequestFormProps {
   practiceName: string;
@@ -78,6 +79,21 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   const isAppt = values.kind === "appointment";
   const needLocation = locations.length > 1;
   const daysOffered = locations.find((l) => l.name === values.location)?.openDays ?? openDays;
+  const [showPrefs, setShowPrefs] = useState(false);
+
+  // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
+  // pick that button's service, and put the cursor in the first field.
+  useEffect(() => {
+    const onStart = (e: Event) => {
+      const id = (e as CustomEvent<RequestEventDetail>).detail?.serviceId;
+      const name = services.find((s) => s.id === id)?.name;
+      setStatus((st) => (st === "sent" ? "idle" : st));
+      setValues((v) => ({ ...v, kind: "appointment", reason: name ?? v.reason }));
+      setTimeout(() => formRef.current?.querySelector<HTMLInputElement>('[name="name"]')?.focus({ preventScroll: true }), 50);
+    };
+    window.addEventListener(REQUEST_EVENT, onStart);
+    return () => window.removeEventListener(REQUEST_EVENT, onStart);
+  }, [services]);
 
   const update = <K extends keyof RequestValues>(k: K, v: RequestValues[K]) => {
     setValues((s) => ({ ...s, [k]: v }));
@@ -309,7 +325,17 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               )}
             </div>
 
-            <fieldset className="sm:col-span-2">
+            {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button. */}
+            {!showPrefs && (
+              <button
+                type="button"
+                onClick={() => setShowPrefs(true)}
+                className="justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+              >
+                + Add more details (days, times, insurance)
+              </button>
+            )}
+            <fieldset className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               <legend className="mb-1.5 font-semibold text-ink">
                 Best days for you <span className="font-normal text-muted">(optional)</span>
               </legend>
@@ -323,7 +349,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               </div>
             </fieldset>
 
-            <fieldset className="sm:col-span-2">
+            <fieldset className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               <legend className="mb-1.5 font-semibold text-ink">
                 Best time of day <span className="font-normal text-muted">(optional)</span>
               </legend>
@@ -344,11 +370,13 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               </div>
             </fieldset>
 
-            <div className="sm:col-span-2">{text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}</div>
+            <div className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+              {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
+            </div>
           </>
         )}
 
-        <div className="sm:col-span-2">
+        <div className={cx("sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
           <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
             {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
             {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}

@@ -22,12 +22,17 @@
 import { PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, SPECIALTY } from "./generic.ts";
 import type { Location, OfficeConfig, OfficeInput, SectionId } from "./types.ts";
 
-/** Always open the page, in this order: who you are, when you're open, how to request a visit. */
-export const TOP_SECTIONS: SectionId[] = ["hero", "quickInfo", "request"];
+/**
+ * Page order follows the usual pattern for dental sites: who you are and how to reach you, then what
+ * you do and why to trust you, then the request form once they've decided. Every "Request
+ * appointment" button scrolls to the form, and the sticky bar on phones keeps it one tap away.
+ */
+/** Always open the page: who you are (with Request and Call buttons), then hours, location and phone. */
+export const TOP_SECTIONS: SectionId[] = ["hero", "quickInfo"];
 /** Ordered per practice (by `sections`), between the fixed top and bottom. */
-export const MIDDLE_SECTIONS: SectionId[] = ["services", "newPatients", "doctors", "reviews", "cta", "gallery", "emergency"];
-/** Always close the page: FAQ (when shown), then contact and the map. */
-export const BOTTOM_SECTIONS: SectionId[] = ["faq", "contact"];
+export const MIDDLE_SECTIONS: SectionId[] = ["services", "reviews", "doctors", "newPatients", "gallery"];
+/** Always close the page: the request form, FAQ (when shown), then contact and the map. */
+export const BOTTOM_SECTIONS: SectionId[] = ["request", "faq", "contact"];
 
 /** Fixed top, the practice's chosen middle (minus sections with nothing to show), fixed bottom. */
 export function resolveSections(o: Omit<OfficeConfig, "sections">, wanted?: SectionId[]): SectionId[] {
@@ -37,11 +42,9 @@ export function resolveSections(o: Omit<OfficeConfig, "sections">, wanted?: Sect
     reviews: o.reviews.length > 0 || !!o.rating || o.stage === "demo",
     gallery: !!o.gallery?.length,
   };
-  let middle = (wanted ?? MIDDLE_SECTIONS).filter((s) => MIDDLE_SECTIONS.includes(s) && hasContent[s] !== false);
-  // The mid-page "request" band never sits right under the request form itself.
-  if (middle[0] === "cta" && middle.length > 1) middle = [middle[1], "cta", ...middle.slice(2)];
+  const middle = (wanted ?? MIDDLE_SECTIONS).filter((s) => MIDDLE_SECTIONS.includes(s) && hasContent[s] !== false);
   const faq = (!wanted || wanted.includes("faq")) && o.faqs.length > 0;
-  return [...TOP_SECTIONS, ...middle, ...(faq ? (["faq"] as SectionId[]) : []), "contact"];
+  return [...TOP_SECTIONS, ...middle, "request", ...(faq ? (["faq"] as SectionId[]) : []), "contact"];
 }
 
 /** Placeholder keys (OfficeConfig.placeholders) and how the live-site error names them. */

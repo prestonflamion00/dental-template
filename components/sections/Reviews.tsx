@@ -48,9 +48,12 @@ export function Reviews({ office }: { office: OfficeConfig }) {
 
       {reviews.length === 0 && stage === "demo" && (
         <>
-          <ul className="grid gap-4 md:grid-cols-3" aria-label="Sample reviews">
+          <ul
+            className="snap-row -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0"
+            aria-label="Sample reviews"
+          >
             {SAMPLE_REVIEWS.map((r, i) => (
-              <li key={r.name} className="glass flex flex-col rounded-[24px] border-2 border-dashed border-ink/15 p-6" data-reveal style={{ ["--d" as string]: `${i * 80}ms` }}>
+              <li key={r.name} className="glass flex w-[85%] shrink-0 flex-col rounded-[24px] border-2 border-dashed border-ink/15 p-6 sm:w-[60%] md:w-auto" data-reveal style={{ ["--d" as string]: `${i * 80}ms` }}>
                 <Stars rating={5} className="text-ink/40" />
                 <p className="mt-4 flex-1 text-ink">“{r.text}”</p>
                 <p className="mt-5 border-t border-ink/10 pt-4">

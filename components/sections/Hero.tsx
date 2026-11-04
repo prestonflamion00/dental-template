@@ -12,6 +12,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
   // With no doctors listed, the practice speaks as a team.
   const team = `the ${practice.logo.text} team`;
   const samplePhotos = office.stage === "demo" && !office.fictional;
+  const has = (id: string) => office.sections.includes(id as (typeof office.sections)[number]);
+  const jump = "flex items-center gap-2 rounded-lg decoration-ink/30 underline-offset-4 [&[href]]:hover:underline";
   return (
     <section id="top" aria-labelledby="hero-title" className="relative overflow-x-clip pb-10 pt-10 sm:pt-16 lg:pb-16 lg:pt-20">
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-1)", width: 520, height: 520, top: -80, left: "-12%" }} />
@@ -32,7 +34,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
             {copy.heroSubhead}
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div id="hero-actions" className="mt-8 flex flex-col gap-3 sm:flex-row">
             <BookButton size="lg" />
             <a href={telHref(contact.phone)} className="btn btn-glass btn-lg">
               <Phone size={18} aria-hidden="true" className="text-accent" />
@@ -40,40 +42,47 @@ export function Hero({ office }: { office: OfficeConfig }) {
             </a>
           </div>
 
-          {/* Trust strip */}
+          {/* Trust strip: each item jumps to the section that backs it up. */}
           <ul
-            className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-[0.95rem] text-muted"
+            className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-[0.95rem] text-muted sm:mt-9"
             aria-label="Why patients trust us"
           >
             {rating && (
-              <li className="flex items-center gap-2">
-                <Stars rating={rating.value} className="text-ink" />
-                <span>
-                  <strong className="text-ink">{rating.value.toFixed(1)}</strong> from {rating.count.toLocaleString()} {rating.source} reviews
-                </span>
+              <li>
+                <a href={has("reviews") ? "#reviews" : undefined} className={jump}>
+                  <Stars rating={rating.value} className="text-ink" />
+                  <span>
+                    <strong className="text-ink">{rating.value.toFixed(1)}</strong> from {rating.count.toLocaleString()} {rating.source} reviews
+                  </span>
+                </a>
               </li>
             )}
             {practice.yearsInPractice && (
-              <li className="flex items-center gap-2">
-                <BadgeCheck size={18} className="text-accent" aria-hidden="true" />
-                <span>
-                  <strong className="text-ink">{practice.yearsInPractice} years</strong> in practice
-                </span>
+              <li>
+                <a href={has("doctors") ? "#doctors" : undefined} className={jump}>
+                  <BadgeCheck size={18} className="text-accent" aria-hidden="true" />
+                  <span>
+                    <strong className="text-ink">{practice.yearsInPractice} years</strong> in practice
+                  </span>
+                </a>
               </li>
             )}
             {practice.acceptingNewPatients && (
-              <li className="flex items-center gap-2">
-                <span className="grid size-5 place-items-center rounded-full bg-success text-white" aria-hidden="true">
-                  <Check size={13} strokeWidth={3} />
-                </span>
-                <strong className="text-ink">Accepting new patients</strong>
+              <li>
+                <a href="#request" className={jump}>
+                  <span className="grid size-5 place-items-center rounded-full bg-success text-white" aria-hidden="true">
+                    <Check size={13} strokeWidth={3} />
+                  </span>
+                  <strong className="text-ink">Accepting new patients</strong>
+                </a>
               </li>
             )}
           </ul>
         </div>
 
         {/* Visual: layered glass cards instead of stock photography */}
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none" data-reveal style={{ ["--d" as string]: "150ms" }}>
+        {/* Phones skip this decorative card so the first screen stays on what matters. */}
+        <div className="relative mx-auto w-full max-w-md max-sm:hidden lg:max-w-none" data-reveal style={{ ["--d" as string]: "150ms" }}>
           <div className="glass rounded-[28px] p-6 sm:p-8">
             <div className="flex items-center gap-3">
               {doctors.length === 0 && (

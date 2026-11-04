@@ -1,36 +1,40 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { Modal } from "@/components/ui/Modal";
-import { RequestForm, type RequestFormProps } from "./RequestForm";
+import { createContext, useCallback, useContext, useMemo } from "react";
+import { withBase } from "@/lib/format";
 
-export interface BookingSettings extends Omit<RequestFormProps, "initialServiceId" | "titleId"> {
-  /** External scheduler URL; when set, buttons link out instead of opening the request form. */
+/** Fired on the page when a request button is used; the form picks the service and takes focus. */
+export const REQUEST_EVENT = "request:start";
+export type RequestEventDetail = { serviceId?: string };
+
+export interface BookingSettings {
+  /** External scheduler URL; when set, buttons link out instead of going to the request form. */
   url?: string;
 }
 
 const Ctx = createContext<{ open: (serviceId?: string) => void; url?: string } | null>(null);
 
-/** Every "Request appointment" button opens the request form in a pop-up (or links to `url`). */
+/**
+ * Every "Request appointment" button scrolls to the request form near the bottom of the page
+ * (components/sections/RequestSection.tsx), closing any open pop-up first and pre-selecting the
+ * service when the button belongs to one. On pages without the form it goes to the home page's.
+ */
 export function BookingProvider({ settings, children }: { settings: BookingSettings; children: React.ReactNode }) {
-  const [state, setState] = useState<{ open: boolean; serviceId?: string; key: number }>({ open: false, key: 0 });
-  const open = useCallback((serviceId?: string) => setState((s) => ({ open: true, serviceId, key: s.key + 1 })), []);
-  const close = useCallback(() => setState((s) => ({ ...s, open: false })), []);
+  const open = useCallback((serviceId?: string) => {
+    const section = document.getElementById("request");
+    if (!section) {
+      window.location.href = withBase("/#request");
+      return;
+    }
+    document.querySelectorAll<HTMLDialogElement>("dialog[open]").forEach((d) => d.close());
+    // After a pop-up closes it hands focus back to its button; wait a frame, then move on.
+    requestAnimationFrame(() => {
+      section.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      window.dispatchEvent(new CustomEvent<RequestEventDetail>(REQUEST_EVENT, { detail: { serviceId } }));
+    });
+  }, []);
   const value = useMemo(() => ({ open, url: settings.url }), [open, settings.url]);
-  const { url, ...form } = settings;
-
-  return (
-    <Ctx.Provider value={value}>
-      {children}
-      {!url && (
-        <Modal open={state.open} onClose={close} labelledBy="request-modal-title">
-          <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:p-9">
-            <RequestForm key={state.key} {...form} initialServiceId={state.serviceId} titleId="request-modal-title" />
-          </div>
-        </Modal>
-      )}
-    </Ctx.Provider>
-  );
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
 export function useBooking() {

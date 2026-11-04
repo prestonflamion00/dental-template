@@ -112,7 +112,7 @@ const familyOrthodonticsHudson: OfficeInput = {
   // Their brand: blue lettering and pink teeth in the logo (bracerus.com). Pink-toned set + their blue.
   theme: { preset: "blush-sand", accent: "#066aab" },
 
-  sections: ["services", "newPatients", "doctors", "reviews", "cta", "emergency", "faq"],
+  sections: ["services", "reviews", "doctors", "newPatients", "faq"],
 };
 
 export default familyOrthodonticsHudson;

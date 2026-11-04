@@ -19,9 +19,9 @@ export function Section({
   align?: "center" | "left";
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className={cx("relative py-16 sm:py-24", className)}>
+    <section id={id} aria-labelledby={`${id}-title`} className={cx("relative py-12 sm:py-24", className)}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <header className={cx("mb-10 max-w-2xl sm:mb-14", align === "center" && "mx-auto text-center")} data-reveal>
+        <header className={cx("mb-8 max-w-2xl sm:mb-14", align === "center" && "mx-auto text-center")} data-reveal>
           {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
           <h2 id={`${id}-title`} className="text-[2.125rem] text-ink sm:text-5xl">
             {title}

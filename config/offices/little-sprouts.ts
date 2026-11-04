@@ -210,7 +210,7 @@ const littleSprouts: OfficeInput = {
   theme: { preset: "sage-blue" },
 
   // No before/after gallery for a pediatric office; emergency card promoted higher.
-  sections: ["hero", "quickInfo", "request", "emergency", "services", "newPatients", "doctors", "reviews", "cta", "faq", "contact"],
+  sections: ["services", "reviews", "doctors", "newPatients", "faq"],
 
   copy: {
     heroEyebrow: "Pediatric dentistry in Austin",
