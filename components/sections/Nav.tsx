@@ -16,7 +16,7 @@ export function Nav({
   practiceName: string;
   phone: string;
   /** `mobileOnly` links appear in the phone menu only (e.g. Emergency). */
-  links: { href: string; label: string; mobileOnly?: boolean }[];
+  links: { href: string; label: string; mobileOnly?: boolean; wideOnly?: boolean }[];
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -56,7 +56,7 @@ export function Nav({
 
         <ul className="hidden items-center gap-1 xl:flex">
           {links.filter((l) => !l.mobileOnly).map((l) => (
-            <li key={l.href}>
+            <li key={l.href} className={l.wideOnly ? "hidden 2xl:block" : undefined}>
               <a
                 href={l.href}
                 className="whitespace-nowrap rounded-full px-2.5 py-2.5 text-[0.95rem] font-semibold text-ink/90 transition-colors hover:bg-white/80 hover:text-ink"
@@ -70,15 +70,17 @@ export function Nav({
         <div className="flex items-center gap-1.5">
           <a
             href={telHref(phone)}
-            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink hover:bg-white/80 2xl:inline-flex"
+            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink hover:bg-white/80 lg:inline-flex"
           >
             <Phone size={17} aria-hidden="true" className="text-accent" />
             {phone}
           </a>
-          {/* Tap-to-call icon (number shown in full on extra-wide screens) */}
+          {/* Phones and tablets get a tap-to-call icon; computers show the number itself, since most people
+              dial it from their phone while looking at the screen. */}
           <a
             href={telHref(phone)}
-            className="grid size-12 place-items-center rounded-full text-accent hover:bg-white/80 2xl:hidden"
+            className="grid size-12 place-items-center rounded-full text-accent hover:bg-white/80 lg:hidden"
+            title={`Call ${phone}`}
             aria-label={`Call ${practiceName} at ${phone}`}
           >
             <Phone size={21} aria-hidden="true" />

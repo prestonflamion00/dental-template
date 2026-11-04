@@ -75,3 +75,29 @@ export function HoursTable({ timezone, hours }: { timezone: string; hours: Recor
     </table>
   );
 }
+
+/** One-line status for the hero: "Open now · until 5 PM" or "Closed · opens Thu 9 AM". Tapping it jumps to the hours. */
+export function HeroStatus({ timezone, hours, label }: { timezone: string; hours: Record<Day, DayHours>; label?: string }) {
+  const now = useNow(timezone, hours);
+  if (!now) return <span className="text-muted">Checking hours…</span>;
+  const { status } = now;
+  const open = status.state === "open";
+  const when = open
+    ? status.closingSoon
+      ? `closing soon, ${status.closesAt}`
+      : `until ${status.closesAt}`
+    : status.opensAt
+      ? `opens ${status.opensDay && status.opensDay.length > 8 ? status.opensDay.slice(0, 3) : status.opensDay} ${status.opensAt}`.replace(" today ", " today at ")
+      : "see hours";
+  return (
+    <a href="#contact" className="inline-flex items-center gap-2 rounded-lg underline-offset-4 hover:underline">
+      <span className={cx("status-dot shrink-0", open ? "live text-success" : "text-danger")} aria-hidden="true" />
+      <span>
+        {label && <span className="text-muted">{label}: </span>}
+        <strong className={open ? "text-success" : "text-danger"}>{open ? "Open now" : "Closed"}</strong>
+        <span className="text-muted"> · {when}</span>
+        <span className="sr-only">, see all hours</span>
+      </span>
+    </a>
+  );
+}

@@ -553,3 +553,15 @@
 @media (prefers-reduced-motion: reduce) {
   .photo-placeholder { animation: none; }
 }
+
+/* ── Things that expand (more form fields, "Read bio", office tabs): a short slide-in ── */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+.reveal-in {
+  animation: reveal-in 0.28s var(--ease-soft, ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-in { animation: none; }
+}

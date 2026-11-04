@@ -29,6 +29,9 @@ export default function PrivacyPage() {
       </p>
       <h2>Cookies & analytics</h2>
       <p>This site does not use advertising cookies. Any analytics are aggregate and do not identify you personally.</p>
+      {!office.fictional && (
+        <p>The map in our contact section is provided by Google Maps. When it loads, Google receives the usual technical details a website visit sends (such as your IP address), under Google’s own privacy policy.</p>
+      )}
       <h2>Contact</h2>
       <p>
         Questions? Call {contact.phone}{contact.email ? ` or email ${contact.email}` : ""}.

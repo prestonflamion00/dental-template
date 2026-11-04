@@ -2,18 +2,27 @@ import { Mail, MapPin, Navigation, Phone } from "lucide-react";
 import { SampleTag } from "@/components/ui/SampleTag";
 import type { Location, OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
-import { fullAddress, mapsHref, telHref } from "@/lib/format";
+import { cx, fullAddress, mapsHref, telHref } from "@/lib/format";
 import { HoursTable } from "./OpenStatus";
 import { OfficeTabs } from "./OfficeTabs";
 
 /**
- * Illustrated map placeholder (no API key, no third-party requests).
- * INTEGRATION POINT: swap for a lazy Google Maps / OpenStreetMap iframe — see lib/integrations.ts §4.
+ * The office on a map: a real Google map for real practices (loaded only when scrolled near, no API
+ * key), or an illustration for our fictional demos, whose addresses are made up.
  */
-function MapPlaceholder({ name, location }: { name: string; location: Location }) {
+function MapPlaceholder({ name, location, real }: { name: string; location: Location; real: boolean }) {
   const a = location.address;
   return (
     <div className="relative aspect-[16/10] overflow-hidden rounded-[22px] bg-accent-soft">
+      {real ? (
+        <iframe
+          title={`Map showing ${name} at ${fullAddress(a)}`}
+          src={`https://maps.google.com/maps?q=${encodeURIComponent(`${name}, ${fullAddress(a)}`)}&z=15&output=embed`}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="absolute inset-0 size-full border-0"
+        />
+      ) : (
       <svg viewBox="0 0 400 250" className="absolute inset-0 size-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <rect width="400" height="250" fill="var(--bg-2)" />
         <path d="M-10 70 Q120 40 210 95 T420 80" stroke="#fff" strokeWidth="14" fill="none" opacity=".9" />
@@ -24,21 +33,27 @@ function MapPlaceholder({ name, location }: { name: string; location: Location }
         <circle cx="60" cy="215" r="44" fill="var(--orb-2)" opacity=".7" />
         <rect x="170" y="115" width="60" height="40" rx="8" fill="var(--orb-1)" opacity=".55" />
       </svg>
-      <div className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-full" aria-hidden="true">
-        <span className="grid size-14 place-items-center rounded-full rounded-br-none bg-accent text-white shadow-xl rotate-45">
-          <MapPin size={24} className="-rotate-45" />
-        </span>
-      </div>
-      <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-2xl bg-white/90 p-3 pl-4 shadow-lg sm:inset-x-4 sm:bottom-4">
-        <p className="text-sm leading-snug text-ink">
-          <strong className="block">{name}</strong>
-          {a.street}
-        </p>
-        <a href={mapsHref(a)} target="_blank" rel="noopener noreferrer" className="btn btn-primary !min-h-11 shrink-0 !px-4 text-sm">
-          <Navigation size={16} aria-hidden="true" />
-          Directions<span className="sr-only"> to {fullAddress(a)} (opens in a new tab)</span>
-        </a>
-      </div>
+      )}
+      {!real && (
+        <div className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-full" aria-hidden="true">
+          <span className="grid size-14 place-items-center rounded-full rounded-br-none bg-accent text-white shadow-xl rotate-45">
+            <MapPin size={24} className="-rotate-45" />
+          </span>
+        </div>
+      )}
+      {/* The name-and-directions card would cover Google's own controls, so only the illustration gets it. */}
+      {!real && (
+        <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-2xl bg-white/90 p-3 pl-4 shadow-lg sm:inset-x-4 sm:bottom-4">
+          <p className="text-sm leading-snug text-ink">
+            <strong className="block">{name}</strong>
+            {a.street}
+          </p>
+          <a href={mapsHref(a)} target="_blank" rel="noopener noreferrer" className="btn btn-primary !min-h-11 shrink-0 !px-4 text-sm">
+            <Navigation size={16} aria-hidden="true" />
+            Directions<span className="sr-only"> to {fullAddress(a)} (opens in a new tab)</span>
+          </a>
+        </div>
+      )}
     </div>
   );
 }
@@ -74,11 +89,12 @@ function LocationCard({ office, location: l, main, several }: { office: OfficeCo
     <div className="glass grid gap-6 rounded-[28px] p-3 lg:grid-cols-[1.15fr_1fr] lg:items-center" data-reveal>
       {/* Phones skip the illustrated map; the Directions button below does the same job. */}
       <div className="max-sm:hidden">
-        <MapPlaceholder name={several ? `${office.practice.logo.text}, ${l.name}` : office.practice.name} location={l} />
+        <MapPlaceholder name={several ? `${office.practice.logo.text}, ${l.name}` : office.practice.name} location={l} real={!office.fictional} />
       </div>
       <div className="p-4 sm:p-5">
         {several && <h3 className="mb-5 text-2xl text-ink max-sm:sr-only">{l.name}</h3>}
-        <div className="grid gap-6 sm:grid-cols-[1.1fr_1fr]">
+        {/* Two columns with a divider between them on larger screens. */}
+        <div className="grid gap-6 sm:grid-cols-[1.1fr_1fr] sm:gap-0 sm:divide-x sm:divide-ink/10 [&>*]:sm:px-6 [&>*:first-child]:sm:pl-0">
           <div>
             <Label className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">
               Hours
@@ -118,7 +134,12 @@ function LocationCard({ office, location: l, main, several }: { office: OfficeCo
               </li>
             </ul>
             {l.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{l.directionsNote}</p>}
-            <a href={mapsHref(l.address)} target="_blank" rel="noopener noreferrer" className="btn btn-primary mt-5 w-full sm:hidden">
+            <a
+              href={mapsHref(l.address)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cx("btn btn-primary mt-5 w-full", office.fictional ? "sm:hidden" : "sm:w-auto")}
+            >
               <Navigation size={16} aria-hidden="true" />
               Directions<span className="sr-only"> to {fullAddress(l.address)} (opens in a new tab)</span>
             </a>

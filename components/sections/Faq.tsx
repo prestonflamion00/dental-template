@@ -46,8 +46,13 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
               id={panelId}
               role="region"
               aria-labelledby={btnId}
-              className={cx("grid transition-[grid-template-rows] duration-300 ease-[var(--ease-soft)]", isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-              hidden={!isOpen}
+              // Slides open and closed (grid rows 0fr <-> 1fr); `inert` keeps a closed answer out of tab order
+              // and screen readers without cutting the closing animation short.
+              className={cx(
+                "grid transition-[grid-template-rows,opacity] duration-300 ease-[var(--ease-soft)] motion-reduce:transition-none",
+                isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              )}
+              inert={!isOpen}
             >
               <div className="overflow-hidden">
                 <p className="px-4 pb-6 text-muted">{f.a}</p>

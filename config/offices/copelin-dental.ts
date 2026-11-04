@@ -81,6 +81,9 @@ const copelinDental: OfficeInput = {
     },
   ],
 
+  // Their Google rating, as shown on Google Maps (Nov 2026).
+  rating: { value: 4.9, count: 344, source: "Google" },
+
   design: "butter",
   theme: { preset: "warm-neutral" },
 

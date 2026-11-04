@@ -63,18 +63,19 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
   contact: () => <Contact office={office} />,
 };
 
-const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string }>> = {
+const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string; wideOnly?: boolean }>> = {
   services: { href: "#services", label: "Services" },
   newPatients: { href: "#new-patients", label: "New Patients" },
   doctors: { href: "#doctors", label: "Our Team" },
   reviews: { href: "#reviews", label: "Reviews" },
   faq: { href: "#faq", label: "FAQ" },
-  contact: { href: "#contact", label: "Contact" },
+  // On laptops the number and Request button in the bar cover "Contact"; the link returns on wide screens.
+  contact: { href: "#contact", label: "Contact", wideOnly: true },
 };
 
 export default function Home() {
   const links = [
-    ...office.sections.map((s) => NAV_LINKS[s]).filter((l): l is { href: string; label: string } => !!l),
+    ...office.sections.map((s) => NAV_LINKS[s]).filter((l): l is NonNullable<(typeof NAV_LINKS)[SectionId]> => !!l),
     { href: "#emergency", label: "Emergency", mobileOnly: true },
   ];
 

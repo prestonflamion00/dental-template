@@ -80,6 +80,8 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   const needLocation = locations.length > 1;
   const daysOffered = locations.find((l) => l.name === values.location)?.openDays ?? openDays;
   const [showPrefs, setShowPrefs] = useState(false);
+  // The form starts compact (name, phone, email) and opens up once someone starts filling it in.
+  const [engaged, setEngaged] = useState(false);
 
   // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
   // pick that button's service, and put the cursor in the first field.
@@ -89,6 +91,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
       const name = services.find((s) => s.id === id)?.name;
       setStatus((st) => (st === "sent" ? "idle" : st));
       setValues((v) => ({ ...v, kind: "appointment", reason: name ?? v.reason }));
+      setEngaged(true);
       setTimeout(() => formRef.current?.querySelector<HTMLInputElement>('[name="name"]')?.focus({ preventScroll: true }), 50);
     };
     window.addEventListener(REQUEST_EVENT, onStart);
@@ -107,6 +110,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setEngaged(true);
     const errs = validateRequest(values, { needLocation });
     setErrors(errs);
     const first = (["name", "phone", "email", "location", "reason", "message"] as const).find((k) => errs[k]);
@@ -196,7 +200,14 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   const messageId = `${uid}-message`;
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} noValidate aria-labelledby={titleId} aria-describedby={`${uid}-note`}>
+    <form
+      ref={formRef}
+      onSubmit={onSubmit}
+      onFocusCapture={() => setEngaged(true)}
+      noValidate
+      aria-labelledby={titleId}
+      aria-describedby={`${uid}-note`}
+    >
       {/* mr-10 keeps clear of the pop-up's close button. */}
       <div role="group" aria-label="What would you like to send?" className="mr-10 inline-flex gap-1 rounded-full bg-ink/5 p-1">
         {(
@@ -240,10 +251,10 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
         {text("phone", "Phone", { type: "tel", auto: "tel", optional: !isAppt, max: LIMITS.phone })}
         {text("email", "Email", { type: "email", auto: "email", max: LIMITS.email })}
 
-        {isAppt && (
+        {engaged && isAppt && (
           <>
             {needLocation && (
-              <fieldset className="sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
+              <fieldset className="reveal-in sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
                 <legend className="mb-1.5 font-semibold text-ink">
                   Which office? <span className="text-danger" aria-hidden="true">*</span>
                 </legend>
@@ -274,7 +285,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               </fieldset>
             )}
 
-            <fieldset className="sm:col-span-2">
+            <fieldset className="reveal-in sm:col-span-2">
               <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
               <div className="flex flex-wrap gap-2">
                 {(
@@ -298,7 +309,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               </div>
             </fieldset>
 
-            <div className="sm:col-span-2">
+            <div className="reveal-in sm:col-span-2">
               <label htmlFor={reasonId} className="mb-1.5 block font-semibold text-ink">
                 Reason for your visit <span className="text-danger" aria-hidden="true">*</span>
               </label>
@@ -330,12 +341,12 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               <button
                 type="button"
                 onClick={() => setShowPrefs(true)}
-                className="justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+                className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
               >
                 + Add more details (days, times, insurance)
               </button>
             )}
-            <fieldset className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+            <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               <legend className="mb-1.5 font-semibold text-ink">
                 Best days for you <span className="font-normal text-muted">(optional)</span>
               </legend>
@@ -349,7 +360,7 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               </div>
             </fieldset>
 
-            <fieldset className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+            <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               <legend className="mb-1.5 font-semibold text-ink">
                 Best time of day <span className="font-normal text-muted">(optional)</span>
               </legend>
@@ -370,13 +381,14 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
               </div>
             </fieldset>
 
-            <div className={cx("sm:col-span-2", !showPrefs && "max-sm:hidden")}>
+            <div className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
               {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
             </div>
           </>
         )}
 
-        <div className={cx("sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
+        {engaged && (
+        <div className={cx("reveal-in sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
           <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
             {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
             {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
@@ -399,7 +411,9 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
             </p>
           )}
         </div>
+        )}
       </div>
+      {!engaged && <p className="mt-3 text-sm text-muted">Takes about a minute. More options appear as you go.</p>}
 
       {/* Honeypot: hidden from people and screen readers; bots that fill it are ignored by the server. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
