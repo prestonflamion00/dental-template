@@ -88,7 +88,7 @@ export default function Home() {
           <Fragment key={id}>{SECTIONS[id]()}</Fragment>
         ))}
       </main>
-      <Footer office={office} />
+      <Footer office={office} showContact={false} />
       <MobileBar phone={office.contact.phone} />
       <EmergencyDialog headline={office.copy.emergencyHeadline} text={office.copy.emergencyText} locations={office.locations} />
       <RevealObserver />
