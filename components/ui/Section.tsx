@@ -43,11 +43,16 @@ export function Highlighted({ text, highlight, ownLine = false }: { text: string
   const breakBefore = ownLine && /^[\s.!?,]*$/.test(after) && before.trim().length > 0;
   return (
     <>
-      {/* The last two words stay together, so a short word like "for" never sits alone on a line. */}
-      {breakBefore ? before.trimEnd().replace(/ (\S+)$/, "\u00a0$1") : before}
+      {breakBefore ? keepLastWordsTogether(before.trimEnd()) : before}
       {breakBefore && <br />}
       <span className="highlight">{highlight}</span>
       {after}
     </>
   );
+}
+
+/** The last two words stay together so a short word like "for" never sits alone on a line, but only
+ * when at least three words come first; joining a two-word start could be too wide for small phones. */
+function keepLastWordsTogether(text: string): string {
+  return text.split(" ").length >= 3 ? text.replace(/ (\S+)$/, "\u00a0$1") : text;
 }
