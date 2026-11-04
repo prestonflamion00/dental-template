@@ -135,6 +135,10 @@ npm run check:responsive -- "https://demos.butterbite.workers.dev/maple-grove/?d
 npm run check:responsive -- --shots shots/ <url>   # also save a screenshot per width to look through
 ```
 
+**The first screen (above the fold) is a rule, not a nice-to-have.** The same check opens each page on a small iPhone (375×667), an iPhone (390×844), a large iPhone (430×932), an iPad (768×1024), a laptop (1280×800) and a desktop (1440×900). It fails unless, before any scrolling, the page shows the practice name, the headline, Request appointment, Call, the open/closed status and the red Emergency button. Anything else earns a place up there only if it doesn't push those down. On phones that's why the eyebrow and trust strip are hidden: the rating sits above the headline, and "Accepting new patients" moves to the info strip.
+
+**Emergency is always a red button** (`components/ui/EmergencyButton.tsx`), and red is used for nothing else. "Closed" is neutral gray; green means open.
+
 Then spot-check on a real iPhone and an Android phone (the check runs Chrome, so Safari-only quirks need a real device). Layout rules that keep this passing: let grid and flex children shrink (`min-w-0`), never fix widths in pixels, and let buttons wrap on very narrow screens (already handled in `globals.css`). The full link bar shows from 1280px; below that the menu button takes over.
 
 ## Themes

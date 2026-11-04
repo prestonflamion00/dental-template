@@ -111,7 +111,8 @@ export function HeroStatus({ timezone, offices }: { timezone: string; offices: {
         <span className="text-muted">
           {" "}
           · {when}
-          {name && ` in ${name}`}
+          {/* Phones: the office names are in the strip just below. */}
+          {name && <span className="max-sm:hidden"> in {name}</span>}
         </span>
         <span className="sr-only">, see all hours</span>
       </span>

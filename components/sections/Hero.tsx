@@ -5,6 +5,7 @@ import { BookButton } from "@/components/booking/BookButton";
 import { Highlighted } from "@/components/ui/Section";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Stars } from "@/components/ui/Stars";
+import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
@@ -31,7 +32,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
               </span>
             </a>
           )}
-          <p className="eyebrow">
+          {/* Phones skip the eyebrow: the status line and the address strip just below say where they are. */}
+          <p className="eyebrow max-sm:hidden">
             {copy.heroEyebrow}
           </p>
           <h1
@@ -57,20 +59,20 @@ export function Hero({ office }: { office: OfficeConfig }) {
           </div>
 
           {/* Live open/closed status (the top reason people open a dentist's site) and the emergency pop-up. */}
-          <p className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-[0.95rem]">
+          {/* One row on phones: status on the left, a small red Emergency button on the right (wraps below on very narrow screens). */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-1.5 gap-y-2 text-[0.875rem] sm:justify-start sm:gap-x-5 sm:text-[0.95rem]">
             <HeroStatus
               timezone={office.timezone}
               offices={office.locations}
             />
-            {/* Phones only: on bigger screens the info strip right below already has "Dental emergency?". */}
-            <a href="#emergency" className="font-semibold text-danger underline-offset-4 hover:underline sm:hidden">
-              Emergency?
-            </a>
-          </p>
+            {/* Always on the first screen, on every device. */}
+            <EmergencyButton label="Emergency" size="xs" className="sm:min-h-10 sm:px-3.5 sm:text-sm" />
+          </div>
 
           {/* Trust strip: each item jumps to the section that backs it up. */}
+          {/* Phones skip this strip: the rating is above the headline and "Accepting new patients" sits in the info strip. */}
           <ul
-            className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-[0.95rem] text-muted sm:mt-7"
+            className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-[0.95rem] text-muted max-sm:hidden"
             aria-label="Why patients trust us"
           >
             {rating && (

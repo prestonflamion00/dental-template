@@ -1,4 +1,4 @@
-import { Clock, MapPin, Phone, Siren } from "lucide-react";
+import { Check, Clock, MapPin, Phone } from "lucide-react";
 import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
 import { mapsHref, telHref } from "@/lib/format";
@@ -12,6 +12,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
   return (
     <section aria-label="Hours and location at a glance" className="relative z-10 px-4 sm:px-6">
       <div className="glass mx-auto grid max-w-6xl gap-6 rounded-[28px] p-6 sm:p-7 sm:grid-cols-2 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-ink/10" data-reveal>
+        <AcceptingNote office={office} />
         <div className="flex gap-4 lg:pr-6">
           <span className="icon-tile shrink-0" aria-hidden="true">
             <Clock size={22} />
@@ -57,7 +58,6 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
               {contact.phone}
             </a>
             {office.copy.phoneNote && <p className="text-[0.95rem] text-muted">{office.copy.phoneNote}</p>}
-            <EmergencyLink className="mt-1" />
           </div>
         </div>
       </div>
@@ -70,10 +70,11 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
   const cols = office.locations.length >= 3 ? "lg:grid-cols-3" : "sm:grid-cols-2";
   return (
     <section aria-label="Our offices at a glance" className="relative z-10 px-4 sm:px-6">
-      <div className={`glass mx-auto grid max-w-6xl gap-6 rounded-[28px] p-6 sm:p-7 ${cols} sm:gap-0 sm:divide-x sm:divide-ink/10`} data-reveal>
+      <div className={`glass mx-auto grid max-w-6xl gap-6 rounded-[28px] p-6 sm:p-7 ${cols} sm:gap-0`} data-reveal>
+        <AcceptingNote office={office} />
         {office.locations.map((l, i) => (
 
-          <div key={l.name} className={i === 0 ? "flex gap-4 sm:pr-6" : "flex gap-4 sm:px-6"}>
+          <div key={l.name} className={i === 0 ? "flex gap-4 sm:pr-6" : "flex gap-4 sm:border-l sm:border-ink/10 sm:px-6"}>
             <span className="icon-tile shrink-0" aria-hidden="true">
               <MapPin size={22} />
             </span>
@@ -101,23 +102,21 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
             </div>
           </div>
         ))}
-        <div className="sm:col-span-full sm:-mt-2 sm:text-right">
-          <EmergencyLink />
-        </div>
       </div>
     </section>
   );
 }
 
-/** Opens the emergency pop-up (components/sections/EmergencyDialog.tsx). */
-function EmergencyLink({ className }: { className?: string }) {
+/** Phones only (bigger screens show it in the hero's trust strip). */
+function AcceptingNote({ office }: { office: OfficeConfig }) {
+  if (!office.practice.acceptingNewPatients) return null;
   return (
-    <a
-      href="#emergency"
-      className={`inline-flex min-h-10 items-center gap-1.5 text-[0.95rem] font-semibold text-danger underline decoration-danger/30 underline-offset-4 hover:decoration-danger ${className ?? ""}`}
-    >
-      <Siren size={16} aria-hidden="true" className="shrink-0" />
-      Dental emergency?
+    <a href="#request" className="-mb-2 flex items-center gap-2 font-semibold text-ink sm:hidden">
+      <span className="grid size-5 place-items-center rounded-full bg-success text-white" aria-hidden="true">
+        <Check size={13} strokeWidth={3} />
+      </span>
+      Accepting new patients
     </a>
   );
 }
+
