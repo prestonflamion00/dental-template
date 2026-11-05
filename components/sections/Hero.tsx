@@ -21,7 +21,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-1)", width: 520, height: 520, top: -80, left: "-12%" }} />
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-3)", width: 460, height: 460, top: 120, right: "-6%" }} />
 
-      <div className="hero-main mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10">
+      <div className="hero-main mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
         <div>
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}
           {rating && (
@@ -47,16 +47,17 @@ export function Hero({ office }: { office: OfficeConfig }) {
           </p>
 
           {/* Phones: Request on its own full-width row, then Call and Emergency side by side, same size.
-              Bigger screens: Request and Call in one row, Emergency next to the status below. */}
-          <div id="hero-actions" className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:flex">
-            <BookButton size="lg" className="col-span-2 max-sm:px-4">
+              Bigger screens: all three in one row, same height. */}
+          <div id="hero-actions" className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:flex-wrap">
+            <BookButton size="lg" className="col-span-2 max-sm:px-4 lg:px-6">
               Request appointment
             </BookButton>
-            <a href={telHref(contact.phone)} className="btn btn-glass btn-lg max-sm:min-w-0 max-sm:px-4">
+            <a href={telHref(contact.phone)} className="btn btn-glass btn-lg max-sm:min-w-0 max-sm:px-4 lg:px-6">
               <Phone size={18} aria-hidden="true" className="text-accent" />
-              Call<span className="max-sm:sr-only"> {contact.phone}</span>
+              {/* The number shows on tablets; phones and computers (number in the top bar) just say Call. */}
+              Call<span className="max-sm:sr-only lg:sr-only"> {contact.phone}</span>
             </a>
-            <EmergencyButton label="Emergency" size="hero" className="min-w-0 sm:hidden" />
+            <EmergencyButton label="Emergency" size="lg" className="min-w-0 max-sm:px-4 lg:px-6" />
           </div>
 
           {/* Live open/closed status (the top reason people open a dentist's site) and the emergency pop-up. */}
@@ -65,8 +66,6 @@ export function Hero({ office }: { office: OfficeConfig }) {
               timezone={office.timezone}
               offices={office.locations}
             />
-            {/* Bigger screens (phones have it next to Call above). Always on the first screen. */}
-            <EmergencyButton label="Emergency" size="sm" className="max-sm:hidden" />
           </div>
 
           {/* Trust strip: each item jumps to the section that backs it up. */}
