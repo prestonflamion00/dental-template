@@ -49,7 +49,7 @@ export function Reviews({ office }: { office: OfficeConfig }) {
       {reviews.length === 0 && stage === "demo" && (
         <>
           <ul
-            className="snap-row -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0"
+            className="snap-row -mx-4 -my-6 flex gap-4 overflow-x-auto px-4 py-6 pb-10 md:mx-0 md:my-0 md:py-0 md:pb-4 md:grid md:grid-cols-3 md:overflow-visible md:px-0"
             aria-label="Sample reviews"
           >
             {SAMPLE_REVIEWS.map((r, i) => (
@@ -70,7 +70,7 @@ export function Reviews({ office }: { office: OfficeConfig }) {
       {/* Mobile: swipeable carousel. Desktop: grid. */}
       {reviews.length > 0 && (
       <div
-        className="snap-row -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3"
+        className="snap-row -mx-4 -my-6 flex gap-4 overflow-x-auto px-4 py-6 pb-10 md:mx-0 md:my-0 md:py-0 md:pb-4 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3"
         role="region"
         aria-label="Patient reviews, scroll horizontally for more"
         tabIndex={0}
