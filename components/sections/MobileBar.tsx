@@ -8,7 +8,7 @@ import { cx, telHref } from "@/lib/format";
 /**
  * Sticky bottom action bar on phones: Request + Call always one thumb-tap away. It stays out of the
  * way while the hero's own Request and Call buttons are on screen, so the first screen never shows
- * the same two buttons twice.
+ * the same two buttons twice, and while the request form is on screen.
  */
 export function MobileBar({ phone }: { phone: string }) {
   const [show, setShow] = useState(false);
@@ -18,8 +18,16 @@ export function MobileBar({ phone }: { phone: string }) {
       setShow(true);
       return;
     }
-    const io = new IntersectionObserver(([e]) => setShow(!e.isIntersecting));
+    // Also out of the way while the request form is on screen: it would cover the fields, and its
+    // Request button would just point at the form you're already looking at.
+    const request = document.getElementById("request");
+    const visible = new Map<Element, boolean>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) visible.set(e.target, e.isIntersecting);
+      setShow(!visible.get(heroButtons) && !(request && visible.get(request)));
+    });
     io.observe(heroButtons);
+    if (request) io.observe(request);
     return () => io.disconnect();
   }, []);
   return (

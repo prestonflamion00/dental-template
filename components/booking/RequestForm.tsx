@@ -262,9 +262,10 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
         </h3>
       )}
       <p id={`${uid}-note`} className={cx("text-muted", heading ? "mt-1" : "mt-4")}>
-        {isAppt
-          ? "Tell us what works for you and we’ll call or text to confirm a time. "
-          : "We usually reply within one business day. "}
+        {/* Phones skip the first sentence: the section intro right above says the same. */}
+        <span className="max-sm:hidden">
+          {isAppt ? "Tell us what works for you and we’ll call or text to confirm a time. " : "We usually reply within one business day. "}
+        </span>
         Please don’t include medical details or insurance numbers.
       </p>
       <div aria-live="assertive" className="sr-only">

@@ -29,7 +29,10 @@ export function BookingProvider({ settings, children }: { settings: BookingSetti
     document.querySelectorAll<HTMLDialogElement>("dialog[open]").forEach((d) => d.close());
     // After a pop-up closes it hands focus back to its button; wait a frame, then move on.
     requestAnimationFrame(() => {
-      section.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      // Phones go straight to the form card, so the fields (not the section heading) fill the screen.
+      const phone = window.matchMedia("(max-width: 639.98px)").matches;
+      const target = (phone && section.querySelector<HTMLElement>("[data-request-card]")) || section;
+      target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       window.dispatchEvent(new CustomEvent<RequestEventDetail>(REQUEST_EVENT, { detail: { serviceId } }));
     });
   }, []);

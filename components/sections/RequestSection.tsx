@@ -47,7 +47,7 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
             </div>
           </li>
         </ul>
-        <div className="glass min-w-0 rounded-[28px] p-6 sm:p-8" data-reveal data-request-card style={{ ["--d" as string]: "80ms" }}>
+        <div className="glass min-w-0 scroll-mt-24 rounded-[28px] p-6 sm:p-8" data-reveal data-request-card style={{ ["--d" as string]: "80ms" }}>
           <RequestForm
             practiceName={practice.name}
             services={office.services.map(({ id, name }) => ({ id, name }))}
