@@ -179,5 +179,13 @@ writeFileSync(
 );
 
 if (existsSync(join(root, "out"))) rmSync(join(root, "out"), { recursive: true, force: true });
+
+// Link-preview thumbnails, drawn from the built sites themselves (scripts/make-thumbnails.mjs).
+console.log("\n▶ Thumbnails");
+const { makeThumbnails } = await import(pathToFileURL(join(root, "scripts/make-thumbnails.mjs")).href);
+await makeThumbnails(built);
+// The thumbnail file has no extension, so tell the host it's a PNG (some apps skip untyped images).
+writeFileSync(join(outDir, "_headers"), `${base}/*/opengraph-image\n  Content-Type: image/png\n  Cache-Control: public, max-age=86400\n`);
+
 console.log(`\n✓ Built ${built.length} practices into site/: ${built.map((b) => b.slug).join(", ")}`);
 console.log(`  Private hub: ${base}/${HUB_PATH}/`);

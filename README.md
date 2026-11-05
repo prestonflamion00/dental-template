@@ -126,6 +126,15 @@ Four looks share the same sections, content and code, so a change to any section
 
 Palettes live in `config/designs.ts`; each look is in `app/designs.css`. Only Butter uses the theme presets and `theme.accent`.
 
+## Link-preview thumbnails
+
+The picture that shows when a site's link is texted, emailed or posted is drawn by `scripts/make-thumbnails.mjs` at the end of `npm run build:all`, in a real browser, from the built site itself (its fonts, colours and logo):
+
+- **Demo sites:** the practice's actual new homepage on a laptop and a phone, labelled "Private preview" ("Website example" for our fictional samples). It's for the dentist we're pitching: they see their own new site before they even tap.
+- **Live sites:** a brand card for patients with the logo, what they do and where, Google stars and review count, and "Accepting new patients".
+
+Screenshots are taken at a moment the main office is open, so they always show "Open now". Key content stays near the middle because WhatsApp crops previews to a square. Each build also saves a copy to `thumbnails/` (commit it): Cloudflare's build servers have no browser, so they use those copies. To preview a live card early: `OG_KIND=live node scripts/make-thumbnails.mjs <practice>` (after a build).
+
 ## Checking every screen size
 
 Before a release, run the responsive check on the pages you changed (any live, preview or local URL). It loads each page at 12 widths from a 320px phone to a 1920px desktop and fails if anything is wider than the screen, or if a button, link or text sticks out of its card:
