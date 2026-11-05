@@ -89,16 +89,6 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   useEffect(() => {
     if (animate) formRef.current?.closest("[data-request-layout]")?.toggleAttribute("data-engaged", engaged);
   }, [animate, engaged]);
-  // ...and a click or tap anywhere outside the form's card folds it back (what's typed is kept).
-  useEffect(() => {
-    if (!animate || !engaged) return;
-    const card = formRef.current?.closest("[data-request-card]") ?? formRef.current;
-    const onDown = (e: PointerEvent) => {
-      if (card && !card.contains(e.target as Node)) setEngaged(false);
-    };
-    document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
-  }, [animate, engaged]);
 
   // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
   // pick that button's service, and put the cursor in the first field.
