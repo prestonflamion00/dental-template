@@ -46,27 +46,27 @@ export function Hero({ office }: { office: OfficeConfig }) {
             {copy.heroSubhead}
           </p>
 
-          <div id="hero-actions" className="mt-6 flex gap-3 sm:mt-8">
-            <BookButton size="lg" className="max-sm:min-w-0 max-sm:flex-1 max-sm:px-4">
-              {/* Very narrow phones (iPhone SE): the short label keeps the button on one line. */}
-              <span className="max-[379px]:hidden">Request appointment</span>
-              <span className="min-[380px]:hidden">Request visit</span>
+          {/* Phones: Request on its own full-width row, then Call and Emergency side by side, same size.
+              Bigger screens: Request and Call in one row, Emergency next to the status below. */}
+          <div id="hero-actions" className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:flex">
+            <BookButton size="lg" className="col-span-2 max-sm:px-4">
+              Request appointment
             </BookButton>
-            <a href={telHref(contact.phone)} className="btn btn-glass btn-lg max-sm:px-5">
+            <a href={telHref(contact.phone)} className="btn btn-glass btn-lg max-sm:min-w-0 max-sm:px-4">
               <Phone size={18} aria-hidden="true" className="text-accent" />
               Call<span className="max-sm:sr-only"> {contact.phone}</span>
             </a>
+            <EmergencyButton label="Emergency" size="hero" className="min-w-0 sm:hidden" />
           </div>
 
           {/* Live open/closed status (the top reason people open a dentist's site) and the emergency pop-up. */}
-          {/* One row on phones: status on the left, a small red Emergency button on the right (wraps below on very narrow screens). */}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-1.5 gap-y-2 text-[0.875rem] sm:justify-start sm:gap-x-5 sm:text-[0.95rem]">
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.95rem]">
             <HeroStatus
               timezone={office.timezone}
               offices={office.locations}
             />
-            {/* Always on the first screen, on every device. */}
-            <EmergencyButton label="Emergency" size="xs" className="sm:min-h-10 sm:px-3.5 sm:text-sm" />
+            {/* Bigger screens (phones have it next to Call above). Always on the first screen. */}
+            <EmergencyButton label="Emergency" size="sm" className="max-sm:hidden" />
           </div>
 
           {/* Trust strip: each item jumps to the section that backs it up. */}
