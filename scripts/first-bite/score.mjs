@@ -17,6 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
 import { promisify } from "node:util";
+import { placesAvailable, placesChecks } from "./places.mjs";
 
 const run = promisify(execFile);
 const { chromium, devices } = createRequire(import.meta.url)("playwright");
@@ -174,9 +175,50 @@ const localSchema = schemaTypes.find((t) => /^(Dentist|MedicalBusiness|MedicalCl
 const schemaHours = /"openingHours(Specification)?"/.test(allHtml);
 
 const NOT_YET = (why) => ({ measured: false, why });
+const NOT = (why) => `not measured: ${why}`;
+
+// Google profile, reviews and map rankings (Google Places API), when a key is set.
+const homeTitle = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(pages[0]?.html ?? "")?.[1]?.split(/[|\-\u2013\u2014]/)[0].trim() ?? host;
+const sitePhones = [...new Set([...allHtml.matchAll(/href=["']tel:([^"']+)/gi)].map((m) => m[1]))];
+let g = null;
+if (placesAvailable) {
+  try {
+    g = await placesChecks({ siteHost: host, name: homeTitle, sitePhones });
+  } catch (e) {
+    g = { found: false, why: String(e.message).slice(0, 200) };
+  }
+}
+const G = g?.found ? g.raw : null;
+const noPlaces = !placesAvailable ? "needs GOOGLE_PLACES_API_KEY" : g && !g.found ? g.why : "";
+const rankPts = (r) => (r?.rank == null ? 0 : r.rank <= 3 ? 1 : r.rank <= 10 ? 0.5 : 0);
 const parts = [
-  { id: "gbp", name: "Google profile", weight: 2.5, ...NOT_YET("Needs the Google Places API (business profile details, photos, hours, categories).") },
-  { id: "reviews", name: "Reviews", weight: 2, ...NOT_YET("Needs the Google Places API (rating, count, recent reviews and replies).") },
+  G
+    ? {
+        id: "gbp", name: "Google profile", weight: 2.5, measured: "partly",
+        checks: [
+          check("Claimed and verified", 1, null, NOT("Google's API doesn't say whether a profile is verified")),
+          check("Basics match the website (phone, website, hours)", 2, ((G.phoneMatches ? 1 : 0) + (G.websiteMatches ? 1 : 0) + (G.hasHours && !G.alwaysOpen ? 1 : 0)) / 3, { phoneMatches: G.phoneMatches, websiteMatches: G.websiteMatches, hoursListed: G.hasHours, showsOpen24Hours: G.alwaysOpen }),
+          check("Category is dentist", 1, G.dentalType ? 1 : 0, G.type),
+          check("Description", 1, G.hasSummary ? 1 : 0, { googleSummary: G.hasSummary }),
+          check("Photos", 2, G.photos >= 10 ? 1 : G.photos / 10, `${G.photos}${G.photos >= 10 ? "+" : ""} photos (the API shows at most 10; freshness not available)`),
+          check("Booking link", 1, null, NOT("not exposed by Google's API")),
+          check("Fresh activity (posts)", 1, null, NOT("not exposed by Google's API")),
+          check("Attributes filled in", 1, G.accessibility ? 1 : 0, { accessibilityListed: G.accessibility }),
+        ],
+      }
+    : { id: "gbp", name: "Google profile", weight: 2.5, ...NOT_YET(noPlaces) },
+  G
+    ? {
+        id: "reviews", name: "Reviews", weight: 2, measured: "partly",
+        checks: [
+          check("Rating", 3, G.rating >= 4.8 ? 1 : G.rating >= 4.5 ? 0.5 : 0, `${G.rating} stars`),
+          check("Volume vs the top dentists nearby", 2, G.medianCompetitor == null ? 1 : G.reviews >= G.medianCompetitor ? 1 : G.reviews >= G.medianCompetitor / 2 ? 0.5 : 0, `${G.reviews} reviews; top nearby median ${G.medianCompetitor ?? "n/a"}`),
+          check("Recent reviews", 2, G.daysSinceNewest == null ? 0 : G.daysSinceNewest <= 30 ? 1 : G.daysSinceNewest <= 90 ? 0.5 : 0, G.daysSinceNewest == null ? "no reviews returned" : `newest of the reviews Google shows: ${G.daysSinceNewest} days ago`),
+          check("Owner replies", 2, null, NOT("Google's API doesn't include owner replies")),
+          check("Ratings elsewhere", 1, null, NOT("directory checks not built yet")),
+        ],
+      }
+    : { id: "reviews", name: "Reviews", weight: 2, ...NOT_YET(noPlaces) },
   {
     id: "experience", name: "Patient experience", weight: 2, measured: true,
     checks: [
@@ -191,8 +233,8 @@ const parts = [
   {
     id: "search", name: "Local search", weight: 1.5, measured: "partly",
     checks: [
-      check("Map rankings", 3, null, "not measured yet: needs a rankings check (Google Places API)"),
-      check("Service rankings", 2, null, "not measured yet: needs a search-results API"),
+      G ? check("Map rankings: \"dentist in [town]\"", 3, rankPts(G.rankings.dentist), G.rankings.dentist) : check("Map rankings", 3, null, NOT(noPlaces)),
+      G ? check("Service rankings on Google Maps", 2, (rankPts(G.rankings.implants) + rankPts(G.rankings.emergency)) / 2, { implants: G.rankings.implants.rank, emergency: G.rankings.emergency.rank }) : check("Service rankings", 2, null, NOT(noPlaces)),
       check("Business markup", 1.5, localSchema ? (schemaHours ? 1 : 0.5) : 0, { type: localSchema ?? null, hours: schemaHours, typesFound: [...new Set(schemaTypes)].slice(0, 8) }),
       check("Page basics: titles, descriptions, headings, image descriptions", 1.5, (uniqueTitles + withDesc + oneH1 + withAlt) / 4, { uniqueTitles: +uniqueTitles.toFixed(2), withDescription: +withDesc.toFixed(2), oneMainHeading: +oneH1.toFixed(2), imagesDescribed: +withAlt.toFixed(2) }),
       check("Consistent listings", 2, null, "not measured yet: needs directory checks"),
@@ -231,6 +273,7 @@ const report = {
   overall, band: overall != null ? band(overall) : null,
   measuredShare: Math.round(coveredWeight * 10) / 100, // of the full 10 points
   parts,
+  google: g,
   findings: { brokenLinks: site_.broken.slice(0, 50), pagesCrawled: pages.length, lighthouse: lh },
   seconds: Math.round((Date.now() - t0) / 1000),
 };
