@@ -40,9 +40,9 @@ export function ToothSketch() {
           <path className="hf-draw hf-d2" pathLength={1} strokeWidth={0.95} transform="translate(6 8) scale(1.3)" d={TOOTH} />
         </g>
         <g strokeWidth={1.1}>
-          <Spark x={38} y={8} r={3.4} i={1} />
-          <Spark x={4} y={6} r={2.4} i={2} />
-          <Spark x={40} y={26} r={2} i={3} />
+          {/* Only to the right of the tooth, so none reach the words beside or above it. */}
+          <Spark x={42} y={7} r={3} i={1} />
+          <Spark x={46} y={25} r={2} i={2} />
         </g>
       </g>
     </svg>

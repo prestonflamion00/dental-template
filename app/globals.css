@@ -645,7 +645,7 @@
 .hf-art, .hf-scene { color: color-mix(in srgb, var(--accent) 72%, var(--ink)); }
 .hf-art { position: absolute; overflow: visible; pointer-events: none; }
 .hf-under { left: -0.04em; right: -0.04em; bottom: -0.2em; width: calc(100% + 0.08em); height: 0.2em; opacity: 0.85; }
-.hf-tooth { left: calc(100% + 0.45em); top: -0.05em; width: 0.95em; height: 0.86em; }
+.hf-tooth { left: calc(100% + 0.5em); top: 0.05em; width: 0.95em; height: 0.86em; }
 #top[data-scene] .hf-tooth { display: none; }
 .hf-scene { margin: -0.5rem -16px 0.5rem; }
 .hf-scene[hidden] { display: none; }
