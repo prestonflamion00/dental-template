@@ -14,13 +14,9 @@ import { Highlighted } from "@/components/ui/Section";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Stars } from "@/components/ui/Stars";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
-import {
-  HighlightSwoosh,
-  SmileScene,
-  ToothSketch,
-} from "@/components/ui/HeroFlourish";
+import { HighlightSwoosh } from "@/components/ui/HeroFlourish";
 import { HeroPhotoStrip } from "@/components/ui/HeroPhoto";
-import { initials, telHref, withBase } from "@/lib/format";
+import { doctorShortName, initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
 export function Hero({ office }: { office: OfficeConfig }) {
@@ -30,7 +26,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
   const samplePhotos = office.stage === "demo" && !office.fictional;
   const has = (id: string) =>
     office.sections.includes(id as (typeof office.sections)[number]);
-  // The pen drawing on the headline (components/ui/HeroFlourish.tsx): on unless a practice turns it off.
+  // The pen underline on the headline (components/ui/HeroFlourish.tsx): on unless a practice turns it off.
   const pen = office.experiments?.smileLine !== false;
   const jump =
     "flex items-center gap-2 rounded-lg decoration-ink/30 underline-offset-4 [&[href]]:hover:underline";
@@ -63,12 +59,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
 
       <div className="hero-main mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
         <div>
-          {/* Phones: the hero photo, or else the pen line, fills any spare room at the top. */}
-          {office.heroImage ? (
-            <HeroPhotoStrip {...office.heroImage} />
-          ) : (
-            pen && <SmileScene />
-          )}
+          {/* Phones: the hero photo (if the practice has one) fills any spare room at the top. */}
+          {office.heroImage && <HeroPhotoStrip {...office.heroImage} />}
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}
           {rating && (
             <a
@@ -92,14 +84,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
               text={copy.heroHeadline}
               highlight={copy.heroHighlight}
               ownLine
-              decorate={
-                pen && (
-                  <>
-                    <HighlightSwoosh />
-                    <ToothSketch />
-                  </>
-                )
-              }
+              decorate={pen && <HighlightSwoosh />}
             />
           </h1>
           <p className="hero-sub mt-3 max-w-xl text-[1.05rem] text-muted sm:mt-5 sm:text-xl">
@@ -204,7 +189,44 @@ export function Hero({ office }: { office: OfficeConfig }) {
           data-reveal
           style={{ ["--d" as string]: "150ms" }}
         >
-          {office.heroImage ? (
+          {office.heroImage?.team ? (
+            // Their team greets you first (the big card); their building sits beside it, like a second photo laid on top.
+            <div className="relative pb-14 lg:pb-16">
+              <figure className="glass rounded-[28px] p-2.5">
+                <div className="relative aspect-[720/465] overflow-hidden rounded-[22px] bg-gradient-to-b from-accent-soft to-white/70">
+                  <Image
+                    src={withBase(office.heroImage.team.src)}
+                    alt={office.heroImage.team.alt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 480px, 90vw"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="px-3 pb-2 pt-3 text-[0.95rem] leading-snug">
+                  <a href={has("doctors") ? "#doctors" : undefined} className="inline-flex items-center gap-1 font-semibold text-ink hover:text-accent">
+                    {doctors.length > 1 ? `Meet our ${doctors.length} dentists` : `Meet ${doctors[0]?.name ?? "the team"}`}
+                    <ChevronRight size={16} aria-hidden="true" />
+                  </a>
+                </figcaption>
+              </figure>
+              <figure className="glass absolute -bottom-1 right-6 w-[48%] rotate-[2.5deg] rounded-[20px] p-2 shadow-lg">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[14px] bg-accent-soft">
+                  <Image
+                    src={withBase(office.heroImage.src)}
+                    alt={office.heroImage.alt}
+                    fill
+                    sizes="(min-width: 1024px) 240px, 45vw"
+                    className="object-cover"
+                    style={{ objectPosition: office.heroImage.position }}
+                  />
+                </div>
+                <figcaption className="px-1.5 pb-0.5 pt-1.5 text-xs font-semibold text-muted">
+                  Our office · {office.contact.address.street}
+                </figcaption>
+              </figure>
+            </div>
+          ) : office.heroImage ? (
             // Their own photo in a framed card, with who they'll see along the bottom.
             <figure className="glass rounded-[28px] p-2.5">
               <div className="relative aspect-[16/11] overflow-hidden rounded-[22px] bg-accent-soft">

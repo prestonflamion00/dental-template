@@ -13,10 +13,12 @@ import { Hero } from "@/components/sections/Hero";
 import { QuickInfo } from "@/components/sections/QuickInfo";
 import { RequestSection } from "@/components/sections/RequestSection";
 import { ServicesGrid } from "@/components/sections/Services";
+import { CatalogList } from "@/components/sections/CatalogList";
 import { NewPatients } from "@/components/sections/NewPatients";
 import { Doctors } from "@/components/sections/Doctors";
 import { Reviews } from "@/components/sections/Reviews";
 import { GalleryGrid } from "@/components/sections/Gallery";
+import { VideoTour } from "@/components/sections/VideoTour";
 import { FaqList } from "@/components/sections/Faq";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
@@ -41,6 +43,7 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
       intro={office.copy.servicesIntro}
     >
       <ServicesGrid services={office.services} phone={office.contact.phone} />
+      {office.catalog && <CatalogList categories={office.catalog} />}
     </Section>
   ),
   newPatients: () => <NewPatients office={office} />,
@@ -55,6 +58,7 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
         </MobileReveal>
       </Section>
     ) : null,
+  video: () => <VideoTour office={office} />,
   faq: () => (
     <Section id="faq" eyebrow="FAQ" title="Questions? We’ve got answers" intro={office.copy.faqIntro}>
       <FaqList faqs={office.faqs} />
@@ -67,6 +71,7 @@ const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string; wideOn
   services: { href: "#services", label: "Services" },
   newPatients: { href: "#new-patients", label: "New Patients" },
   doctors: { href: "#doctors", label: "Our Team" },
+  video: { href: "#video", label: "Video", wideOnly: true },
   reviews: { href: "#reviews", label: "Reviews" },
   faq: { href: "#faq", label: "FAQ" },
   // On laptops the number and Request button in the bar cover "Contact"; the link returns on wide screens.

@@ -639,34 +639,19 @@
   #top #hero-actions { margin-top: 2rem; }
 }
 
-/* ── Hero pen drawing (components/ui/HeroFlourish.tsx) ── */
+/* ── Hero pen underline (components/ui/HeroFlourish.tsx) ── */
 .hf-wrap { position: relative; display: inline-block; }
 /* A muted ink version of the accent, so it reads as pen, not as a highlight. */
-.hf-art, .hf-scene { color: color-mix(in srgb, var(--accent) 72%, var(--ink)); }
-.hf-art { position: absolute; overflow: visible; pointer-events: none; }
+.hf-art { position: absolute; overflow: visible; pointer-events: none; color: color-mix(in srgb, var(--accent) 72%, var(--ink)); }
 .hf-under { left: -0.04em; right: -0.04em; bottom: -0.2em; width: calc(100% + 0.08em); height: 0.2em; opacity: 0.85; }
-.hf-tooth { left: calc(100% + 0.5em); top: 0.05em; width: 0.95em; height: 0.86em; }
-#top[data-scene] .hf-tooth { display: none; }
-.hf-scene { margin: -0.5rem -16px 0.5rem; }
-.hf-scene[hidden] { display: none; }
-.hf-scene svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.hf-line { opacity: 0.55; }
 .hf-draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
-.hf-float { transform-box: fill-box; }
-.hf-float { transform-origin: center; }
 @media (prefers-reduced-motion: no-preference) {
-  /* Drawn in like a pen: underline, then the line across, then the tooth, then the sparkles. */
   .hf-draw { stroke-dashoffset: 1; animation: hf-draw 1s cubic-bezier(.45,.05,.35,1) 0.35s forwards; }
-  .hf-line { animation-duration: 1.8s; animation-delay: 0.5s; }
-  .hf-d2 { animation-duration: 1.2s; animation-delay: 1.3s; }
-  .hf-spark { opacity: 0; animation: hf-spark-in 0.4s ease forwards, hf-twinkle 3.6s ease-in-out infinite; }
-  .hf-s1 { animation-delay: 2.4s, 2.8s; }
-  .hf-s2 { animation-delay: 2.55s, 4s; }
-  .hf-s3 { animation-delay: 2.7s, 5.1s; }
-  /* Then a little life: the tooth floats a couple of pixels, slowly. */
-  .hf-float { animation: hf-float 6s ease-in-out 2.6s infinite; }
 }
 @keyframes hf-draw { to { stroke-dashoffset: 0; } }
-@keyframes hf-spark-in { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
-@keyframes hf-twinkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.7) rotate(20deg); } }
-@keyframes hf-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* Hero photo strip on phones (components/ui/HeroPhoto.tsx): team ⇄ building, slowly. */
+@media (prefers-reduced-motion: no-preference) {
+  .hp-fade { animation: hp-fade 14s ease-in-out 4s infinite; }
+}
+@keyframes hp-fade { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }

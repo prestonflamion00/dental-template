@@ -105,6 +105,8 @@ for (const url of args) {
     await page.goto(url, { waitUntil: "networkidle" });
     const missing = await page.evaluate((must) => {
       const out = [];
+      // The first-screen rule is for home pages (they have the hero); inner pages only get the width checks.
+      if (!document.getElementById("hero-title")) return out;
       for (const [name, sel] of Object.entries(must)) {
         const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
         const r = el?.getBoundingClientRect();

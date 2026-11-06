@@ -45,6 +45,7 @@ export type SectionId =
   | "doctors"
   | "reviews"
   | "gallery"
+  | "video"
   | "faq"
   | "contact";
 
@@ -79,6 +80,8 @@ export interface Doctor {
   name: string;
   /** Credentials shown after the name, e.g. "DDS" or "DMD, FAGD"; left out when not publicly known. */
   credentials?: string;
+  /** Longer bio for the doctor's own page (paragraphs), when the practice has doctor pages. */
+  about?: string[];
   /** Role line, e.g. "Founder & General Dentist". */
   title: string;
   bio?: string;
@@ -95,12 +98,34 @@ export interface Service {
   icon: IconName;
   /** One sentence for the card. */
   short: string;
+  /** With a full catalog: the page "Learn more" opens, e.g. "/services/implants/" or "/services/#gum-care". */
+  page?: string;
   /** A few plain-language sentences for the detail modal. */
   detail: string;
   /** Optional bullet points in the detail modal. */
   points?: string[];
   /** Typical visit length in minutes (for a future online scheduler; not shown yet). */
   durationMin?: number;
+}
+
+/** A block of a content page: a heading, a paragraph or a bullet point. */
+export type ContentBlock = ["h" | "p" | "li", string];
+
+/** One service in a practice's full list, with its own page. */
+export interface CatalogService {
+  id: string;
+  name: string;
+  /** One sentence for lists. */
+  summary: string;
+  body: ContentBlock[];
+}
+
+/** A group in the full list of services (e.g. "Preventive care"). */
+export interface ServiceCategory {
+  id: string;
+  name: string;
+  intro?: string;
+  services: CatalogService[];
 }
 
 export interface Review {
@@ -227,11 +252,53 @@ export interface OfficeConfig {
    * Optional hero photo (path under /public): the practice's own office or team, never stock. Desktop
    * shows it in a framed card beside the headline; phones show it above the headline where it fits.
    */
-  heroImage?: { src: string; alt: string; /** CSS object-position, e.g. "50% 40%". */ position?: string };
+  heroImage?: {
+    src: string;
+    alt: string;
+    /** CSS object-position, e.g. "50% 40%". */
+    position?: string;
+    /**
+     * Optional team photo: when set it greets visitors first (the big hero card on bigger screens,
+     * the first image on phones) and the building photo sits alongside it.
+     */
+    team?: { src: string; alt: string };
+  };
+
+  /**
+   * Optional full list of services, grouped (for practices that offer a lot). The home page keeps
+   * the highlight cards and adds a compact "everything we offer" list; each service gets its own page.
+   */
+  catalog?: ServiceCategory[];
+
+  /** Optional team beyond the doctors (hygienists, assistants, front office): their own page, /team/. */
+  staff?: { name: string; role: string; photo?: string }[];
+
+  /** Optional payments & financing page (/billing/): online bill pay, accepted payments, financing partners. */
+  billing?: {
+    payUrl?: string;
+    methods: string[];
+    financing?: { name: string; url: string }[];
+    intro?: string;
+  };
+
+  /** Optional careers page (/careers/). */
+  careers?: {
+    intro: string;
+    applyUrl: string;
+    jobs: { title: string; type?: string; pay?: string; perks: string[]; details: string[] }[];
+  };
+
+  /** Optional pages for nearby towns the practice serves (/areas/<slug>/), e.g. "washington-in". */
+  areas?: { slug: string; town: string; region: string }[];
+
+  /** Optional video tour (their own, path under /public), shown in its own section with a still frame until played. */
+  video?: { src: string; poster: string; title: string; caption?: string };
 
   experiments?: {
-    /** The pen drawing on the hero headline (underline, tooth, and on tall phones a line across the top). On unless set to false. */
+    /** The pen underline that draws itself under the hero headline's highlight. On unless set to false. */
     smileLine?: boolean;
+    /** Each doctor gets their own page (/doctors/<name>/), and the team cards link to it. */
+    doctorPages?: boolean;
   };
 
   /** Overall look (config/designs.ts). Defaults to "butter", which uses `theme` for its colours. */

@@ -33,3 +33,13 @@ export function withBase(path: string): string {
   const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   return base && path.startsWith("/") && !path.startsWith("//") ? base + path : path;
 }
+
+/** URL-friendly name for a doctor's page: "Dr. Eric Herman" → "dr-eric-herman". */
+export function doctorSlug(name: string): string {
+  return name.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+/** Short form for buttons: "Dr. Lynn Stine" → "Dr. Stine"; other names → first name. */
+export function doctorShortName(name: string): string {
+  return /^Dr\.?\s/.test(name) ? `Dr. ${name.split(" ").at(-1)}` : name.split(" ")[0];
+}
