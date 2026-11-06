@@ -709,3 +709,6 @@
   /* Option B: the photo runs up behind the see-through bar. */
   #top[data-hero="bleed"]:has(.hero-name) .hero-photo { margin-top: -84px; min-height: 230px; }
 }
+
+/* The menu is open (components/sections/Nav.tsx): the sticky bottom bar steps aside. */
+html[data-menu-open] [data-mobile-bar] { transform: translateY(120%); pointer-events: none; }

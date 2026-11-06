@@ -162,6 +162,13 @@ export function Nav({
   }, []);
   const heroMode = stage !== "none";
 
+  // While the menu is open, the sticky Call / Request bar at the bottom steps aside (the menu has
+  // the same buttons, and the two would overlap); app/globals.css hides it on html[data-menu-open].
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-menu-open", menuOpen);
+    return () => document.documentElement.removeAttribute("data-menu-open");
+  }, [menuOpen]);
+
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -260,7 +267,8 @@ export function Nav({
       <div
         id="mobile-menu"
         hidden={!menuOpen}
-        className="glass-strong mx-auto mt-2 max-w-6xl rounded-[24px] p-3 xl:hidden"
+        // Never taller than the screen below the bar: on small phones it scrolls inside itself.
+        className="glass-strong mx-auto mt-2 max-h-[calc(100svh-7.5rem)] max-w-6xl overflow-y-auto overscroll-contain rounded-[24px] p-3 xl:hidden"
       >
         <ul className="grid gap-1">
           {links.map((l) =>
