@@ -15,7 +15,7 @@ import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Stars } from "@/components/ui/Stars";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { HighlightSwoosh } from "@/components/ui/HeroFlourish";
-import { HeroPhotoStrip } from "@/components/ui/HeroPhoto";
+import { HeroPhoto } from "@/components/ui/HeroPhoto";
 import { doctorShortName, initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
@@ -28,11 +28,14 @@ export function Hero({ office }: { office: OfficeConfig }) {
     office.sections.includes(id as (typeof office.sections)[number]);
   // The pen underline on the headline (components/ui/HeroFlourish.tsx): on unless a practice turns it off.
   const pen = office.experiments?.smileLine !== false;
+  // Phones: photo-first when a layout is chosen and there's a photo (or a placeholder for a real-practice demo).
+  const photoFirst = !!office.heroLayout && (!!office.heroImage || samplePhotos);
   const jump =
     "flex items-center gap-2 rounded-lg decoration-ink/30 underline-offset-4 [&[href]]:hover:underline";
   return (
     <section
       id="top"
+      data-hero={photoFirst ? office.heroLayout : undefined}
       aria-labelledby="hero-title"
       className="relative overflow-x-clip pb-10 pt-5 sm:pt-16 lg:pb-14 lg:pt-12"
     >
@@ -59,8 +62,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
 
       <div className="hero-main mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
         <div>
-          {/* Phones: the hero photo (if the practice has one) fills any spare room at the top. */}
-          {office.heroImage && <HeroPhotoStrip {...office.heroImage} />}
+          {/* Phones, photo-first layouts: their photo (or a placeholder on demos) leads the first screen. */}
+          {photoFirst && <HeroPhoto image={office.heroImage} placeholder={samplePhotos} />}
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}
           {rating && (
             <a

@@ -650,8 +650,37 @@
 }
 @keyframes hf-draw { to { stroke-dashoffset: 0; } }
 
-/* Hero photo strip on phones (components/ui/HeroPhoto.tsx): team ⇄ building, slowly. */
-@media (prefers-reduced-motion: no-preference) {
-  .hp-fade { animation: hp-fade 14s ease-in-out 4s infinite; }
+/* ── Photo-first hero on phones (components/ui/HeroPhoto.tsx; office.heroLayout) ──
+   The photo takes whatever room is left after the rating, headline, buttons and status, so it
+   always fits the first screen, from an iPhone SE up; on taller phones it simply grows. */
+@media (max-width: 639.98px) {
+  #top[data-hero] { justify-content: flex-start; padding-top: 0.75rem; }
+  #top[data-hero] > .hero-main { display: flex; flex-direction: column; flex: 1; margin-top: 0; }
+  #top[data-hero] > .hero-main > div:first-child { display: flex; flex-direction: column; flex: 1; }
+  #top[data-hero] .hero-photo { flex: 1 1 0; align-self: stretch; min-height: 150px; max-height: 54svh; margin-bottom: 1rem; }
+  #top[data-hero] #hero-title { margin-top: 0.25rem; font-size: 2.15rem; line-height: 1.05; }
+  #top[data-hero] .hero-sub { display: none; }
+  #top[data-hero] #hero-actions { margin-top: 1.25rem; }
+  #top[data-hero] > .hero-cue { margin-top: 0.25rem; }
+
+  /* A: a rounded photo card, like the rest of the site's cards. */
+  #top[data-hero="card"] .hero-photo { border-radius: 24px; box-shadow: 0 0 0 6px rgb(255 255 255 / 0.65), 0 14px 30px -18px rgb(var(--shadow-tint, 40 20 25) / 0.5); margin: 8px 6px 1.1rem; }
+
+  /* B: edge to edge, fading into the page at the bottom. */
+  #top[data-hero="bleed"] { padding-top: 0; }
+  #top[data-hero="bleed"] .hero-photo { margin: -0.5rem -16px 0.25rem; -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
+
+  /* C: no frame, soft edges, everything centered (like a portrait on paper). */
+  #top[data-hero="soft"] .hero-photo { margin: 0 -8px 0.5rem; -webkit-mask-image: radial-gradient(ellipse 62% 58% at 50% 46%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 62% 58% at 50% 46%, #000 62%, transparent 100%); }
+  #top[data-hero="soft"] .hero-main > div:first-child { text-align: center; align-items: center; }
+  #top[data-hero="soft"] .hero-main > div:first-child > a:first-of-type { justify-content: center; }
+  #top[data-hero="soft"] #hero-actions { width: 100%; }
+  #top[data-hero="soft"] #hero-actions + div { justify-content: center; }
 }
+/* Opening: the photo settles in with a very slow zoom; team ⇄ building crossfade after that. */
+@media (prefers-reduced-motion: no-preference) {
+  .hp-zoom { animation: hp-zoom 7s cubic-bezier(.2,.6,.3,1) both; }
+  .hp-fade { animation: hp-fade 14s ease-in-out 5s infinite; }
+}
+@keyframes hp-zoom { from { transform: scale(1.07); } to { transform: scale(1); } }
 @keyframes hp-fade { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }

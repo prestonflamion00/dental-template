@@ -291,6 +291,13 @@ export interface OfficeConfig {
   /** Optional pages for nearby towns the practice serves (/areas/<slug>/), e.g. "washington-in". */
   areas?: { slug: string; town: string; region: string }[];
 
+  /**
+   * Phones: photo-first hero. The photo (or, on demos without one, a placeholder) leads the first
+   * screen; the headline is smaller and the subhead steps aside. "card": a rounded photo card;
+   * "bleed": edge to edge, fading into the page; "soft": no frame, soft edges, centered text.
+   */
+  heroLayout?: "card" | "bleed" | "soft";
+
   /** Optional video tour (their own, path under /public), shown in its own section with a still frame until played. */
   video?: { src: string; poster: string; title: string; caption?: string };
 

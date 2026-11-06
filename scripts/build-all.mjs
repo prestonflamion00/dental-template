@@ -29,6 +29,8 @@ const outDir = join(root, "site");
 const slugs = readdirSync(join(root, "config/offices"))
   .filter((f) => f.endsWith(".ts"))
   .map((f) => f.replace(/\.ts$/, ""))
+  // ONLY=a,b builds just those practices (handy for mockup previews).
+  .filter((s) => !process.env.ONLY || process.env.ONLY.split(",").includes(s))
   .sort();
 
 // Every file must also be registered in config/office.ts (that's what the app imports).
