@@ -6,6 +6,8 @@ import { Highlighted } from "@/components/ui/Section";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Stars } from "@/components/ui/Stars";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
+import { HighlightSwoosh, MadeForYou, ReviewTicker } from "@/components/ui/HeroFlourish";
+import { SAMPLE_REVIEWS } from "./Reviews";
 import { initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
@@ -18,6 +20,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
   const jump = "flex items-center gap-2 rounded-lg decoration-ink/30 underline-offset-4 [&[href]]:hover:underline";
   return (
     <section id="top" aria-labelledby="hero-title" className="relative overflow-x-clip pb-10 pt-5 sm:pt-16 lg:pb-14 lg:pt-12">
+      {/* #6: a private preview greets the dentist it was built for. */}
+      {office.stage === "demo" && !office.fictional && <MadeForYou who={doctors.length === 1 ? doctors[0].name : practice.name} />}
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-1)", width: 520, height: 520, top: -80, left: "-12%" }} />
       <div className="orb-local" style={{ ["--c" as string]: "var(--orb-3)", width: 460, height: 460, top: 120, right: "-6%" }} />
 
@@ -40,7 +44,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
             id="hero-title"
             className="mt-3 text-[2.75rem] sm:mt-4 leading-[1.04] text-ink sm:text-6xl lg:text-[4.5rem]"
           >
-            <Highlighted text={copy.heroHeadline} highlight={copy.heroHighlight} ownLine />
+            <Highlighted text={copy.heroHeadline} highlight={copy.heroHighlight} ownLine decorate={<HighlightSwoosh />} />
           </h1>
           <p className="hero-sub mt-3 max-w-xl text-[1.05rem] text-muted sm:mt-5 sm:text-xl">
             {copy.heroSubhead}
@@ -67,6 +71,12 @@ export function Hero({ office }: { office: OfficeConfig }) {
               offices={office.locations}
             />
           </div>
+
+          {/* #2: real patient quotes rotate here (demos without reviews show the playful samples). */}
+          <ReviewTicker
+            href={has("reviews") ? "#reviews" : undefined}
+            quotes={(office.reviews.length ? office.reviews : office.stage === "demo" ? SAMPLE_REVIEWS : []).map((r) => ({ text: r.text, name: r.name }))}
+          />
 
           {/* Trust strip: each item jumps to the section that backs it up. */}
           {/* Phones skip this strip: the rating is above the headline and "Accepting new patients" sits in the info strip. */}

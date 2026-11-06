@@ -35,7 +35,18 @@ export function Section({
 }
 
 /** Renders `text` with `highlight` (if present) wrapped in an italic serif accent. */
-export function Highlighted({ text, highlight, ownLine = false }: { text: string; highlight?: string; ownLine?: boolean }) {
+export function Highlighted({
+  text,
+  highlight,
+  ownLine = false,
+  decorate,
+}: {
+  text: string;
+  highlight?: string;
+  ownLine?: boolean;
+  /** Trial: a drawing on the highlighted words (components/ui/HeroFlourish.tsx). */
+  decorate?: React.ReactNode;
+}) {
   if (!highlight || !text.includes(highlight)) return <>{text}</>;
   const [before, after] = text.split(highlight);
   // `ownLine`: a phrase that ends the headline starts its own line, so the switch to the accent
@@ -45,8 +56,37 @@ export function Highlighted({ text, highlight, ownLine = false }: { text: string
     <>
       {breakBefore ? keepLastWordsTogether(before.trimEnd()) : before}
       {breakBefore && <br />}
-      <span className="highlight">{highlight}</span>
-      {after}
+      {decorate ? (
+        <Decorated highlight={highlight} after={after} decorate={decorate} />
+      ) : (
+        <>
+          <span className="highlight">{highlight}</span>
+          {after}
+        </>
+      )}
+    </>
+  );
+}
+
+/**
+ * The drawing goes under the whole highlight (up to three words) or its last two words, kept on one line
+ * with any punctuation that follows, so it never stretches across a wrapped line.
+ */
+function Decorated({ highlight, after, decorate }: { highlight: string; after: string; decorate: React.ReactNode }) {
+  const words = highlight.split(" ");
+  const n = words.length > 3 ? 2 : words.length;
+  const tail = words.slice(-n).join("\u00a0");
+  const head = words.slice(0, -n).join(" ");
+  return (
+    <>
+      {head && <span className="highlight">{head} </span>}
+      <span className="whitespace-nowrap">
+        <span className="fl-wrap">
+          <span className="highlight">{tail}</span>
+          {decorate}
+        </span>
+        {after}
+      </span>
     </>
   );
 }
