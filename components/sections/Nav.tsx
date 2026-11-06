@@ -109,41 +109,66 @@ export function Nav({
       const k = 1 + (b.width / a.width - 1) * e;
       c.style.transform = `translate(${a.left + (b.left - a.left) * e}px, ${a.top + (b.top - a.top) * e}px) scale(${k})`;
     };
+    // Scroll only decides WHEN; the glide itself runs on a clock, at one fixed speed, both ways.
+    // Two thresholds (hysteresis), so stopping right at the line can't make it flicker.
+    const DURATION = reduce ? 0 : 450; // ms
+    const TO_BAR = 24; // the name is within 24px of the bar → glide up into it
+    const TO_HERO = 72; // the name's spot is back 72px below the bar → glide back down
     let current = "",
-      raf = 0;
+      raf = 0,
+      anim = 0,
+      dir: 0 | 1 = 0, // 1 = heading into the bar, 0 = heading back to the hero
+      t = 0, // 0 = in the hero, 1 = in the bar
+      last = 0;
+    const show = (stageNow: typeof current) => {
+      if (stageNow !== current) setStage((current = stageNow as never));
+      const moving = stageNow === "moving";
+      heroName.style.visibility = stageNow === "hero" ? "" : "hidden";
+      [cText, cMark].forEach(
+        (c) => c && (c.style.visibility = moving ? "visible" : "hidden"),
+      );
+    };
+    const frame = (now: number) => {
+      anim = 0;
+      const step = DURATION ? (now - last) / DURATION : 1;
+      last = now;
+      t = Math.max(0, Math.min(1, t + (dir ? step : -step)));
+      const done = dir ? t >= 1 : t <= 0;
+      if (done) {
+        show(dir ? "bar" : "hero");
+        return;
+      }
+      show("moving");
+      const e = t * t * (3 - 2 * t); // ease in and out
+      // Measured every frame, so the copy stays glued to the real name while the page scrolls.
+      place(big, logoText, cText!, e);
+      if (cMark && bigMark && logoMark) place(bigMark, logoMark, cMark, e);
+      anim = requestAnimationFrame(frame);
+    };
+    const glide = (to: 0 | 1) => {
+      if (dir === to && (anim || t === to)) return;
+      dir = to;
+      last = performance.now();
+      if (!anim) anim = requestAnimationFrame(frame);
+    };
     const update = () => {
       raf = 0;
       if (!phone()) {
+        cancelAnimationFrame(anim);
+        anim = 0;
+        t = 0;
+        dir = 0;
         if (current !== "none") setStage((current = "none"));
         [cText, cMark].forEach((c) => c && (c.style.visibility = "hidden"));
         heroName.style.visibility = "";
         return;
       }
-      // Progress: 0 while the name is more than 140px below the bar's logo, 1 when it reaches it.
+      if (!current || current === "none") show(t >= 1 ? "bar" : "hero");
       const gap =
-        big.getBoundingClientRect().top - logoText.getBoundingClientRect().top;
-      const p = Math.max(0, Math.min(1, 1 - gap / 140));
-      const next =
-        p <= 0
-          ? "hero"
-          : p >= 1
-            ? "bar"
-            : reduce
-              ? p < 0.5
-                ? "hero"
-                : "bar"
-              : "moving";
-      if (next !== current) setStage((current = next));
-      const moving = next === "moving";
-      heroName.style.visibility = next === "hero" ? "" : "hidden";
-      [cText, cMark].forEach(
-        (c) => c && (c.style.visibility = moving ? "visible" : "hidden"),
-      );
-      if (moving) {
-        const e = p * p * (3 - 2 * p); // ease in and out
-        place(big, logoText, cText!, e);
-        if (cMark && bigMark && logoMark) place(bigMark, logoMark, cMark, e);
-      }
+        big.getBoundingClientRect().top -
+        navRef.current!.getBoundingClientRect().bottom;
+      if (gap < TO_BAR) glide(1);
+      else if (gap > TO_HERO) glide(0);
     };
     const schedule = () => (raf ||= requestAnimationFrame(update));
     fit();
@@ -156,6 +181,7 @@ export function Nav({
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(anim);
       layer.remove();
       heroName.style.visibility = "";
     };
