@@ -2,8 +2,9 @@ import type { OfficeInput } from "../types";
 
 /**
  * Prospect demo for Herman Family Dentistry (Vincennes, IN). Real practice: built only from public
- * information on their own site (vincennesdentalpractice.com, Nov 2026). Anything not listed here is
- * filled by buildOffice: placeholder insurance plans and sample reviews.
+ * information on their own site (vincennesdentalpractice.com, Nov 2026), including the doctors'
+ * portraits (public/offices/herman/). Anything not listed here is filled by buildOffice: placeholder
+ * insurance plans and sample reviews. herman-family-dentistry-hero.ts is the same site with a hero photo.
  */
 const hermanFamilyDentistry: OfficeInput = {
   id: "herman-family-dentistry",
@@ -36,10 +37,11 @@ const hermanFamilyDentistry: OfficeInput = {
     sun: null,
   },
 
-  // From their doctor pages. Only Dr. Herman's degree is stated (Eric L. Herman DDS).
+  // From their doctor pages (bios and portraits). Only Dr. Herman's degree is stated (Eric L. Herman DDS).
   doctors: [
     {
       name: "Dr. Eric Herman",
+      photo: "/offices/herman/dr-herman.jpg",
       credentials: "DDS",
       title: "General Dentist",
       bio: "Since 2001, Dr. Herman has brought healthier, brighter smiles to Knox County and the surrounding area. He's a Fellow of the Academy of General Dentistry and of the International Congress of Oral Implantologists.",
@@ -47,18 +49,21 @@ const hermanFamilyDentistry: OfficeInput = {
     },
     {
       name: "Dr. Lynn Stine",
+      photo: "/offices/herman/dr-stine.jpg",
       title: "General Dentist",
       bio: "Dr. Stine joined the practice in 2007, after a General Practice Residency at Denver Health in Denver, Colorado.",
       highlights: ["Indiana University School of Dentistry", "Since 2007"],
     },
     {
       name: "Dr. Karen Schenk",
+      photo: "/offices/herman/dr-schenk.jpg",
       title: "General Dentist",
       bio: "A South Knox High School graduate with a Master's in Biology from Purdue, Dr. Schenk joined in 2017 and focuses on general dentistry and anti-aging treatments.",
       highlights: ["Indiana University School of Dentistry", "Since 2017"],
     },
     {
       name: "Dr. John Anderson",
+      photo: "/offices/herman/dr-anderson.jpg",
       title: "General Dentist",
       bio: "A Vincennes native and Rivet High School graduate, Dr. Anderson joined in 2024 and enjoys caring for patients in his hometown.",
       highlights: ["University of Louisville School of Dentistry", "Since 2024"],

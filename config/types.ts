@@ -223,6 +223,12 @@ export interface OfficeConfig {
   social: Partial<Record<"facebook" | "instagram" | "google" | "youtube" | "tiktok" | "yelp", string>>;
 
   /** Features being tried on one practice before they go to every site. */
+  /**
+   * Optional hero photo (path under /public): the practice's own office or team, never stock. Desktop
+   * shows it in a framed card beside the headline; phones show it above the headline where it fits.
+   */
+  heroImage?: { src: string; alt: string; /** CSS object-position, e.g. "50% 40%". */ position?: string };
+
   experiments?: {
     /** The pen drawing on the hero headline (underline, tooth, and on tall phones a line across the top). On unless set to false. */
     smileLine?: boolean;

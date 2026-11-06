@@ -7,7 +7,7 @@ import { cx, initials, withBase } from "@/lib/format";
 
 export function Doctors({ office }: { office: OfficeConfig }) {
   const { doctors, copy } = office;
-  // Demos of real practices never use their photos: a placeholder marks where theirs will go.
+  // Demos of real practices show a placeholder where a photo will go, unless we've added theirs.
   const samplePhotos = office.stage === "demo" && !office.fictional;
   const cols =
     doctors.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : doctors.length === 2 ? "sm:grid-cols-2 max-w-4xl mx-auto" : "max-w-sm mx-auto";
@@ -18,9 +18,7 @@ export function Doctors({ office }: { office: OfficeConfig }) {
           // Every screen: a big portrait (full card width on phones), with the name and details under it.
           <li key={d.name} className="glass glass-hover flex flex-col rounded-[28px] p-3" data-reveal style={{ ["--d" as string]: `${i * 90}ms` }}>
             <div className="relative aspect-[4/4.2] overflow-hidden rounded-[22px] bg-accent-soft">
-              {samplePhotos ? (
-                <PhotoPlaceholder className="absolute inset-0" />
-              ) : d.photo ? (
+              {d.photo ? (
                 <Image
                   src={withBase(d.photo)}
                   alt={`Portrait of ${d.name}`}
@@ -29,6 +27,8 @@ export function Doctors({ office }: { office: OfficeConfig }) {
                   className="object-cover"
                   loading="lazy"
                 />
+              ) : samplePhotos ? (
+                <PhotoPlaceholder className="absolute inset-0" />
               ) : (
                 <span className="absolute inset-0 grid place-items-center font-serif text-7xl text-accent" aria-hidden="true">
                   {initials(d.name)}

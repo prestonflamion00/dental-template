@@ -52,10 +52,14 @@ export function ToothSketch() {
 /**
  * Taller phones only: when the hero has room to spare, the pen line fills it. Measured, so it shows
  * only where it fits and never pushes the buttons off the first screen. Rendered on every screen size
- * (hidden where there's no room) because it also keeps the small tooth from running off the edge.
+ * (hidden where there's no room) because the measuring also keeps the small tooth from running off
+ * the edge.
  */
-export function SmileScene() {
-  const ref = useRef<HTMLDivElement>(null);
+/**
+ * Phones: how much room the hero has to spare above and below its content (0 when there isn't
+ * enough, or on bigger screens), so something can fill it without pushing the buttons down.
+ */
+export function useSpareHeight(ref: React.RefObject<HTMLElement | null>, min: number, max: number, attr: string) {
   const [height, setHeight] = useState(0);
   useEffect(() => {
     const fit = () => {
@@ -71,16 +75,22 @@ export function SmileScene() {
       if (!hero || !main || window.innerWidth >= 640) return setHeight(0);
       const mine = ref.current?.offsetHeight ?? 0;
       const free = hero.clientHeight - (main.offsetHeight - mine) - (cue?.offsetHeight ?? 0) - 40;
-      setHeight(free >= 90 ? Math.min(170, free - 20) : 0);
+      setHeight(free >= min ? Math.min(max, free - 20) : 0);
     };
     fit();
     document.fonts?.ready.then(fit); // the headline's height settles once its font loads
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
-  }, []);
+  }, [ref, min, max]);
   useEffect(() => {
-    document.getElementById("top")?.toggleAttribute("data-scene", height > 0);
-  }, [height]);
+    document.getElementById("top")?.toggleAttribute(attr, height > 0);
+  }, [height, attr]);
+  return height;
+}
+
+export function SmileScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const height = useSpareHeight(ref, 90, 170, "data-scene");
   return (
     <div ref={ref} className="hf-scene" style={{ height: height || undefined }} aria-hidden="true" hidden={!height}>
       {height > 0 && (
