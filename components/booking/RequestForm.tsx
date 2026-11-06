@@ -52,9 +52,19 @@ const inputCls = (err?: string) =>
 const chipCls =
   "relative inline-flex min-h-11 cursor-pointer select-none items-center rounded-full border border-ink/15 bg-white/70 px-4 font-semibold text-ink transition hover:border-ink/40 has-checked:border-ink has-checked:bg-ink has-checked:text-bg has-focus-visible:ring-2 has-focus-visible:ring-accent has-focus-visible:ring-offset-2";
 
-export function RequestForm({ practiceName, services, openDays, locations = [], initialServiceId, titleId, heading = true, animate = false }: RequestFormProps) {
+export function RequestForm({
+  practiceName,
+  services,
+  openDays,
+  locations = [],
+  initialServiceId,
+  titleId,
+  heading = true,
+  animate = false,
+}: RequestFormProps) {
   const uid = useId();
-  const initialReason = services.find((s) => s.id === initialServiceId)?.name ?? "";
+  const initialReason =
+    services.find((s) => s.id === initialServiceId)?.name ?? "";
   const empty: RequestValues = {
     kind: "appointment",
     name: "",
@@ -70,7 +80,9 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   };
   const [values, setValues] = useState<RequestValues>(empty);
   const [errors, setErrors] = useState<RequestErrors>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">(
+    "idle",
+  );
   // Bot traps (checked by the server): when the form appeared, and a hidden field people never fill.
   const startedAt = useRef(0);
   const [company, setCompany] = useState("");
@@ -81,13 +93,18 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   const successRef = useRef<HTMLDivElement>(null);
   const isAppt = values.kind === "appointment";
   const needLocation = locations.length > 1;
-  const daysOffered = locations.find((l) => l.name === values.location)?.openDays ?? openDays;
+  const daysOffered =
+    locations.find((l) => l.name === values.location)?.openDays ?? openDays;
   const [showPrefs, setShowPrefs] = useState(false);
+  const phone = useIsPhone();
   // The form starts compact (name, phone, email) and opens up once someone starts filling it in.
   const [engaged, setEngaged] = useState(false);
   // Expanding form: tell the surrounding layout (RequestSection) to give the form the full width.
   useEffect(() => {
-    if (animate) formRef.current?.closest("[data-request-layout]")?.toggleAttribute("data-engaged", engaged);
+    if (animate)
+      formRef.current
+        ?.closest("[data-request-layout]")
+        ?.toggleAttribute("data-engaged", engaged);
   }, [animate, engaged]);
 
   // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
@@ -97,16 +114,30 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
       const id = (e as CustomEvent<RequestEventDetail>).detail?.serviceId;
       const name = services.find((s) => s.id === id)?.name;
       setStatus((st) => (st === "sent" ? "idle" : st));
-      setValues((v) => ({ ...v, kind: "appointment", reason: name ?? v.reason }));
+      setValues((v) => ({
+        ...v,
+        kind: "appointment",
+        reason: name ?? v.reason,
+      }));
       if (!animate) setEngaged(true);
-      setTimeout(() => formRef.current?.querySelector<HTMLInputElement>('[name="name"]')?.focus({ preventScroll: true }), 50);
+      setTimeout(
+        () =>
+          formRef.current
+            ?.querySelector<HTMLInputElement>('[name="name"]')
+            ?.focus({ preventScroll: true }),
+        50,
+      );
     };
     window.addEventListener(REQUEST_EVENT, onStart);
     return () => window.removeEventListener(REQUEST_EVENT, onStart);
   }, [services, animate]);
 
   // Expanding form: open up only once name, phone and email all have something typed in.
-  const basicsStarted = !!(values.name.trim() && values.phone.trim() && values.email.trim());
+  const basicsStarted = !!(
+    values.name.trim() &&
+    values.phone.trim() &&
+    values.email.trim()
+  );
   useEffect(() => {
     if (animate && basicsStarted) setEngaged(true);
   }, [animate, basicsStarted]);
@@ -119,21 +150,33 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
     update("kind", kind);
     setErrors({});
   };
-  const toggleDay = (d: Day) => update("days", values.days.includes(d) ? values.days.filter((x) => x !== d) : [...values.days, d]);
+  const toggleDay = (d: Day) =>
+    update(
+      "days",
+      values.days.includes(d)
+        ? values.days.filter((x) => x !== d)
+        : [...values.days, d],
+    );
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setEngaged(true);
     const errs = validateRequest(values, { needLocation });
     setErrors(errs);
-    const first = (["name", "phone", "email", "location", "reason", "message"] as const).find((k) => errs[k]);
+    const first = (
+      ["name", "phone", "email", "location", "reason", "message"] as const
+    ).find((k) => errs[k]);
     if (first) {
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
     }
     setStatus("sending");
     try {
-      await sendContactMessage({ ...values, company, startedAt: startedAt.current });
+      await sendContactMessage({
+        ...values,
+        company,
+        startedAt: startedAt.current,
+      });
     } catch {
       setStatus("failed");
       return;
@@ -145,11 +188,19 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
   if (status === "sent") {
     const first = values.name.trim().split(" ")[0];
     return (
-      <div ref={successRef} tabIndex={-1} role="status" className="flex flex-col items-start py-4 outline-none">
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        className="flex flex-col items-start py-4 outline-none"
+      >
         <span className="grid size-14 place-items-center rounded-full bg-success/10 text-success">
           <CheckCircle2 size={28} aria-hidden="true" />
         </span>
-        <h3 id={heading ? titleId : undefined} className="mt-5 text-3xl text-ink">
+        <h3
+          id={heading ? titleId : undefined}
+          className="mt-5 text-3xl text-ink"
+        >
           {isAppt ? "Request sent. Thank you!" : "Message sent. Thank you!"}
         </h3>
         <p className="mt-2 text-muted">
@@ -158,7 +209,9 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
             : `Thanks, ${first}. Someone from ${practiceName} will get back to you within one business day.`}
         </p>
         {!contactIsLive && (
-          <p className="mt-4 rounded-xl bg-accent-soft px-4 py-3 text-sm text-ink">Demo note: this form is a preview and nothing was sent.</p>
+          <p className="mt-4 rounded-xl bg-accent-soft px-4 py-3 text-sm text-ink">
+            Demo note: this form is a preview and nothing was sent.
+          </p>
         )}
         <button
           type="button"
@@ -184,7 +237,14 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
     return (
       <div>
         <label htmlFor={id} className="mb-1.5 block font-semibold text-ink">
-          {label} {opts.optional ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
+          {label}{" "}
+          {opts.optional ? (
+            <span className="font-normal text-muted">(optional)</span>
+          ) : (
+            <span className="text-danger" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
         <input
           id={id}
@@ -200,7 +260,10 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
           className={inputCls(err)}
         />
         {err && (
-          <p id={`${id}-err`} className="mt-1.5 text-sm font-medium text-danger">
+          <p
+            id={`${id}-err`}
+            className="mt-1.5 text-sm font-medium text-danger"
+          >
             {err}
           </p>
         )}
@@ -224,7 +287,11 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
       aria-describedby={`${uid}-note`}
     >
       {/* mr-10 keeps clear of the pop-up's close button. */}
-      <div role="group" aria-label="What would you like to send?" className="mr-10 inline-flex gap-1 rounded-full bg-ink/5 p-1">
+      <div
+        role="group"
+        aria-label="What would you like to send?"
+        className="mr-10 inline-flex gap-1 rounded-full bg-ink/5 p-1"
+      >
         {(
           [
             ["appointment", "Appointment"],
@@ -251,41 +318,67 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
           {isAppt ? "Request an appointment" : "Ask us a question"}
         </h3>
       )}
-      <p id={`${uid}-note`} className={cx("text-muted", heading ? "mt-1" : "mt-4")}>
+      <p
+        id={`${uid}-note`}
+        className={cx("text-muted", heading ? "mt-1" : "mt-4")}
+      >
         {/* Phones skip the first sentence: the section intro right above says the same. */}
         <span className="max-sm:hidden">
-          {isAppt ? "Tell us what works for you and we’ll call or text to confirm a time. " : "We usually reply within one business day. "}
+          {isAppt
+            ? "Tell us what works for you and we’ll call or text to confirm a time. "
+            : "We usually reply within one business day. "}
         </span>
         Please don’t include medical details or insurance numbers.
       </p>
       <div aria-live="assertive" className="sr-only">
-        {errorCount > 0 ? `${errorCount} field${errorCount > 1 ? "s need" : " needs"} attention.` : ""}
+        {errorCount > 0
+          ? `${errorCount} field${errorCount > 1 ? "s need" : " needs"} attention.`
+          : ""}
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        <div className="sm:col-span-2">{text("name", "Name", { auto: "name", max: LIMITS.name })}</div>
-        {text("phone", "Phone", { type: "tel", auto: "tel", optional: !isAppt, max: LIMITS.phone })}
-        {text("email", "Email", { type: "email", auto: "email", max: LIMITS.email })}
+        <div className="sm:col-span-2">
+          {text("name", "Name", { auto: "name", max: LIMITS.name })}
+        </div>
+        {text("phone", "Phone", {
+          type: "tel",
+          auto: "tel",
+          optional: !isAppt,
+          max: LIMITS.phone,
+        })}
+        {text("email", "Email", {
+          type: "email",
+          auto: "email",
+          max: LIMITS.email,
+        })}
 
-        {/* Everything past name, phone and email appears once someone starts filling the form in.
-            `animate` (the expanding form): it's always rendered and slides open smoothly;
-            otherwise it simply appears. */}
-        {animate ? (
-          <div
-            className={cx(
-              "grid transition-[grid-template-rows,opacity] duration-500 ease-[var(--ease-soft)] motion-reduce:transition-none sm:col-span-2",
-              engaged ? "grid-rows-[1fr] opacity-100" : "-mt-4 grid-rows-[0fr] opacity-0",
-            )}
-            inert={!engaged}
-          >
-            <div className="-mx-1 min-h-0 overflow-hidden px-1 pt-1">
-              <div className="grid gap-4 pb-1 sm:grid-cols-2">
+        {/* Everything past name, phone and email slides open once someone has typed in all three
+            (always rendered, so it can animate). */}
+        <div
+          className={cx(
+            "grid transition-[grid-template-rows,opacity,margin-top] duration-500 ease-[var(--ease-soft)] motion-reduce:transition-none sm:col-span-2",
+            engaged
+              ? "mt-0 grid-rows-[1fr] opacity-100"
+              : "-mt-4 grid-rows-[0fr] opacity-0",
+          )}
+          inert={!engaged}
+        >
+          <div className="-mx-1 min-h-0 overflow-hidden px-1 pt-1">
+            <div className="grid gap-4 pb-1 sm:grid-cols-2">
               {isAppt && (
                 <>
                   {needLocation && (
-                    <fieldset className="reveal-in sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
+                    <fieldset
+                      className="sm:col-span-2"
+                      aria-describedby={
+                        errors.location ? `${uid}-location-err` : undefined
+                      }
+                    >
                       <legend className="mb-1.5 font-semibold text-ink">
-                        Which office? <span className="text-danger" aria-hidden="true">*</span>
+                        Which office?{" "}
+                        <span className="text-danger" aria-hidden="true">
+                          *
+                        </span>
                       </legend>
                       <div className="flex flex-wrap gap-2">
                         {locations.map((l) => (
@@ -298,7 +391,13 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                               onChange={() => {
                                 update("location", l.name);
                                 // Keep only days this office is open.
-                                setValues((s) => ({ ...s, location: l.name, days: s.days.filter((d) => l.openDays.includes(d)) }));
+                                setValues((s) => ({
+                                  ...s,
+                                  location: l.name,
+                                  days: s.days.filter((d) =>
+                                    l.openDays.includes(d),
+                                  ),
+                                }));
                               }}
                               className="sr-only"
                             />
@@ -307,15 +406,20 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                         ))}
                       </div>
                       {errors.location && (
-                        <p id={`${uid}-location-err`} className="mt-1.5 text-sm font-medium text-danger">
+                        <p
+                          id={`${uid}-location-err`}
+                          className="mt-1.5 text-sm font-medium text-danger"
+                        >
                           {errors.location}
                         </p>
                       )}
                     </fieldset>
                   )}
 
-                  <fieldset className="reveal-in sm:col-span-2">
-                    <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
+                  <fieldset className="sm:col-span-2">
+                    <legend className="mb-1.5 font-semibold text-ink">
+                      Have you visited us before?
+                    </legend>
                     <div className="flex flex-wrap gap-2">
                       {(
                         [
@@ -338,9 +442,15 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                     </div>
                   </fieldset>
 
-                  <div className="reveal-in sm:col-span-2">
-                    <label htmlFor={reasonId} className="mb-1.5 block font-semibold text-ink">
-                      Reason for your visit <span className="text-danger" aria-hidden="true">*</span>
+                  <div className="sm:col-span-2">
+                    <label
+                      htmlFor={reasonId}
+                      className="mb-1.5 block font-semibold text-ink"
+                    >
+                      Reason for your visit{" "}
+                      <span className="text-danger" aria-hidden="true">
+                        *
+                      </span>
                     </label>
                     <select
                       id={reasonId}
@@ -349,7 +459,9 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                       onChange={(e) => update("reason", e.target.value)}
                       aria-invalid={!!errors.reason}
                       aria-required
-                      aria-describedby={errors.reason ? `${reasonId}-err` : undefined}
+                      aria-describedby={
+                        errors.reason ? `${reasonId}-err` : undefined
+                      }
                       className={inputCls(errors.reason)}
                     >
                       <option value="">Choose one</option>
@@ -359,278 +471,269 @@ export function RequestForm({ practiceName, services, openDays, locations = [], 
                       <option>{OTHER_REASON}</option>
                     </select>
                     {errors.reason && (
-                      <p id={`${reasonId}-err`} className="mt-1.5 text-sm font-medium text-danger">
+                      <p
+                        id={`${reasonId}-err`}
+                        className="mt-1.5 text-sm font-medium text-danger"
+                      >
                         {errors.reason}
                       </p>
                     )}
                   </div>
 
-                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button; tap again to fold them back (what's filled in is kept). */}
+                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button; tap
+                      again to fold them back (what's filled in is kept). They slide, never pop. */}
                   <button
                     type="button"
-                    onClick={() => setShowPrefs((v) => !v)}
+                    onClick={(e) => {
+                      const btn = e.currentTarget;
+                      setShowPrefs((v) => !v);
+                      // Hiding from further down: the fields above the screen fold away, so bring the
+                      // button back into view instead of leaving the page somewhere unexpected.
+                      if (showPrefs && btn.getBoundingClientRect().top < 80) {
+                        btn.scrollIntoView({
+                          block: "center",
+                          behavior: matchMedia(
+                            "(prefers-reduced-motion: reduce)",
+                          ).matches
+                            ? "auto"
+                            : "smooth",
+                        });
+                      }
+                    }}
                     aria-expanded={showPrefs}
-                    className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
+                    aria-controls={`${uid}-extras`}
+                    className="justify-self-start text-left text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
                   >
-                    {showPrefs ? "− Hide extra details" : "+ Add more details (days, times, insurance)"}
+                    {showPrefs
+                      ? "− Hide extra details"
+                      : "+ Add days, times & insurance"}
                   </button>
-                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-                    <legend className="mb-1.5 font-semibold text-ink">
-                      Best days for you <span className="font-normal text-muted">(optional)</span>
-                    </legend>
-                    <div className="flex flex-wrap gap-2">
-                      {DAY_ORDER.filter((d) => daysOffered.includes(d)).map((d) => (
-                        <label key={d} className={chipCls}>
-                          <input type="checkbox" checked={values.days.includes(d)} onChange={() => toggleDay(d)} className="sr-only" />
-                          {DAY_LABELS[d]}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
+                  <div
+                    id={`${uid}-extras`}
+                    className={cx(
+                      "grid transition-[grid-template-rows,opacity,margin-top] duration-400 ease-[var(--ease-soft)] motion-reduce:transition-none sm:col-span-2 sm:mt-0 sm:grid-rows-[1fr] sm:opacity-100",
+                      showPrefs
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "-mt-4 grid-rows-[0fr] opacity-0",
+                    )}
+                    inert={phone && !showPrefs}
+                  >
+                    <div className="-mx-1 min-h-0 overflow-hidden px-1 pt-1">
+                      <div className="grid gap-4 pb-1 sm:grid-cols-2">
+                        <fieldset className="sm:col-span-2">
+                          <legend className="mb-1.5 font-semibold text-ink">
+                            Best days for you{" "}
+                            <span className="font-normal text-muted">
+                              (optional)
+                            </span>
+                          </legend>
+                          <div className="flex flex-wrap gap-2">
+                            {DAY_ORDER.filter((d) =>
+                              daysOffered.includes(d),
+                            ).map((d) => (
+                              <label key={d} className={chipCls}>
+                                <input
+                                  type="checkbox"
+                                  checked={values.days.includes(d)}
+                                  onChange={() => toggleDay(d)}
+                                  className="sr-only"
+                                />
+                                {DAY_LABELS[d]}
+                              </label>
+                            ))}
+                          </div>
+                        </fieldset>
 
-                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-                    <legend className="mb-1.5 font-semibold text-ink">
-                      Best time of day <span className="font-normal text-muted">(optional)</span>
-                    </legend>
-                    <div className="flex flex-wrap gap-2">
-                      {TIMES_OF_DAY.map((t) => (
-                        <label key={t} className={chipCls}>
-                          <input
-                            type="radio"
-                            name="time"
-                            value={t}
-                            checked={values.time === t}
-                            onChange={() => update("time", t)}
-                            className="sr-only"
+                        <fieldset className="sm:col-span-2">
+                          <legend className="mb-1.5 font-semibold text-ink">
+                            Best time of day{" "}
+                            <span className="font-normal text-muted">
+                              (optional)
+                            </span>
+                          </legend>
+                          <div className="flex flex-wrap gap-2">
+                            {TIMES_OF_DAY.map((t) => (
+                              <label key={t} className={chipCls}>
+                                <input
+                                  type="radio"
+                                  name="time"
+                                  value={t}
+                                  checked={values.time === t}
+                                  onChange={() => update("time", t)}
+                                  className="sr-only"
+                                />
+                                {t}
+                              </label>
+                            ))}
+                          </div>
+                        </fieldset>
+
+                        <div className="sm:col-span-2">
+                          {text("insurance", "Insurance provider", {
+                            optional: true,
+                            max: LIMITS.insurance,
+                          })}
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label
+                            htmlFor={messageId}
+                            className="mb-1.5 block font-semibold text-ink"
+                          >
+                            {isAppt
+                              ? "Anything else we should know?"
+                              : "How can we help?"}{" "}
+                            {isAppt ? (
+                              <span className="font-normal text-muted">
+                                (optional)
+                              </span>
+                            ) : (
+                              <span className="text-danger" aria-hidden="true">
+                                *
+                              </span>
+                            )}
+                          </label>
+                          <textarea
+                            id={messageId}
+                            name="message"
+                            rows={isAppt ? 3 : 4}
+                            maxLength={LIMITS.message}
+                            value={values.message}
+                            onChange={(e) => update("message", e.target.value)}
+                            aria-invalid={!!errors.message}
+                            aria-required={!isAppt}
+                            aria-describedby={
+                              errors.message ? `${messageId}-err` : undefined
+                            }
+                            className={cx(inputCls(errors.message), "py-3")}
                           />
-                          {t}
-                        </label>
-                      ))}
+                          {errors.message && (
+                            <p
+                              id={`${messageId}-err`}
+                              className="mt-1.5 text-sm font-medium text-danger"
+                            >
+                              {errors.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </fieldset>
-
-                  <div className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-                    {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
                   </div>
                 </>
               )}
 
-              <div className={cx("reveal-in sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
-                <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
-                  {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
-                  {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
-                </label>
-                <textarea
-                  id={messageId}
-                  name="message"
-                  rows={isAppt ? 3 : 4}
-                  maxLength={LIMITS.message}
-                  value={values.message}
-                  onChange={(e) => update("message", e.target.value)}
-                  aria-invalid={!!errors.message}
-                  aria-required={!isAppt}
-                  aria-describedby={errors.message ? `${messageId}-err` : undefined}
-                  className={cx(inputCls(errors.message), "py-3")}
-                />
-                {errors.message && (
-                  <p id={`${messageId}-err`} className="mt-1.5 text-sm font-medium text-danger">
-                    {errors.message}
-                  </p>
-                )}
-              </div>
-              </div>
+              {!isAppt && (
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor={messageId}
+                    className="mb-1.5 block font-semibold text-ink"
+                  >
+                    {isAppt
+                      ? "Anything else we should know?"
+                      : "How can we help?"}{" "}
+                    {isAppt ? (
+                      <span className="font-normal text-muted">(optional)</span>
+                    ) : (
+                      <span className="text-danger" aria-hidden="true">
+                        *
+                      </span>
+                    )}
+                  </label>
+                  <textarea
+                    id={messageId}
+                    name="message"
+                    rows={isAppt ? 3 : 4}
+                    maxLength={LIMITS.message}
+                    value={values.message}
+                    onChange={(e) => update("message", e.target.value)}
+                    aria-invalid={!!errors.message}
+                    aria-required={!isAppt}
+                    aria-describedby={
+                      errors.message ? `${messageId}-err` : undefined
+                    }
+                    className={cx(inputCls(errors.message), "py-3")}
+                  />
+                  {errors.message && (
+                    <p
+                      id={`${messageId}-err`}
+                      className="mt-1.5 text-sm font-medium text-danger"
+                    >
+                      {errors.message}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-        ) : (
-          engaged && (
-            <>
-              {isAppt && (
-                <>
-                  {needLocation && (
-                    <fieldset className="reveal-in sm:col-span-2" aria-describedby={errors.location ? `${uid}-location-err` : undefined}>
-                      <legend className="mb-1.5 font-semibold text-ink">
-                        Which office? <span className="text-danger" aria-hidden="true">*</span>
-                      </legend>
-                      <div className="flex flex-wrap gap-2">
-                        {locations.map((l) => (
-                          <label key={l.name} className={chipCls}>
-                            <input
-                              type="radio"
-                              name="location"
-                              value={l.name}
-                              checked={values.location === l.name}
-                              onChange={() => {
-                                update("location", l.name);
-                                // Keep only days this office is open.
-                                setValues((s) => ({ ...s, location: l.name, days: s.days.filter((d) => l.openDays.includes(d)) }));
-                              }}
-                              className="sr-only"
-                            />
-                            {l.name}
-                          </label>
-                        ))}
-                      </div>
-                      {errors.location && (
-                        <p id={`${uid}-location-err`} className="mt-1.5 text-sm font-medium text-danger">
-                          {errors.location}
-                        </p>
-                      )}
-                    </fieldset>
-                  )}
-
-                  <fieldset className="reveal-in sm:col-span-2">
-                    <legend className="mb-1.5 font-semibold text-ink">Have you visited us before?</legend>
-                    <div className="flex flex-wrap gap-2">
-                      {(
-                        [
-                          ["new", "I’m a new patient"],
-                          ["returning", "I’ve been here before"],
-                        ] as const
-                      ).map(([k, label]) => (
-                        <label key={k} className={chipCls}>
-                          <input
-                            type="radio"
-                            name="patientType"
-                            value={k}
-                            checked={values.patientType === k}
-                            onChange={() => update("patientType", k)}
-                            className="sr-only"
-                          />
-                          {label}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-
-                  <div className="reveal-in sm:col-span-2">
-                    <label htmlFor={reasonId} className="mb-1.5 block font-semibold text-ink">
-                      Reason for your visit <span className="text-danger" aria-hidden="true">*</span>
-                    </label>
-                    <select
-                      id={reasonId}
-                      name="reason"
-                      value={values.reason}
-                      onChange={(e) => update("reason", e.target.value)}
-                      aria-invalid={!!errors.reason}
-                      aria-required
-                      aria-describedby={errors.reason ? `${reasonId}-err` : undefined}
-                      className={inputCls(errors.reason)}
-                    >
-                      <option value="">Choose one</option>
-                      {services.map((s) => (
-                        <option key={s.id}>{s.name}</option>
-                      ))}
-                      <option>{OTHER_REASON}</option>
-                    </select>
-                    {errors.reason && (
-                      <p id={`${reasonId}-err`} className="mt-1.5 text-sm font-medium text-danger">
-                        {errors.reason}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Phones: the optional extras (days, times, insurance, a note) fold behind one button; tap again to fold them back (what's filled in is kept). */}
-                  <button
-                    type="button"
-                    onClick={() => setShowPrefs((v) => !v)}
-                    aria-expanded={showPrefs}
-                    className="reveal-in justify-self-start text-[0.95rem] font-bold text-accent underline underline-offset-4 sm:hidden"
-                  >
-                    {showPrefs ? "− Hide extra details" : "+ Add more details (days, times, insurance)"}
-                  </button>
-                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-                    <legend className="mb-1.5 font-semibold text-ink">
-                      Best days for you <span className="font-normal text-muted">(optional)</span>
-                    </legend>
-                    <div className="flex flex-wrap gap-2">
-                      {DAY_ORDER.filter((d) => daysOffered.includes(d)).map((d) => (
-                        <label key={d} className={chipCls}>
-                          <input type="checkbox" checked={values.days.includes(d)} onChange={() => toggleDay(d)} className="sr-only" />
-                          {DAY_LABELS[d]}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-
-                  <fieldset className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-                    <legend className="mb-1.5 font-semibold text-ink">
-                      Best time of day <span className="font-normal text-muted">(optional)</span>
-                    </legend>
-                    <div className="flex flex-wrap gap-2">
-                      {TIMES_OF_DAY.map((t) => (
-                        <label key={t} className={chipCls}>
-                          <input
-                            type="radio"
-                            name="time"
-                            value={t}
-                            checked={values.time === t}
-                            onChange={() => update("time", t)}
-                            className="sr-only"
-                          />
-                          {t}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-
-                  <div className={cx("reveal-in sm:col-span-2", !showPrefs && "max-sm:hidden")}>
-                    {text("insurance", "Insurance provider", { optional: true, max: LIMITS.insurance })}
-                  </div>
-                </>
-              )}
-
-              <div className={cx("reveal-in sm:col-span-2", isAppt && !showPrefs && "max-sm:hidden")}>
-                <label htmlFor={messageId} className="mb-1.5 block font-semibold text-ink">
-                  {isAppt ? "Anything else we should know?" : "How can we help?"}{" "}
-                  {isAppt ? <span className="font-normal text-muted">(optional)</span> : <span className="text-danger" aria-hidden="true">*</span>}
-                </label>
-                <textarea
-                  id={messageId}
-                  name="message"
-                  rows={isAppt ? 3 : 4}
-                  maxLength={LIMITS.message}
-                  value={values.message}
-                  onChange={(e) => update("message", e.target.value)}
-                  aria-invalid={!!errors.message}
-                  aria-required={!isAppt}
-                  aria-describedby={errors.message ? `${messageId}-err` : undefined}
-                  className={cx(inputCls(errors.message), "py-3")}
-                />
-                {errors.message && (
-                  <p id={`${messageId}-err`} className="mt-1.5 text-sm font-medium text-danger">
-                    {errors.message}
-                  </p>
-                )}
-              </div>
-            </>
-          )
-        )}
+        </div>
       </div>
-      {!engaged && <p className="mt-3 text-sm text-muted">Takes about a minute. More options appear as you go.</p>}
+      <div
+        className={cx(
+          "grid transition-[grid-template-rows,opacity] duration-500 ease-[var(--ease-soft)] motion-reduce:transition-none",
+          engaged ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100",
+        )}
+        aria-hidden={engaged}
+      >
+        <p className="min-h-0 overflow-hidden text-sm text-muted">
+          <span className="block pt-3">
+            Takes about a minute. More options appear as you go.
+          </span>
+        </p>
+      </div>
 
       {/* Honeypot: hidden from people and screen readers; bots that fill it are ignored by the server. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-px w-px overflow-hidden"
+      >
         <label>
           Company
-          <input tabIndex={-1} autoComplete="off" name="company" value={company} onChange={(e) => setCompany(e.target.value)} />
+          <input
+            tabIndex={-1}
+            autoComplete="off"
+            name="company"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+          />
         </label>
       </div>
       {status === "failed" && (
-        <p role="alert" className="mt-4 rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm font-medium text-danger">
+        <p
+          role="alert"
+          className="mt-4 rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm font-medium text-danger"
+        >
           Sorry, that didn’t go through. Please try again, or call us instead.
         </p>
       )}
-      <button type="submit" className="btn btn-primary mt-6 w-full sm:w-auto" disabled={status === "sending"}>
+      <button
+        type="submit"
+        className="btn btn-primary mt-6 w-full sm:w-auto"
+        disabled={status === "sending"}
+      >
         {status === "sending" ? (
           <>
-            <Loader2 size={18} className="animate-spin" aria-hidden="true" /> Sending…
+            <Loader2 size={18} className="animate-spin" aria-hidden="true" />{" "}
+            Sending…
           </>
         ) : (
           <>
-            {isAppt ? "Send request" : "Send message"} <Send size={17} aria-hidden="true" />
+            {isAppt ? "Send request" : "Send message"}{" "}
+            <Send size={17} aria-hidden="true" />
           </>
         )}
       </button>
     </form>
   );
+}
+
+/** True below the `sm` breakpoint (640px), kept in sync as the window resizes. */
+function useIsPhone() {
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639.98px)");
+    const sync = () => setPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return phone;
 }

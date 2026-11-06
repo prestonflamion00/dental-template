@@ -49,6 +49,9 @@ const built = [];
 for (const slug of slugs) {
   console.log(`\n▶ Building ${slug} → ${base}/${slug}/`);
   rmSync(join(root, "out"), { recursive: true, force: true });
+  // A fresh build cache per practice: Next's cache, reused across practices with different settings,
+  // occasionally crashes the stylesheet step ("…was canceled").
+  rmSync(join(root, ".next"), { recursive: true, force: true });
   const res = spawnSync("npx", ["next", "build"], {
     cwd: root,
     stdio: "inherit",
