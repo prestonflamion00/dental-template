@@ -64,11 +64,19 @@ export function Hero({ office }: { office: OfficeConfig }) {
         <div>
           {/* Phones, photo-first layouts: their photo (or a placeholder on demos) leads the first screen. */}
           {photoFirst && <HeroPhoto image={office.heroImage} placeholder={samplePhotos} />}
+          {/* Phones, photo-first: the practice name, big, under the photo. Once it scrolls away it
+              moves into the sticky top bar (components/sections/Nav.tsx watches #hero-name). */}
+          {photoFirst && (
+            <p id="hero-name" className="hero-name sm:hidden">
+              <span className="block font-serif text-[2.15rem] font-medium leading-[1.02] tracking-tight text-ink">{practice.logo.text}</span>
+              {practice.logo.mark && <span className="mt-1.5 block text-xs font-bold uppercase tracking-[0.16em] text-muted">{practice.logo.mark}</span>}
+            </p>
+          )}
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}
           {rating && (
             <a
               href={has("reviews") ? "#reviews" : undefined}
-              className={`mb-3 text-[0.95rem] text-muted sm:hidden ${jump}`}
+              className={`hero-rating mb-3 text-[0.95rem] text-muted sm:hidden ${jump}`}
             >
               <Stars rating={rating.value} className="text-ink" />
               <span>

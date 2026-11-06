@@ -634,6 +634,10 @@
     margin-top: auto;
   }
 }
+@media (max-width: 639.98px) and (max-height: 700px) {
+  #top[data-hero] .hero-photo { min-height: 120px; }
+  #top[data-hero] .hero-name > span:first-child { font-size: 1.9rem; }
+}
 @media (max-width: 639.98px) and (min-height: 740px) {
   #top .hero-sub { margin-top: 1rem; font-size: 1.15rem; }
   #top #hero-actions { margin-top: 2rem; }
@@ -659,6 +663,13 @@
   #top[data-hero] > .hero-main > div:first-child { display: flex; flex-direction: column; flex: 1; }
   #top[data-hero] .hero-photo { flex: 1 1 0; align-self: stretch; min-height: 150px; max-height: 54svh; margin-bottom: 1rem; }
   #top[data-hero] #hero-title { margin-top: 0.25rem; font-size: 2.15rem; line-height: 1.05; }
+  /* With the big name: photo, name, then the headline as a short tagline, the rating, the buttons. */
+  #top[data-hero] .hero-photo { order: 0; }
+  #top[data-hero] .hero-name { order: 1; margin-bottom: 0.6rem; }
+  #top[data-hero]:has(.hero-name) #hero-title { order: 2; margin-top: 0; font-size: 1.3rem; line-height: 1.25; }
+  #top[data-hero]:has(.hero-name) #hero-title br { display: none; }
+  #top[data-hero]:has(.hero-name) .hero-rating { order: 3; margin: 0.6rem 0 0; }
+  #top[data-hero]:has(.hero-name) .hero-main > div:first-child > :not(.hero-photo, .hero-name, #hero-title, .hero-rating) { order: 4; }
   #top[data-hero] .hero-sub { display: none; }
   #top[data-hero] #hero-actions { margin-top: 1.25rem; }
   #top[data-hero] > .hero-cue { margin-top: 0.25rem; }
@@ -684,3 +695,11 @@
 }
 @keyframes hp-zoom { from { transform: scale(1.07); } to { transform: scale(1); } }
 @keyframes hp-fade { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }
+
+/* Phones, while the hero's big name shows (components/sections/Nav.tsx): a see-through top bar. */
+@media (max-width: 639.98px) {
+  nav.nav-clear::before { opacity: 0; }
+  nav.nav-clear { background: transparent !important; border-color: transparent !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  nav.nav-clear a, nav.nav-clear button { background: rgb(255 255 255 / 0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  nav.nav-clear > a:first-child { background: none; backdrop-filter: none; }
+}

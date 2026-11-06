@@ -178,6 +178,9 @@ const hermanFamilyDentistry: OfficeInput = {
   // Every service on their site, grouped, in their words (config/herman-catalog.ts).
   catalog: hermanCatalog,
 
+  // Phones: photo-first hero, edge to edge (option B, chosen Nov 2026).
+  heroLayout: "bleed",
+
   // Their 30-second video, from their website (compressed for the web).
   video: {
     src: "/offices/herman/video.mp4",

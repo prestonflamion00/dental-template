@@ -24,7 +24,8 @@ const WIDTHS = [320, 360, 390, 430, 600, 768, 834, 1024, 1180, 1280, 1440, 1920]
 // Screens for the first-screen rule: small iPhone, iPhone, large iPhone, iPad, laptop, desktop.
 const FOLD_SCREENS = [[375, 667], [390, 844], [430, 932], [768, 1024], [1280, 800], [1440, 900]];
 const FOLD_MUST_SHOW = {
-  "practice name": 'header a[href="#top"]',
+  // The bar's logo, or the big name in a photo-first hero (the bar's logo steps aside while it shows).
+  "practice name": '#hero-name, header a[href="#top"]',
   headline: "#hero-title",
   "Request appointment": '#hero-actions a[href="#request"]',
   Call: '#hero-actions a[href^="tel:"]',

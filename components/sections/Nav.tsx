@@ -36,6 +36,27 @@ export function Nav({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Phones with a big practice name in the hero (#hero-name): the bar's logo steps aside until that
+  // name starts sliding under the bar, then fades in, so the name is never shown twice. Until then
+  // the bar itself is see-through: just the call and menu buttons over the photo.
+  const [nameInHero, setNameInHero] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const name = document.getElementById("hero-name");
+    if (!name) return;
+    const check = () => {
+      const barBottom = navRef.current?.getBoundingClientRect().bottom ?? 80;
+      setNameInHero(window.innerWidth < 640 && name.getBoundingClientRect().top > barBottom);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, []);
+
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -51,17 +72,20 @@ export function Nav({
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-4">
       <nav
+        ref={navRef}
         aria-label="Main"
         className={cx(
           "glass-strong mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-[24px] pl-4 pr-2.5 transition-all duration-300 ease-[var(--ease-soft)] sm:pl-5",
           scrolled ? "py-1.5 shadow-lg" : "py-2.5",
+          nameInHero && "nav-clear",
         )}
       >
         <a href="#top" className="min-w-0 shrink rounded-xl">
           <span
             className={cx(
-              "block origin-left transition-transform duration-300",
+              "block origin-left transition-[transform,opacity] duration-300",
               scrolled && "scale-[0.94]",
+              nameInHero && "max-sm:pointer-events-none max-sm:-translate-y-1 max-sm:opacity-0",
             )}
           >
             {logo}
