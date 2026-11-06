@@ -36,7 +36,7 @@ export function OfficeTabs({ names, children }: { names: string[]; children: Rea
         ))}
       </div>
       {panels.map((p, i) => (
-        <div key={names[i]} id={`${uid}-panel-${i}`} role="tabpanel" aria-labelledby={`${uid}-tab-${i}`} hidden={active !== i}>
+        <div key={names[i]} id={`${uid}-panel-${i}`} role="tabpanel" aria-labelledby={`${uid}-tab-${i}`} hidden={active !== i} className="reveal-in">
           {p}
         </div>
       ))}

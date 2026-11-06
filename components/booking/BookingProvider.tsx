@@ -29,7 +29,22 @@ export function BookingProvider({ settings, children }: { settings: BookingSetti
     document.querySelectorAll<HTMLDialogElement>("dialog[open]").forEach((d) => d.close());
     // After a pop-up closes it hands focus back to its button; wait a frame, then move on.
     requestAnimationFrame(() => {
-      section.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      // Phones land on the form's heading, just below the sticky bar (skipping the section's top
+      // padding and eyebrow), so the heading and the first fields share the screen.
+      const phone = window.matchMedia("(max-width: 639.98px)").matches;
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+      const title = phone ? document.getElementById("request-title") : null;
+      if (title) {
+        // Land the heading 8px below the sticky bar, measured (its height varies by phone and it
+        // shrinks once the page scrolls), so the small label above the heading is tucked under it.
+        const spot = () => (document.querySelector("header nav")?.getBoundingClientRect().bottom ?? 76) + 8;
+        const go = (b: ScrollBehavior) => window.scrollTo({ top: window.scrollY + title.getBoundingClientRect().top - spot(), behavior: b });
+        go(behavior);
+        // Once the scroll settles, correct for the bar having shrunk on the way.
+        setTimeout(() => Math.abs(title.getBoundingClientRect().top - spot()) > 2 && go("auto"), behavior === "smooth" ? 900 : 50);
+      } else {
+        section.scrollIntoView({ behavior });
+      }
       window.dispatchEvent(new CustomEvent<RequestEventDetail>(REQUEST_EVENT, { detail: { serviceId } }));
     });
   }, []);

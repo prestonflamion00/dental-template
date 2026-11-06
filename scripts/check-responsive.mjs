@@ -2,6 +2,9 @@
  * Responsive check: loads each page at widths from a small phone to a large desktop and reports
  * anything wider than the screen (the usual cause of sideways scrolling and cut-off content), and
  * any button, link or text that spills out of its card.
+ * It also checks the first screen ("above the fold") on common devices: before any scrolling, every
+ * site must show the practice name, what they do (the headline), Request appointment, Call, the
+ * open/closed status and the Emergency button, and on phones nothing of the next section.
  * Optionally saves a screenshot per width for a quick visual pass.
  *
  *   node scripts/check-responsive.mjs [--shots <dir>] <url> [<url> ...]
@@ -17,6 +20,17 @@ const { chromium } = createRequire(import.meta.url)("playwright");
 
 // Small phone, common phones, large phone, small tablet, iPad portrait/landscape, laptops, desktops.
 const WIDTHS = [320, 360, 390, 430, 600, 768, 834, 1024, 1180, 1280, 1440, 1920];
+
+// Screens for the first-screen rule: small iPhone, iPhone, large iPhone, iPad, laptop, desktop.
+const FOLD_SCREENS = [[375, 667], [390, 844], [430, 932], [768, 1024], [1280, 800], [1440, 900]];
+const FOLD_MUST_SHOW = {
+  "practice name": 'header a[href="#top"]',
+  headline: "#hero-title",
+  "Request appointment": '#hero-actions a[href="#request"]',
+  Call: '#hero-actions a[href^="tel:"]',
+  "open/closed status": '#top a[href="#contact"]',
+  Emergency: '#top a[href="#emergency"]',
+};
 
 const args = process.argv.slice(2);
 let shotsDir = null;
@@ -85,6 +99,30 @@ for (const url of args) {
     await page.close();
   }
 }
+for (const url of args) {
+  for (const [width, height] of FOLD_SCREENS) {
+    const page = await browser.newPage({ viewport: { width, height } });
+    await page.goto(url, { waitUntil: "networkidle" });
+    const missing = await page.evaluate((must) => {
+      const out = [];
+      for (const [name, sel] of Object.entries(must)) {
+        const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
+        const r = el?.getBoundingClientRect();
+        if (!r || r.top < 0 || r.bottom > innerHeight) out.push(r ? `${name} (ends at ${Math.round(r.bottom)}px)` : `${name} (not shown)`);
+      }
+      // Phones: the hero fills the first screen, so the next section must not peek in.
+      const next = document.querySelector("#top")?.nextElementSibling;
+      if (innerWidth < 640 && next && next.getBoundingClientRect().top < innerHeight - 1) out.push("next section peeks in");
+      return out;
+    }, FOLD_MUST_SHOW);
+    if (missing.length) {
+      problems++;
+      console.log(`✗ ${url} @ ${width}×${height}: below the first screen: ${missing.join(", ")}`);
+    }
+    await page.close();
+  }
+}
+
 await browser.close();
-console.log(problems ? `\n${problems} page/width combination(s) need fixing.` : `\n✓ ${args.length} page(s) fit every width from ${WIDTHS[0]} to ${WIDTHS.at(-1)}px.`);
+console.log(problems ? `\n${problems} page/width combination(s) need fixing.` : `\n✓ ${args.length} page(s) fit every width from ${WIDTHS[0]} to ${WIDTHS.at(-1)}px, and the first screen has what matters on ${FOLD_SCREENS.length} devices.`);
 process.exit(problems ? 1 : 0);

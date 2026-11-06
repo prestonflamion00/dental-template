@@ -75,6 +75,7 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo },
     ...(input.otherLocations ?? []).map((l) => ({ ...l, hours: stand(l.hours, PLACEHOLDER_HOURS, "hours") })),
   ];
+  const area = serviceArea(input.practice.area, locations, name);
 
   const base: Omit<OfficeConfig, "sections"> = {
     ...input,
@@ -82,7 +83,7 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     placeholders,
     practice: {
       name,
-      tagline: input.practice.tagline ?? `Dental care in ${city}`,
+      tagline: input.practice.tagline ?? `Dental care in ${area}`,
       logo: { text: name, ...input.practice.logo },
       yearsInPractice: input.practice.yearsInPractice,
       acceptingNewPatients: stand(input.practice.acceptingNewPatients, true, "acceptingNewPatients"),
@@ -102,7 +103,7 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     social: input.social ?? {},
     theme: { preset: "warm-neutral", ...input.theme },
     copy: {
-      ...defaults.copy(name, city),
+      ...defaults.copy(name, area),
       firstVisitSteps: defaults.steps,
       comfortPerks: defaults.perks,
       ...input.copy,
@@ -122,4 +123,33 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     );
   }
   return { ...base, sections: resolveSections(base, input.sections) };
+}
+
+/* ── Service area: the "Orthodontics in ___" wording ── */
+
+const US_STATES: Record<string, string> = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California", CO: "Colorado", CT: "Connecticut",
+  DE: "Delaware", DC: "Washington, DC", FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho", IL: "Illinois",
+  IN: "Indiana", IA: "Iowa", KS: "Kansas", KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
+  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi", MO: "Missouri", MT: "Montana",
+  NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York",
+  NC: "North Carolina", ND: "North Dakota", OH: "Ohio", OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania",
+  RI: "Rhode Island", SC: "South Carolina", SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah",
+  VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
+};
+
+/**
+ * Up to 3 offices: name them all ("Hudson & North Cambridge", "A, B & C"). More than 3 in one state:
+ * the state ("Massachusetts"). More than 3 across states: the practice must say it (`practice.area`),
+ * ideally borrowed from how they describe their region on their own site.
+ */
+export function serviceArea(explicit: string | undefined, locations: Pick<Location, "name" | "address">[], practiceName: string): string {
+  if (explicit) return explicit;
+  const names = [...new Set(locations.map((l) => l.name))];
+  if (names.length <= 3) return names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} & ${names.at(-1)}`;
+  const states = [...new Set(locations.map((l) => l.address.region.toUpperCase()))];
+  if (states.length === 1) return US_STATES[states[0]] ?? states[0];
+  throw new Error(
+    `${practiceName}: ${locations.length} offices across ${states.join(", ")}. Set practice.area to describe the region (borrow their own wording if they have it).`,
+  );
 }

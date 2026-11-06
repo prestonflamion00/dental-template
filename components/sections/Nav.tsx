@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Menu, Phone, X } from "lucide-react";
+import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { BookButton } from "@/components/booking/BookButton";
 import { cx, telHref } from "@/lib/format";
 
@@ -15,8 +16,14 @@ export function Nav({
   logo: React.ReactNode;
   practiceName: string;
   phone: string;
-  /** `mobileOnly` links appear in the phone menu only (e.g. Emergency). */
-  links: { href: string; label: string; mobileOnly?: boolean }[];
+  /** `mobileOnly` links appear in the phone menu only (e.g. Emergency); `urgent` ones become the red Emergency button. */
+  links: {
+    href: string;
+    label: string;
+    mobileOnly?: boolean;
+    wideOnly?: boolean;
+    urgent?: boolean;
+  }[];
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,34 +58,48 @@ export function Nav({
         )}
       >
         <a href="#top" className="min-w-0 shrink rounded-xl">
-          <span className={cx("block origin-left transition-transform duration-300", scrolled && "scale-[0.94]")}>{logo}</span>
+          <span
+            className={cx(
+              "block origin-left transition-transform duration-300",
+              scrolled && "scale-[0.94]",
+            )}
+          >
+            {logo}
+          </span>
         </a>
 
         <ul className="hidden items-center gap-1 xl:flex">
-          {links.filter((l) => !l.mobileOnly).map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="whitespace-nowrap rounded-full px-2.5 py-2.5 text-[0.95rem] font-semibold text-ink/90 transition-colors hover:bg-white/80 hover:text-ink"
+          {links
+            .filter((l) => !l.mobileOnly)
+            .map((l) => (
+              <li
+                key={l.href}
+                className={l.wideOnly ? "hidden 2xl:block" : undefined}
               >
-                {l.label}
-              </a>
-            </li>
-          ))}
+                <a
+                  href={l.href}
+                  className="whitespace-nowrap rounded-full px-2.5 py-2.5 text-[0.95rem] font-semibold text-ink/90 transition-colors hover:bg-white/80 hover:text-ink"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
         </ul>
 
         <div className="flex items-center gap-1.5">
           <a
             href={telHref(phone)}
-            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink hover:bg-white/80 2xl:inline-flex"
+            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2.5 text-[0.95rem] font-semibold text-ink hover:bg-white/80 lg:inline-flex"
           >
             <Phone size={17} aria-hidden="true" className="text-accent" />
             {phone}
           </a>
-          {/* Tap-to-call icon (number shown in full on extra-wide screens) */}
+          {/* Phones and tablets get a tap-to-call icon; computers show the number itself, since most people
+              dial it from their phone while looking at the screen. */}
           <a
             href={telHref(phone)}
-            className="grid size-12 place-items-center rounded-full text-accent hover:bg-white/80 2xl:hidden"
+            className="grid size-12 place-items-center rounded-full text-accent hover:bg-white/80 lg:hidden"
+            title={`Call ${phone}`}
             aria-label={`Call ${practiceName} at ${phone}`}
           >
             <Phone size={21} aria-hidden="true" />
@@ -92,8 +113,14 @@ export function Nav({
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((o) => !o)}
           >
-            {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
-            <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
+            {menuOpen ? (
+              <X size={22} aria-hidden="true" />
+            ) : (
+              <Menu size={22} aria-hidden="true" />
+            )}
+            <span className="sr-only">
+              {menuOpen ? "Close menu" : "Open menu"}
+            </span>
           </button>
         </div>
       </nav>
@@ -104,17 +131,28 @@ export function Nav({
         className="glass-strong mx-auto mt-2 max-w-6xl rounded-[24px] p-3 xl:hidden"
       >
         <ul className="grid gap-1">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="flex min-h-12 items-center rounded-2xl px-4 text-lg font-semibold text-ink hover:bg-white/80"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
+          {links.map((l) =>
+            l.urgent ? (
+              <li key={l.href} className="px-1 pt-2">
+                <EmergencyButton
+                  label={l.label}
+                  size="lg"
+                  className="w-full"
+                  onClick={() => setMenuOpen(false)}
+                />
+              </li>
+            ) : (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex min-h-12 items-center rounded-2xl px-4 text-lg font-semibold text-ink hover:bg-white/80"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ),
+          )}
         </ul>
         <div className="mt-2 grid gap-2 border-t border-ink/10 px-1 pt-3 sm:hidden">
           <BookButton className="w-full" />

@@ -77,8 +77,8 @@ export type Specialty = "general" | "orthodontics" | "pediatric";
 
 export interface Doctor {
   name: string;
-  /** Credentials shown after the name, e.g. "DDS" or "DMD, FAGD". */
-  credentials: string;
+  /** Credentials shown after the name, e.g. "DDS" or "DMD, FAGD"; left out when not publicly known. */
+  credentials?: string;
   /** Role line, e.g. "Founder & General Dentist". */
   title: string;
   bio?: string;
@@ -168,6 +168,12 @@ export interface OfficeConfig {
     /** Optional short description used for meta + footer. */
     description: string;
     specialty: Specialty;
+    /**
+     * Where the practice serves, as it says it in its own words (e.g. "the Twin Cities"). Optional:
+     * by default the offices' towns are named (up to 3), or the state with more. Required only when
+     * 4+ offices span more than one state, since there's no safe automatic wording for that.
+     */
+    area?: string;
   };
 
   contact: {
@@ -215,6 +221,12 @@ export interface OfficeConfig {
   newPatientFormsUrl?: string;
 
   social: Partial<Record<"facebook" | "instagram" | "google" | "youtube" | "tiktok" | "yelp", string>>;
+
+  /** Features being tried on one practice before they go to every site. */
+  experiments?: {
+    /** The pen drawing on the hero headline (underline, tooth, and on tall phones a line across the top). On unless set to false. */
+    smileLine?: boolean;
+  };
 
   /** Overall look (config/designs.ts). Defaults to "butter", which uses `theme` for its colours. */
   design?: Design;

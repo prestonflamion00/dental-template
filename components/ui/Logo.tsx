@@ -9,13 +9,16 @@ export function Logo({ practice, compact = false }: { practice: OfficeConfig["pr
   if (logo.image) {
     return <Image src={withBase(logo.image)} alt={name} width={180} height={48} className="h-10 w-auto" priority />;
   }
+  // Phones: a long name drops the tooth tile (and a very long one gets slightly smaller) so it fits
+  // on one line and the bar stays short.
+  const long = logo.text.length > 16;
   return (
     <span className="flex items-center gap-2.5">
-      <span className="icon-tile !size-10 !rounded-[14px] max-[359px]:!hidden" aria-hidden="true">
+      <span className={`icon-tile !size-10 !rounded-[14px] max-[359px]:!hidden ${long ? "max-sm:!hidden" : ""}`} aria-hidden="true">
         <Tooth size={22} />
       </span>
       <span className="flex flex-col leading-none">
-        <span className="font-serif text-[1.3rem] font-medium tracking-tight text-ink">{logo.text}</span>{" "}
+        <span className={`font-serif text-[1.3rem] font-medium tracking-tight text-ink ${logo.text.length > 20 ? "max-sm:text-[1.1rem]" : ""}`}>{logo.text}</span>{" "}
         {logo.mark && !compact && (
           <span className="mt-1 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-muted">{logo.mark}</span>
         )}

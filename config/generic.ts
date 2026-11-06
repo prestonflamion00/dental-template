@@ -103,13 +103,13 @@ export const GENERIC_FAQS: Faq[] = [
   },
 ];
 
-/** Friendly wording that fits any practice; `city` and `name` personalize it. */
+/** Friendly wording that fits any practice; `city` (the town, or the offices' towns) and `name` personalize it. */
 export function genericCopy(name: string, city: string) {
   return {
     heroEyebrow: `Dental care in ${city}`,
     heroHeadline: "Dental care that puts you at ease.",
     heroHighlight: "at ease",
-    heroSubhead: `Friendly, unhurried visits for the whole family at ${name}.`,
+    heroSubhead: "Friendly, unhurried visits for the whole family.",
     servicesIntro: "From routine cleanings to a brighter smile, here’s how we can help.",
     newPatientsIntro: "New here? Here’s what to expect, step by step.",
     doctorsIntro: "The people who’ll take care of you.",
@@ -187,8 +187,8 @@ export const SPECIALTY: Record<
       ...genericCopy(name, city),
       heroEyebrow: `Orthodontics in ${city}`,
       heroHeadline: "Straighter smiles for the whole family.",
-      heroHighlight: "the whole family",
-      heroSubhead: "Braces, clear aligners and early treatment for kids, teens and adults, with clear answers at every step.",
+      heroHighlight: "for the whole family",
+      heroSubhead: "Braces, clear aligners and early treatment for every age.",
       servicesIntro: "Options for every age and every smile.",
       newPatientsIntro: "Thinking about braces or aligners? Here’s how getting started works.",
       doctorsIntro: "Experienced orthodontic care, close to home.",
@@ -211,8 +211,8 @@ export const SPECIALTY: Record<
       ...genericCopy(name, city),
       heroEyebrow: `Pediatric dentistry in ${city}`,
       heroHeadline: "Happy visits for growing smiles.",
-      heroHighlight: "growing smiles",
-      heroSubhead: `Gentle, fun dental care for babies, kids and teens at ${name}.`,
+      heroHighlight: "for growing smiles",
+      heroSubhead: "Gentle, fun dental care for babies, kids and teens.",
       servicesIntro: "Everything little smiles need, explained in kid-friendly words.",
       newPatientsIntro: "First visit? Here’s what to expect, step by step.",
       doctorsIntro: "The friendly faces your kids will get to know.",

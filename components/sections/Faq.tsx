@@ -20,14 +20,22 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
         const btnId = `${uid}-q${i}`;
         const panelId = `${uid}-a${i}`;
         return (
-          <div key={f.q}>
+          // The whole item toggles: the question row, the gaps around it and the open answer. Keyboard
+          // users press the button, whose click bubbles up here. Links inside an answer still work.
+          <div
+            key={f.q}
+            className="cursor-pointer"
+            onClick={(e) => {
+              if ((e.target as HTMLElement).closest("a")) return;
+              setOpen(isOpen ? null : i);
+            }}
+          >
             <h3 className="font-sans">
               <button
                 id={btnId}
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                onClick={() => setOpen(isOpen ? null : i)}
                 className="flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-5 text-left text-[1.075rem] font-semibold text-ink"
               >
                 {f.q}
@@ -46,8 +54,13 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
               id={panelId}
               role="region"
               aria-labelledby={btnId}
-              className={cx("grid transition-[grid-template-rows] duration-300 ease-[var(--ease-soft)]", isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-              hidden={!isOpen}
+              // Slides open and closed (grid rows 0fr <-> 1fr); `inert` keeps a closed answer out of tab order
+              // and screen readers without cutting the closing animation short.
+              className={cx(
+                "grid transition-[grid-template-rows,opacity] duration-300 ease-[var(--ease-soft)] motion-reduce:transition-none",
+                isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              )}
+              inert={!isOpen}
             >
               <div className="overflow-hidden">
                 <p className="px-4 pb-6 text-muted">{f.a}</p>

@@ -104,7 +104,9 @@ export const viewport: Viewport = {
  * Runs before paint: marks JS as available (enables scroll-reveal) and lets
  * sales demos preview other presets with ?theme=sage-blue and other designs with ?design=honey (no rebuild needed).
  */
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var q=new URLSearchParams(location.search),t=q.get('theme'),g=q.get('design');if(t&&${JSON.stringify(
+// A refresh always starts at the top: no restored scroll spot, no jump back to a #section from an
+// earlier tap. (A shared link with #reviews etc. still opens at that section the first time.)
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'){history.scrollRestoration='manual';if(location.hash)history.replaceState(null,'',location.pathname+location.search);scrollTo(0,0);addEventListener('load',function(){scrollTo(0,0)});}}catch(e){}try{var q=new URLSearchParams(location.search),t=q.get('theme'),g=q.get('design');if(t&&${JSON.stringify(
   THEME_PRESETS,
 )}.indexOf(t)>-1){d.setAttribute('data-theme',t);d.style.cssText='';}if(g&&${JSON.stringify(DESIGNS)}.indexOf(g)>-1){d.setAttribute('data-design',g);d.style.cssText='';}}catch(e){}})();`;
 
@@ -131,11 +133,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {office.fictional && (
           <p className="demo-banner">
-            Demo website: {office.practice.name} is a fictional practice, not a real dental office.
+            <span className="sm:hidden">Demo site · fictional practice</span>
+            <span className="max-sm:hidden">Demo website: {office.practice.name} is a fictional practice, not a real dental office.</span>
           </p>
         )}
         {office.stage === "demo" && !office.fictional && (
-          <p className="demo-banner">Private preview for {office.practice.name} · made by butterbite digital</p>
+          <p className="demo-banner">
+            <span className="sm:hidden">Private preview · butterbite digital</span>
+            <span className="max-sm:hidden">Private preview for {office.practice.name} · made by butterbite digital</span>
+          </p>
         )}
         <a href="#main" className="skip-link">
           Skip to main content

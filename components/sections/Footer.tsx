@@ -2,7 +2,7 @@ import { Phone } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { Logo } from "@/components/ui/Logo";
 import { SocialIcon } from "@/components/ui/Icon";
-import { telHref, withBase } from "@/lib/format";
+import { cx, telHref, withBase } from "@/lib/format";
 
 const SOCIAL_LABELS: Record<string, string> = {
   facebook: "Facebook",
@@ -13,13 +13,17 @@ const SOCIAL_LABELS: Record<string, string> = {
   yelp: "Yelp",
 };
 
-export function Footer({ office }: { office: OfficeConfig }) {
+/**
+ * `showContact`: off on the home page, where the contact section right above already has the phone,
+ * hours and directions; on for the privacy and accessibility pages.
+ */
+export function Footer({ office, showContact = true }: { office: OfficeConfig; showContact?: boolean }) {
   const { practice, contact, social } = office;
   const year = new Date().getFullYear();
   return (
     <footer className="px-3 pb-6 pt-10 sm:px-5">
       <div className="glass mx-auto max-w-6xl rounded-[32px] p-7 sm:p-10">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.8fr]">
+        <div className={cx("grid gap-8 md:grid-cols-2", showContact && "lg:grid-cols-[1.4fr_1fr_0.8fr]")}>
           <div>
             <Logo practice={practice} />
             <p className="mt-4 max-w-xs text-[0.95rem] text-muted">{practice.tagline}.</p>
@@ -42,33 +46,35 @@ export function Footer({ office }: { office: OfficeConfig }) {
             )}
           </div>
 
-          <div>
-            <h2 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Get in touch</h2>
-            <ul className="mt-3 grid gap-1.5 text-ink">
-              <li>
-                <a href={telHref(contact.phone)} className="inline-flex items-center gap-2 py-1 font-semibold hover:text-accent">
-                  <Phone size={16} aria-hidden="true" className="text-accent" />
-                  {contact.phone}
-                </a>
-              </li>
-              {contact.email && (
+          {showContact && (
+            <div>
+              <h2 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Get in touch</h2>
+              <ul className="mt-3 grid gap-1.5 text-ink">
                 <li>
-                  <a href={`mailto:${contact.email}`} className="inline-block py-1 [overflow-wrap:anywhere] hover:text-accent">
-                    {contact.email}
+                  <a href={telHref(contact.phone)} className="inline-flex items-center gap-2 py-1 font-semibold hover:text-accent">
+                    <Phone size={16} aria-hidden="true" className="text-accent" />
+                    {contact.phone}
                   </a>
                 </li>
-              )}
-              <li>
-                <a href={withBase("/#contact")} className="inline-block py-1 hover:text-accent">
-                  Hours &amp; directions
-                </a>
-              </li>
-            </ul>
-          </div>
+                {contact.email && (
+                  <li>
+                    <a href={`mailto:${contact.email}`} className="inline-block py-1 [overflow-wrap:anywhere] hover:text-accent">
+                      {contact.email}
+                    </a>
+                  </li>
+                )}
+                <li>
+                  <a href={withBase("/#contact")} className="inline-block py-1 hover:text-accent">
+                    Hours &amp; directions
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
 
           <nav aria-label="Footer">
             <h2 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Info</h2>
-            <ul className="mt-3 grid gap-1.5 text-ink">
+            <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1.5 text-ink md:grid">
               <li><a href={withBase("/privacy")} className="inline-block py-1 hover:text-accent">Privacy policy</a></li>
               <li><a href={withBase("/accessibility")} className="inline-block py-1 hover:text-accent">Accessibility</a></li>
             </ul>

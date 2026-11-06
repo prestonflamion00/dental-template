@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Day, DayHours } from "@/config/types";
-import { DAY_LABELS, formatRange, getOpenStatus, nowInTimezone, type OpenStatus } from "@/lib/hours";
+import { DAY_LABELS, formatRange, getOpenStatus, minutesUntilOpen, nowInTimezone, type OpenStatus } from "@/lib/hours";
 import { cx } from "@/lib/format";
 
 /**
@@ -32,7 +32,7 @@ export function OpenBadge({ timezone, hours, className }: { timezone: string; ho
       <span
         className={cx(
           "inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-sm font-bold",
-          open ? "bg-success/10 text-success" : "bg-danger/10 text-danger",
+          open ? "bg-success/10 text-success" : "bg-ink/[0.06] text-ink/75",
         )}
       >
         <span className={cx("status-dot", open && "live")} aria-hidden="true" />
@@ -73,5 +73,49 @@ export function HoursTable({ timezone, hours }: { timezone: string; hours: Recor
         })}
       </tbody>
     </table>
+  );
+}
+
+/**
+ * One-line status for the hero: "Open now · until 5 PM" or "Closed · opens Thu 9 AM". With several
+ * offices it shows whichever is open (or opens soonest) and names it quietly. Tapping it jumps to the hours.
+ */
+export function HeroStatus({ timezone, offices }: { timezone: string; offices: { name: string; hours: Record<Day, DayHours> }[] }) {
+  const [pick, setPick] = useState<{ status: OpenStatus; name?: string } | null>(null);
+  useEffect(() => {
+    const tick = () => {
+      const best = offices
+        .map((o) => ({ o, wait: minutesUntilOpen({ hours: o.hours, timezone }) }))
+        .reduce((a, b) => (b.wait < a.wait ? b : a));
+      setPick({ status: getOpenStatus({ hours: best.o.hours, timezone }), name: offices.length > 1 ? best.o.name : undefined });
+    };
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, [timezone, offices]);
+  if (!pick) return <span className="text-muted">Checking hours…</span>;
+  const { status, name } = pick;
+  const open = status.state === "open";
+  const when = open
+    ? status.closingSoon
+      ? `closing soon, ${status.closesAt}`
+      : `until ${status.closesAt}`
+    : status.opensAt
+      ? `opens ${status.opensDay && status.opensDay.length > 8 ? status.opensDay.slice(0, 3) : status.opensDay} ${status.opensAt}`.replace(" today ", " today at ")
+      : "see hours";
+  return (
+    <a href="#contact" className="inline-flex items-center gap-2 rounded-lg underline-offset-4 hover:underline">
+      <span className={cx("status-dot shrink-0", open ? "live text-success" : "text-ink/35")} aria-hidden="true" />
+      <span>
+        <strong className={open ? "text-success" : "text-ink"}>{open ? "Open now" : "Closed"}</strong>
+        <span className="text-muted">
+          {" "}
+          · {when}
+          {/* Phones: the office names are in the strip just below. */}
+          {name && <span className="max-sm:hidden"> in {name}</span>}
+        </span>
+        <span className="sr-only">, see all hours</span>
+      </span>
+    </a>
   );
 }

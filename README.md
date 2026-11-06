@@ -77,6 +77,8 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    - `practice`: `specialty` (`"general"`, `"orthodontics"` or `"pediatric"`: sets the default wording, services and FAQs), tagline, logo text (or `logo.image: "/brand/logo.svg"`), years in practice, accepting new patients
    - `contact`: email, `hours` (24h `"HH:MM"`, `null` = closed)
    - `otherLocations`: more offices, each with a `name`, phone, address and hours. The quick-info strip, contact section and request form ("Which office?") adapt automatically; name the main office with `contact.locationName`.
+   - `practice.area`: how the hero names where they are ("Orthodontics in ___"). Left out, it names every office when there are 3 or fewer ("Hudson & North Cambridge"), or the state with more. With 4+ offices across states it must be set: borrow their own wording if they have it.
+   - `experiments.smileLine`: the hero's pen drawing, on by default (`false` turns it off). A pen underline draws itself under the headline's highlighted words with a small sketched tooth beside them; on taller phones with room to spare, one pen line is drawn across the top of the hero instead, dipping into a smile under a tooth. Afterwards the sparkles twinkle and the tooth floats, gently. See `components/ui/HeroFlourish.tsx`.
    - `doctors`, `services` (pick an `icon` from the `IconName` list in `config/types.ts`), `insurances`, `reviews`, `rating`, `faqs`
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`
@@ -125,6 +127,15 @@ Four looks share the same sections, content and code, so a change to any section
 
 Palettes live in `config/designs.ts`; each look is in `app/designs.css`. Only Butter uses the theme presets and `theme.accent`.
 
+## Link-preview thumbnails
+
+The picture that shows when a site's link is texted, emailed or posted is drawn by `scripts/make-thumbnails.mjs` at the end of `npm run build:all`, in a real browser, from the built site itself (its fonts, colours and logo):
+
+- **Demo sites:** the practice's actual new homepage on a laptop and a phone, labelled "Private preview" ("Website example" for our fictional samples). It's for the dentist we're pitching: they see their own new site before they even tap.
+- **Live sites:** a brand card for patients with the logo, what they do and where, Google stars and review count, and "Accepting new patients".
+
+Screenshots are taken at a moment the main office is open, so they always show "Open now". Key content stays near the middle because WhatsApp crops previews to a square. Each build also saves a copy to `thumbnails/` (commit it): Cloudflare's build servers have no browser, so they use those copies. To preview a live card early: `OG_KIND=live node scripts/make-thumbnails.mjs <practice>` (after a build).
+
 ## Checking every screen size
 
 Before a release, run the responsive check on the pages you changed (any live, preview or local URL). It loads each page at 12 widths from a 320px phone to a 1920px desktop and fails if anything is wider than the screen, or if a button, link or text sticks out of its card:
@@ -133,6 +144,10 @@ Before a release, run the responsive check on the pages you changed (any live, p
 npm run check:responsive -- "https://demos.butterbite.workers.dev/maple-grove/?design=honey"
 npm run check:responsive -- --shots shots/ <url>   # also save a screenshot per width to look through
 ```
+
+**The first screen (above the fold) is a rule, not a nice-to-have.** The same check opens each page on a small iPhone (375×667), an iPhone (390×844), a large iPhone (430×932), an iPad (768×1024), a laptop (1280×800) and a desktop (1440×900). It fails unless, before any scrolling, the page shows the practice name, the headline, Request appointment, Call, the open/closed status and the red Emergency button. Anything else earns a place up there only if it doesn't push those down. On phones the hero fills the whole first screen (with a small "Hours & location" cue at the bottom), so the next section never half-peeks in; that is also why the eyebrow and trust strip are hidden there: the rating sits above the headline, and "Accepting new patients" moves to the info strip.
+
+**Emergency is always a red button** (`components/ui/EmergencyButton.tsx`), and red is used for nothing else. "Closed" is neutral gray; green means open.
 
 Then spot-check on a real iPhone and an Android phone (the check runs Chrome, so Safari-only quirks need a real device). Layout rules that keep this passing: let grid and flex children shrink (`min-w-0`), never fix widths in pixels, and let buttons wrap on very narrow screens (already handled in `globals.css`). The full link bar shows from 1280px; below that the menu button takes over.
 

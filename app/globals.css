@@ -300,17 +300,17 @@
     color: #fff;
     background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 88%, white), var(--accent) 45%, var(--accent-2));
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.28),
-      0 1px 2px rgb(var(--accent-rgb) / 0.3),
-      0 10px 24px -10px rgb(var(--accent-rgb) / 0.65);
+      inset 0 1px 0 rgb(255 255 255 / 0.24),
+      0 1px 2px rgb(0 0 0 / 0.14),
+      0 4px 10px -5px rgb(var(--accent-rgb) / 0.35);
   }
   @media (hover: hover) {
     .btn-primary:hover {
       transform: translateY(-1px);
       box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.3),
-        0 2px 4px rgb(var(--accent-rgb) / 0.3),
-        0 16px 30px -12px rgb(var(--accent-rgb) / 0.7);
+        inset 0 1px 0 rgb(255 255 255 / 0.26),
+        0 2px 4px rgb(0 0 0 / 0.14),
+        0 8px 16px -8px rgb(var(--accent-rgb) / 0.4);
     }
     .btn-glass:hover {
       transform: translateY(-1px);
@@ -326,6 +326,20 @@
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.9),
       0 6px 18px -10px rgb(var(--shadow-tint) / 0.3);
+  }
+  /* Emergency only (components/ui/EmergencyButton.tsx): same shape and shading as .btn-primary, in red. */
+  .btn-danger {
+    color: #fff;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 88%, white), var(--danger) 45%, color-mix(in srgb, var(--danger) 82%, black));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.24),
+      0 1px 2px rgb(0 0 0 / 0.14),
+      0 4px 10px -5px color-mix(in srgb, var(--danger) 35%, transparent);
+  }
+  @media (hover: hover) {
+    .btn-danger:hover {
+      transform: translateY(-1px);
+    }
   }
   .btn-lg {
     min-height: 56px;
@@ -450,6 +464,8 @@
   /* Horizontal scroll-snap carousel (reviews on mobile). */
   .snap-row {
     scroll-snap-type: x mandatory;
+    /* Snap cards to the row's side padding (px-4), not the screen edge. */
+    scroll-padding-inline: 1rem;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -553,3 +569,104 @@
 @media (prefers-reduced-motion: reduce) {
   .photo-placeholder { animation: none; }
 }
+
+/* ── Things that expand (more form fields, "Read bio", office tabs): a short slide-in ── */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+.reveal-in {
+  animation: reveal-in 0.28s var(--ease-soft, ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-in { animation: none; }
+}
+
+/* ── Expanding request form (RequestSection + RequestForm) ──
+   Large screens: the reassurance cards fade out and the form glides to full width while it's in use. */
+@media (min-width: 1024px) {
+  [data-request-layout] {
+    grid-template-columns: 0.8fr 1.2fr;
+    transition:
+      grid-template-columns 0.55s var(--ease-soft, ease),
+      column-gap 0.55s var(--ease-soft, ease);
+  }
+  [data-request-layout][data-engaged] {
+    grid-template-columns: 0fr 1fr;
+    column-gap: 0;
+  }
+  [data-request-layout] > ul {
+    min-width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s 0.15s, visibility 0s 0s;
+  }
+  [data-request-layout][data-engaged] > ul {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0s 0.2s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-request-layout],
+  [data-request-layout] > ul {
+    transition: none;
+  }
+}
+
+/* Phones: the hero fills the first screen, so the next section (today's hours) starts just below it
+   instead of half-peeking in; a small cue at the bottom says there's more. 82px = the sticky nav;
+   demo sites add the 39px preview banner. Taller phones get a little more breathing room between the parts. */
+@media (max-width: 639.98px) {
+  #top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 82px);
+    padding-bottom: 0;
+  }
+  body:has(> .demo-banner) #top {
+    min-height: calc(100svh - 121px);
+  }
+  #top > .hero-cue {
+    margin-top: auto;
+  }
+  #top > .hero-main {
+    margin-top: auto;
+  }
+}
+@media (max-width: 639.98px) and (min-height: 740px) {
+  #top .hero-sub { margin-top: 1rem; font-size: 1.15rem; }
+  #top #hero-actions { margin-top: 2rem; }
+}
+
+/* ── Hero pen drawing (components/ui/HeroFlourish.tsx) ── */
+.hf-wrap { position: relative; display: inline-block; }
+/* A muted ink version of the accent, so it reads as pen, not as a highlight. */
+.hf-art, .hf-scene { color: color-mix(in srgb, var(--accent) 72%, var(--ink)); }
+.hf-art { position: absolute; overflow: visible; pointer-events: none; }
+.hf-under { left: -0.04em; right: -0.04em; bottom: -0.2em; width: calc(100% + 0.08em); height: 0.2em; opacity: 0.85; }
+.hf-tooth { left: calc(100% + 0.5em); top: 0.05em; width: 0.95em; height: 0.86em; }
+#top[data-scene] .hf-tooth { display: none; }
+.hf-scene { margin: -0.5rem -16px 0.5rem; }
+.hf-scene[hidden] { display: none; }
+.hf-scene svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.hf-line { opacity: 0.55; }
+.hf-draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.hf-float { transform-box: fill-box; }
+.hf-float { transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Drawn in like a pen: underline, then the line across, then the tooth, then the sparkles. */
+  .hf-draw { stroke-dashoffset: 1; animation: hf-draw 1s cubic-bezier(.45,.05,.35,1) 0.35s forwards; }
+  .hf-line { animation-duration: 1.8s; animation-delay: 0.5s; }
+  .hf-d2 { animation-duration: 1.2s; animation-delay: 1.3s; }
+  .hf-spark { opacity: 0; animation: hf-spark-in 0.4s ease forwards, hf-twinkle 3.6s ease-in-out infinite; }
+  .hf-s1 { animation-delay: 2.4s, 2.8s; }
+  .hf-s2 { animation-delay: 2.55s, 4s; }
+  .hf-s3 { animation-delay: 2.7s, 5.1s; }
+  /* Then a little life: the tooth floats a couple of pixels, slowly. */
+  .hf-float { animation: hf-float 6s ease-in-out 2.6s infinite; }
+}
+@keyframes hf-draw { to { stroke-dashoffset: 0; } }
+@keyframes hf-spark-in { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+@keyframes hf-twinkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.7) rotate(20deg); } }
+@keyframes hf-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }

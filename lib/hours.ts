@@ -62,6 +62,20 @@ export type OpenStatus =
   | { state: "open"; closesAt: string; closingSoon: boolean }
   | { state: "closed"; opensAt?: string; opensDay?: string };
 
+/** Minutes from now until the office next opens (0 if open now, Infinity if it never opens). */
+export function minutesUntilOpen(office: Pick<OfficeConfig, "hours" | "timezone">, date = new Date()): number {
+  const { day, minutes } = nowInTimezone(office.timezone, date);
+  const idx = DAYS.indexOf(day);
+  for (let i = 0; i <= 7; i++) {
+    const h = office.hours[DAYS[(idx + i) % 7]];
+    if (!h) continue;
+    const open = toMinutes(h.open) + i * 1440;
+    const close = toMinutes(h.close) + i * 1440;
+    if (minutes < close) return Math.max(0, open - minutes);
+  }
+  return Infinity;
+}
+
 /** Compute open/closed status for the office right now (in its timezone). */
 export function getOpenStatus(office: Pick<OfficeConfig, "hours" | "timezone">, date = new Date()): OpenStatus {
   const { day, minutes } = nowInTimezone(office.timezone, date);

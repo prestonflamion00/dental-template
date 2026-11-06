@@ -21,7 +21,7 @@ export function MobileReveal({ label, children, className }: { label: string; ch
           {label}
         </button>
       )}
-      <div className={cx(!open && "max-sm:hidden")}>{children}</div>
+      <div className={cx(!open && "max-sm:hidden", open && "reveal-in")}>{children}</div>
     </>
   );
 }
