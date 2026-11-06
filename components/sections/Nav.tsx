@@ -66,12 +66,11 @@ export function Nav({
       big.style.fontSize = "";
       if (!phone()) return;
       const max = parseFloat(getComputedStyle(big).fontSize);
-      // The screen minus the page's side gutters (the column itself may be stretched by the name).
-      const avail = document.documentElement.clientWidth - 32;
-      big.style.fontSize = `${Math.min(max, (max * avail) / big.scrollWidth)}px`;
+      big.style.fontSize = `${Math.min(max, (max * (document.documentElement.clientWidth - 32)) / big.scrollWidth)}px`;
     };
 
-    // The travelling copies.
+    // The travelling copies: fixed to the screen, line height 1 like both ends, and resized by font
+    // size (not by scaling), so the last frame is drawn exactly like the bar's own logo.
     const layer = document.createElement("div");
     layer.setAttribute("aria-hidden", "true");
     const copy = (el: HTMLElement | null) => {
@@ -83,7 +82,7 @@ export function Nav({
         left: "0",
         top: "0",
         margin: "0",
-        transformOrigin: "0 0",
+        lineHeight: "1",
         whiteSpace: "nowrap",
         pointerEvents: "none",
         zIndex: "41",
@@ -93,62 +92,83 @@ export function Nav({
       layer.appendChild(c);
       return c;
     };
-    const cText = copy(big),
-      cMark = copy(bigMark);
+    const pairs = [
+      { src: big, dst: logoText, c: copy(big) },
+      ...(bigMark && logoMark
+        ? [{ src: bigMark, dst: logoMark, c: copy(bigMark) }]
+        : []),
+    ];
     document.body.appendChild(layer);
-
-    const place = (
-      src: HTMLElement,
-      dst: HTMLElement,
-      c: HTMLElement,
-      e: number,
-    ) => {
-      c.style.fontSize = getComputedStyle(src).fontSize;
-      const a = src.getBoundingClientRect(),
-        b = dst.getBoundingClientRect();
-      const k = 1 + (b.width / a.width - 1) * e;
-      c.style.transform = `translate(${a.left + (b.left - a.left) * e}px, ${a.top + (b.top - a.top) * e}px) scale(${k})`;
+    const px = (el: HTMLElement) => parseFloat(getComputedStyle(el).fontSize);
+    type Box = { x: number; y: number; size: number };
+    const boxOf = (el: HTMLElement): Box => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left, y: r.top, size: px(el) };
     };
-    // Scroll only decides WHEN; the glide itself runs on a clock, at one fixed speed, both ways.
-    // Two thresholds (hysteresis), so stopping right at the line can't make it flicker.
-    const DURATION = reduce ? 0 : 450; // ms
-    const TO_BAR = 24; // the name is within 24px of the bar → glide up into it
-    const TO_HERO = 72; // the name's spot is back 72px below the bar → glide back down
+    const draw = (c: HTMLElement, b: Box) => {
+      c.style.fontSize = `${b.size}px`;
+      c.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+    };
+
+    // Scroll decides WHEN (two thresholds, so stopping on the line can't flicker); the glide runs
+    // on a clock at one speed. Up into the bar it glides in screen coordinates (the bar doesn't
+    // move), so a fast flick can't leave it behind; back down it lands on the name's live spot.
+    // If a fast fling has already carried the name off screen, it switches without a glide.
+    const DURATION = reduce ? 0 : 420; // ms
+    const TO_BAR = 24; // name within 24px of the bar → into the bar
+    const TO_HERO = 72; // name's spot back 72px below the bar → back to the hero
     let current = "",
       raf = 0,
       anim = 0,
-      dir: 0 | 1 = 0, // 1 = heading into the bar, 0 = heading back to the hero
-      t = 0, // 0 = in the hero, 1 = in the bar
-      last = 0;
-    const show = (stageNow: typeof current) => {
-      if (stageNow !== current) setStage((current = stageNow as never));
-      const moving = stageNow === "moving";
-      heroName.style.visibility = stageNow === "hero" ? "" : "hidden";
-      [cText, cMark].forEach(
-        (c) => c && (c.style.visibility = moving ? "visible" : "hidden"),
+      dir: 0 | 1 = 0,
+      startAt = 0,
+      from: Box[] = [];
+    const show = (next: string) => {
+      if (next !== current) setStage((current = next) as never);
+      heroName.style.visibility = next === "hero" ? "" : "hidden";
+      pairs.forEach(
+        ({ c }) =>
+          c && (c.style.visibility = next === "moving" ? "visible" : "hidden"),
       );
     };
     const frame = (now: number) => {
       anim = 0;
-      const step = DURATION ? (now - last) / DURATION : 1;
-      last = now;
-      t = Math.max(0, Math.min(1, t + (dir ? step : -step)));
-      const done = dir ? t >= 1 : t <= 0;
-      if (done) {
-        show(dir ? "bar" : "hero");
-        return;
-      }
+      const t = DURATION ? Math.min(1, (now - startAt) / DURATION) : 1;
+      if (t >= 1) return show(dir ? "bar" : "hero");
+      const e = t * t * (3 - 2 * t);
+      pairs.forEach(({ src, dst, c }, k) => {
+        if (!c) return;
+        const a = from[k],
+          b = boxOf(dir ? dst : src);
+        draw(c, {
+          x: a.x + (b.x - a.x) * e,
+          y: a.y + (b.y - a.y) * e,
+          size: a.size + (b.size - a.size) * e,
+        });
+      });
       show("moving");
-      const e = t * t * (3 - 2 * t); // ease in and out
-      // Measured every frame, so the copy stays glued to the real name while the page scrolls.
-      place(big, logoText, cText!, e);
-      if (cMark && bigMark && logoMark) place(bigMark, logoMark, cMark, e);
       anim = requestAnimationFrame(frame);
     };
     const glide = (to: 0 | 1) => {
-      if (dir === to && (anim || t === to)) return;
+      if (dir === to) return;
       dir = to;
-      last = performance.now();
+      // Start from wherever the name is drawn right now (mid-glide: the copy's current spot).
+      from = pairs.map(({ src, dst, c }) => {
+        if (current === "moving" && c) {
+          const r = c.getBoundingClientRect();
+          return { x: r.left, y: r.top, size: parseFloat(c.style.fontSize) };
+        }
+        return boxOf(to ? src : dst);
+      });
+      const target = (to ? logoText : big).getBoundingClientRect();
+      const source = from[0];
+      const offscreen = (y: number) => y < -60 || y > window.innerHeight;
+      if (offscreen(source.y) || offscreen(target.top)) {
+        cancelAnimationFrame(anim);
+        anim = 0;
+        return show(to ? "bar" : "hero");
+      }
+      startAt = performance.now();
       if (!anim) anim = requestAnimationFrame(frame);
     };
     const update = () => {
@@ -156,14 +176,13 @@ export function Nav({
       if (!phone()) {
         cancelAnimationFrame(anim);
         anim = 0;
-        t = 0;
         dir = 0;
         if (current !== "none") setStage((current = "none"));
-        [cText, cMark].forEach((c) => c && (c.style.visibility = "hidden"));
+        pairs.forEach(({ c }) => c && (c.style.visibility = "hidden"));
         heroName.style.visibility = "";
         return;
       }
-      if (!current || current === "none") show(t >= 1 ? "bar" : "hero");
+      if (!current || current === "none") show(dir ? "bar" : "hero");
       const gap =
         big.getBoundingClientRect().top -
         navRef.current!.getBoundingClientRect().bottom;
@@ -223,7 +242,9 @@ export function Nav({
           <span
             className={cx(
               "block origin-left transition-transform duration-300",
-              scrolled && "scale-[0.94]",
+              // The shrink-on-scroll is skipped on phones with the hero name, so the gliding name lands
+              // on the logo at its exact size.
+              scrolled && (heroMode ? "sm:scale-[0.94]" : "scale-[0.94]"),
               heroMode &&
                 stage !== "bar" &&
                 "max-sm:pointer-events-none max-sm:opacity-0",

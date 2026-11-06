@@ -73,14 +73,14 @@ export function Hero({ office }: { office: OfficeConfig }) {
             <p id="hero-name" className="hero-name sm:hidden">
               <span
                 data-name-text
-                className="block w-fit whitespace-nowrap font-serif text-[2.6rem] font-medium leading-[1.02] tracking-tight text-ink"
+                className="block w-fit whitespace-nowrap font-serif text-[2.6rem] font-medium leading-none tracking-tight text-ink"
               >
                 {practice.logo.text}
               </span>
               {practice.logo.mark && (
                 <span
                   data-name-mark
-                  className="mt-1.5 block w-fit whitespace-nowrap text-xs font-bold uppercase tracking-[0.16em] text-muted"
+                  className="mt-2 block w-fit whitespace-nowrap text-xs leading-none font-bold uppercase tracking-[0.16em] text-muted"
                 >
                   {practice.logo.mark}
                 </span>
