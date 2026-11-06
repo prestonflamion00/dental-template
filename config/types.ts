@@ -77,8 +77,8 @@ export type Specialty = "general" | "orthodontics" | "pediatric";
 
 export interface Doctor {
   name: string;
-  /** Credentials shown after the name, e.g. "DDS" or "DMD, FAGD". */
-  credentials: string;
+  /** Credentials shown after the name, e.g. "DDS" or "DMD, FAGD"; left out when not publicly known. */
+  credentials?: string;
   /** Role line, e.g. "Founder & General Dentist". */
   title: string;
   bio?: string;
@@ -223,7 +223,16 @@ export interface OfficeConfig {
   social: Partial<Record<"facebook" | "instagram" | "google" | "youtube" | "tiktok" | "yelp", string>>;
 
   /** Features being tried on one practice before they go to every site. */
-  experiments?: Record<string, boolean>;
+  experiments?: {
+    /** Hand-drawn smile under the headline's highlight, a tooth with sparkles, and a bigger tooth scene on tall phones. */
+    smileLine?: boolean;
+    /** Short patient quotes rotating under the hero buttons (sample quotes on demos without reviews). */
+    quotes?: boolean;
+    /** The hero's colour blobs drift slowly under a fine paper grain. */
+    livingBackground?: boolean;
+    /** Demos of real practices: a brief "Built for Dr. …" note on arrival. */
+    greeting?: boolean;
+  };
 
   /** Overall look (config/designs.ts). Defaults to "butter", which uses `theme` for its colours. */
   design?: Design;

@@ -5,7 +5,7 @@ import { Stars } from "@/components/ui/Stars";
 import { SocialIcon } from "@/components/ui/Icon";
 
 /** Demo-only stand-ins: clearly samples, never mistaken for real patients. */
-const SAMPLE_REVIEWS = [
+export const SAMPLE_REVIEWS = [
   { name: "Your next happy patient", text: "Your Google reviews here! This is where patients rave about their visits.", meta: "Sample review" },
   { name: "A future five-star fan", text: "Imagine a glowing review right here. We pull your newest ones in automatically.", meta: "Sample review" },
   { name: "Probably your mom", text: "Best practice in town, obviously. (Your real reviews will be much more convincing.)", meta: "Sample review" },

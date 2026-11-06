@@ -78,6 +78,7 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    - `contact`: email, `hours` (24h `"HH:MM"`, `null` = closed)
    - `otherLocations`: more offices, each with a `name`, phone, address and hours. The quick-info strip, contact section and request form ("Which office?") adapt automatically; name the main office with `contact.locationName`.
    - `practice.area`: how the hero names where they are ("Orthodontics in ___"). Left out, it names every office when there are 3 or fewer ("Hudson & North Cambridge"), or the state with more. With 4+ offices across states it must be set: borrow their own wording if they have it.
+   - `experiments`: optional hero touches, each on or off per practice: `smileLine` (a hand-drawn smile under the headline's highlight and a tooth with sparkles; on taller phones with room to spare, a bigger tooth scene fills the space), `quotes` (patient quotes rotating under the buttons), `livingBackground` (the hero's colours drift slowly under a fine grain) and `greeting` (a real-practice demo greets the dentist: "Built for Dr. …"). See `components/ui/HeroFlourish.tsx`.
    - `doctors`, `services` (pick an `icon` from the `IconName` list in `config/types.ts`), `insurances`, `reviews`, `rating`, `faqs`
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`

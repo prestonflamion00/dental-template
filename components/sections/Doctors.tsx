@@ -15,9 +15,9 @@ export function Doctors({ office }: { office: OfficeConfig }) {
     <Section id="doctors" eyebrow="Meet the team" title="Friendly faces, gentle hands" intro={copy.doctorsIntro}>
       <ul className={cx("grid gap-5", cols)}>
         {doctors.map((d, i) => (
-          // Phones: a compact row (small photo beside the name) instead of a tall portrait card.
-          <li key={d.name} className="glass glass-hover flex rounded-[28px] p-3 max-sm:items-center max-sm:gap-4 sm:flex-col" data-reveal style={{ ["--d" as string]: `${i * 90}ms` }}>
-            <div className="relative aspect-[4/4.2] overflow-hidden rounded-[22px] bg-accent-soft max-sm:size-24 max-sm:shrink-0 max-sm:rounded-2xl">
+          // Every screen: a big portrait (full card width on phones), with the name and details under it.
+          <li key={d.name} className="glass glass-hover flex flex-col rounded-[28px] p-3" data-reveal style={{ ["--d" as string]: `${i * 90}ms` }}>
+            <div className="relative aspect-[4/4.2] overflow-hidden rounded-[22px] bg-accent-soft">
               {samplePhotos ? (
                 <PhotoPlaceholder className="absolute inset-0" />
               ) : d.photo ? (
@@ -30,15 +30,15 @@ export function Doctors({ office }: { office: OfficeConfig }) {
                   loading="lazy"
                 />
               ) : (
-                <span className="absolute inset-0 grid place-items-center font-serif text-4xl text-accent sm:text-7xl" aria-hidden="true">
+                <span className="absolute inset-0 grid place-items-center font-serif text-7xl text-accent" aria-hidden="true">
                   {initials(d.name)}
                 </span>
               )}
             </div>
-            <div className="flex min-w-0 flex-1 flex-col sm:px-3 sm:pb-4 sm:pt-5">
+            <div className="flex min-w-0 flex-1 flex-col px-3 pb-4 pt-5">
               <h3 className="text-[1.35rem] leading-tight text-ink sm:text-[1.65rem]">
                 {d.name}
-                <span className="ml-2 align-middle font-sans text-sm font-bold tracking-wide text-muted">{d.credentials}</span>
+                {d.credentials && <span className="ml-2 align-middle font-sans text-sm font-bold tracking-wide text-muted">{d.credentials}</span>}
               </h3>
               <p className="mt-1 text-[0.95rem] font-semibold text-accent">{d.title}</p>
               {d.bio && (
