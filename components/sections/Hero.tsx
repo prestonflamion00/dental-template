@@ -6,6 +6,7 @@ import { Highlighted } from "@/components/ui/Section";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Stars } from "@/components/ui/Stars";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
+import { SmileUnderline, ToothSpark } from "@/components/ui/SmileLine";
 import { initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
@@ -40,7 +41,12 @@ export function Hero({ office }: { office: OfficeConfig }) {
             id="hero-title"
             className="mt-3 text-[2.75rem] sm:mt-4 leading-[1.04] text-ink sm:text-6xl lg:text-[4.5rem]"
           >
-            <Highlighted text={copy.heroHeadline} highlight={copy.heroHighlight} ownLine />
+            <Highlighted
+              text={copy.heroHeadline}
+              highlight={copy.heroHighlight}
+              ownLine
+              decorate={office.experiments?.smileLine && (<><SmileUnderline /><ToothSpark /></>)}
+            />
           </h1>
           <p className="hero-sub mt-3 max-w-xl text-[1.05rem] text-muted sm:mt-5 sm:text-xl">
             {copy.heroSubhead}

@@ -35,7 +35,18 @@ export function Section({
 }
 
 /** Renders `text` with `highlight` (if present) wrapped in an italic serif accent. */
-export function Highlighted({ text, highlight, ownLine = false }: { text: string; highlight?: string; ownLine?: boolean }) {
+export function Highlighted({
+  text,
+  highlight,
+  ownLine = false,
+  decorate,
+}: {
+  text: string;
+  highlight?: string;
+  ownLine?: boolean;
+  /** Trial: drawings around the highlighted words (components/ui/SmileLine.tsx). */
+  decorate?: React.ReactNode;
+}) {
   if (!highlight || !text.includes(highlight)) return <>{text}</>;
   const [before, after] = text.split(highlight);
   // `ownLine`: a phrase that ends the headline starts its own line, so the switch to the accent
@@ -45,7 +56,14 @@ export function Highlighted({ text, highlight, ownLine = false }: { text: string
     <>
       {breakBefore ? keepLastWordsTogether(before.trimEnd()) : before}
       {breakBefore && <br />}
-      <span className="highlight">{highlight}</span>
+      {decorate ? (
+        <span className="sl-wrap">
+          <span className="highlight">{highlight}</span>
+          {decorate}
+        </span>
+      ) : (
+        <span className="highlight">{highlight}</span>
+      )}
       {after}
     </>
   );
