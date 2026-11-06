@@ -224,14 +224,8 @@ export interface OfficeConfig {
 
   /** Features being tried on one practice before they go to every site. */
   experiments?: {
-    /** Hand-drawn smile under the headline's highlight, a tooth with sparkles, and a bigger tooth scene on tall phones. */
+    /** The pen drawing on the hero headline (underline, tooth, and on tall phones a line across the top). On unless set to false. */
     smileLine?: boolean;
-    /** Short patient quotes rotating under the hero buttons (sample quotes on demos without reviews). */
-    quotes?: boolean;
-    /** The hero's colour blobs drift slowly under a fine paper grain. */
-    livingBackground?: boolean;
-    /** Demos of real practices: a brief "Built for Dr. …" note on arrival. */
-    greeting?: boolean;
   };
 
   /** Overall look (config/designs.ts). Defaults to "butter", which uses `theme` for its colours. */

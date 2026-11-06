@@ -80,9 +80,6 @@ const hermanFamilyDentistry: OfficeInput = {
   // Their Google rating, as shown on their own website (Nov 2026).
   rating: { value: 4.9, count: 183, source: "Google" },
 
-  // The hero touches we're trying: smile line, quotes, a living background and the greeting.
-  experiments: { smileLine: true, quotes: true, livingBackground: true, greeting: true },
-
   design: "butter",
   // Their brand: sage green (vincennesdentalpractice.com), deepened for readable text.
   theme: { preset: "sage-blue", accent: "#4a7553" },
