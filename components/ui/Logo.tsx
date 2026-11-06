@@ -18,9 +18,9 @@ export function Logo({ practice, compact = false }: { practice: OfficeConfig["pr
         <Tooth size={22} />
       </span>
       <span className="flex flex-col leading-none">
-        <span className={`font-serif text-[1.3rem] font-medium tracking-tight text-ink ${logo.text.length > 20 ? "max-sm:text-[1.1rem]" : ""}`}>{logo.text}</span>{" "}
+        <span data-logo-text className={`font-serif text-[1.3rem] font-medium tracking-tight text-ink ${logo.text.length > 20 ? "max-sm:text-[1.1rem]" : ""}`}>{logo.text}</span>{" "}
         {logo.mark && !compact && (
-          <span className="mt-1 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-muted">{logo.mark}</span>
+          <span data-logo-mark className="mt-1 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-muted">{logo.mark}</span>
         )}
       </span>
     </span>

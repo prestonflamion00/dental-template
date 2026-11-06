@@ -665,7 +665,7 @@
   #top[data-hero] #hero-title { margin-top: 0.25rem; font-size: 2.15rem; line-height: 1.05; }
   /* With the big name: photo, name, then the headline as a short tagline, the rating, the buttons. */
   #top[data-hero] .hero-photo { order: 0; }
-  #top[data-hero] .hero-name { order: 1; margin-bottom: 0.6rem; }
+  #top[data-hero] .hero-name { order: 1; margin-bottom: 0.6rem; min-width: 0; max-width: 100%; }
   #top[data-hero]:has(.hero-name) #hero-title { order: 2; margin-top: 0; font-size: 1.3rem; line-height: 1.25; }
   #top[data-hero]:has(.hero-name) #hero-title br { display: none; }
   #top[data-hero]:has(.hero-name) .hero-rating { order: 3; margin: 0.6rem 0 0; }
@@ -696,10 +696,16 @@
 @keyframes hp-zoom { from { transform: scale(1.07); } to { transform: scale(1); } }
 @keyframes hp-fade { 0%, 40% { opacity: 1; } 50%, 90% { opacity: 0; } 100% { opacity: 1; } }
 
-/* Phones, while the hero's big name shows (components/sections/Nav.tsx): a see-through top bar. */
+/* Phones with the hero's big name (components/sections/Nav.tsx): call and menu sit together in one
+   frosted capsule, lined up with the page's 16px edge, in both states of the bar so they never jump.
+   Until the name has glided into the bar, the bar itself is see-through. */
 @media (max-width: 639.98px) {
+  nav.nav-hero { padding-right: 1px; }
+  nav.nav-hero .nav-actions { gap: 0; padding: 3px; border-radius: 999px; background: rgb(255 255 255 / 0.78); -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%); box-shadow: 0 0 0 1px rgb(255 255 255 / 0.7), 0 6px 18px -8px rgb(var(--shadow-tint, 40 20 25) / 0.35); transition: box-shadow .3s, background-color .3s; }
+  nav.nav-hero:not(.nav-clear) .nav-actions { box-shadow: none; background: transparent; }
+  nav.nav-hero .nav-actions > a, nav.nav-hero .nav-actions > button { width: 42px; height: 42px; }
   nav.nav-clear::before { opacity: 0; }
   nav.nav-clear { background: transparent !important; border-color: transparent !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
-  nav.nav-clear a, nav.nav-clear button { background: rgb(255 255 255 / 0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-  nav.nav-clear > a:first-child { background: none; backdrop-filter: none; }
+  /* Option B: the photo runs up behind the see-through bar. */
+  #top[data-hero="bleed"]:has(.hero-name) .hero-photo { margin-top: -84px; min-height: 230px; }
 }

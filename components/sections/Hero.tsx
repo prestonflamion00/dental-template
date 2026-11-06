@@ -29,7 +29,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
   // The pen underline on the headline (components/ui/HeroFlourish.tsx): on unless a practice turns it off.
   const pen = office.experiments?.smileLine !== false;
   // Phones: photo-first when a layout is chosen and there's a photo (or a placeholder for a real-practice demo).
-  const photoFirst = !!office.heroLayout && (!!office.heroImage || samplePhotos);
+  const photoFirst =
+    !!office.heroLayout && (!!office.heroImage || samplePhotos);
   const jump =
     "flex items-center gap-2 rounded-lg decoration-ink/30 underline-offset-4 [&[href]]:hover:underline";
   return (
@@ -63,13 +64,27 @@ export function Hero({ office }: { office: OfficeConfig }) {
       <div className="hero-main mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
         <div>
           {/* Phones, photo-first layouts: their photo (or a placeholder on demos) leads the first screen. */}
-          {photoFirst && <HeroPhoto image={office.heroImage} placeholder={samplePhotos} />}
+          {photoFirst && (
+            <HeroPhoto image={office.heroImage} placeholder={samplePhotos} />
+          )}
           {/* Phones, photo-first: the practice name, big, under the photo. Once it scrolls away it
               moves into the sticky top bar (components/sections/Nav.tsx watches #hero-name). */}
           {photoFirst && (
             <p id="hero-name" className="hero-name sm:hidden">
-              <span className="block font-serif text-[2.15rem] font-medium leading-[1.02] tracking-tight text-ink">{practice.logo.text}</span>
-              {practice.logo.mark && <span className="mt-1.5 block text-xs font-bold uppercase tracking-[0.16em] text-muted">{practice.logo.mark}</span>}
+              <span
+                data-name-text
+                className="block w-fit whitespace-nowrap font-serif text-[2.6rem] font-medium leading-[1.02] tracking-tight text-ink"
+              >
+                {practice.logo.text}
+              </span>
+              {practice.logo.mark && (
+                <span
+                  data-name-mark
+                  className="mt-1.5 block w-fit whitespace-nowrap text-xs font-bold uppercase tracking-[0.16em] text-muted"
+                >
+                  {practice.logo.mark}
+                </span>
+              )}
             </p>
           )}
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}
@@ -215,8 +230,13 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   />
                 </div>
                 <figcaption className="px-3 pb-2 pt-3 text-[0.95rem] leading-snug">
-                  <a href={has("doctors") ? "#doctors" : undefined} className="inline-flex items-center gap-1 font-semibold text-ink hover:text-accent">
-                    {doctors.length > 1 ? `Meet our ${doctors.length} dentists` : `Meet ${doctors[0]?.name ?? "the team"}`}
+                  <a
+                    href={has("doctors") ? "#doctors" : undefined}
+                    className="inline-flex items-center gap-1 font-semibold text-ink hover:text-accent"
+                  >
+                    {doctors.length > 1
+                      ? `Meet our ${doctors.length} dentists`
+                      : `Meet ${doctors[0]?.name ?? "the team"}`}
                     <ChevronRight size={16} aria-hidden="true" />
                   </a>
                 </figcaption>
