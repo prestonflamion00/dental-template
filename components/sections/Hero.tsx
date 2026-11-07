@@ -117,8 +117,9 @@ export function Hero({ office }: { office: OfficeConfig }) {
             >
               <Stars rating={rating.value} className="text-ink" />
               <span>
-                <strong className="text-ink">{rating.value.toFixed(1)}</strong>{" "}
-                · {rating.count.toLocaleString()} {rating.source} reviews
+                <strong className="text-ink">{rating.value.toFixed(1)}</strong>
+                {/* Just the stars and score on the first screen; the count is for screen readers. */}
+                <span className="sr-only"> from {rating.count.toLocaleString()} {rating.source} reviews</span>
               </span>
             </a>
           )}
