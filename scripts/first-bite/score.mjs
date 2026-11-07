@@ -213,7 +213,11 @@ const parts = [
         checks: [
           check("Rating", 3, G.rating >= 4.8 ? 1 : G.rating >= 4.5 ? 0.5 : 0, `${G.rating} stars`),
           check("Volume vs the top dentists nearby", 2, G.medianCompetitor == null ? 1 : G.reviews >= G.medianCompetitor ? 1 : G.reviews >= G.medianCompetitor / 2 ? 0.5 : 0, `${G.reviews} reviews; top nearby median ${G.medianCompetitor ?? "n/a"}`),
-          check("Recent reviews", 2, G.daysSinceNewest == null ? 0 : G.daysSinceNewest <= 30 ? 1 : G.daysSinceNewest <= 90 ? 0.5 : 0, G.daysSinceNewest == null ? "no reviews returned" : `newest of the reviews Google shows: ${G.daysSinceNewest} days ago`),
+          // Google's API returns only its 5 "most relevant" reviews, not the newest, so a recent one there
+          // proves recency, but an older one proves nothing.
+          G.daysSinceNewest != null && G.daysSinceNewest <= 30
+            ? check("Recent reviews", 2, 1, `a review from ${G.daysSinceNewest} days ago`)
+            : check("Recent reviews", 2, null, NOT("Google's API shows only 5 'most relevant' reviews, not the newest")),
           check("Owner replies", 2, null, NOT("Google's API doesn't include owner replies")),
           check("Ratings elsewhere", 1, null, NOT("directory checks not built yet")),
         ],
