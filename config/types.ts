@@ -298,6 +298,13 @@ export interface OfficeConfig {
    */
   heroLayout?: "card" | "bleed" | "soft";
 
+  /**
+   * Phones with a big hero name (heroLayout): how it hands over to the top bar as you scroll.
+   * "glide" (default): it flies into the bar's logo; "fade": iPhone large-title style; "expand":
+   * the call/menu capsule stretches into the full bar.
+   */
+  nameMorph?: "glide" | "fade" | "expand";
+
   /** Optional video tour (their own, path under /public), shown in its own section with a still frame until played. */
   video?: { src: string; poster: string; title: string; caption?: string };
 

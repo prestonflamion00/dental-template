@@ -12,8 +12,15 @@ export function Nav({
   practiceName,
   phone,
   links,
+  morph = "glide",
 }: {
   logo: React.ReactNode;
+  /**
+   * Phones with a big hero name: how it hands over to the bar. "glide": the name flies into the
+   * bar's logo; "fade": iPhone large-title style, the name scrolls away and the logo fades in;
+   * "expand": the call/menu capsule stretches into the full bar, revealing the logo.
+   */
+  morph?: "glide" | "fade" | "expand";
   practiceName: string;
   phone: string;
   /** `mobileOnly` links appear in the phone menu only (e.g. Emergency); `urgent` ones become the red Emergency button. */
@@ -43,9 +50,9 @@ export function Nav({
   // bar is see-through: the photo runs up behind it, with call and menu in one frosted capsule.
   // stage: "none" (no big name) | "hero" (name in the hero) | "moving" | "bar" (logo in the bar).
   const navRef = useRef<HTMLElement>(null);
-  const [stage, setStage] = useState<"none" | "hero" | "moving" | "bar">(
-    "none",
-  );
+  const [stage, setStage] = useState<
+    "none" | "hero" | "moving" | "leaving" | "bar"
+  >("none");
   useEffect(() => {
     const heroName = document.getElementById("hero-name");
     const big = heroName?.querySelector<HTMLElement>("[data-name-text]");
@@ -56,6 +63,7 @@ export function Nav({
     const logoMark =
       navRef.current?.querySelector<HTMLElement>("[data-logo-mark]") ?? null;
     if (!heroName || !big || !logoText) return;
+    const glideMode = morph === "glide";
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -75,7 +83,13 @@ export function Nav({
     // page (shifting everything sideways), so the copies live inside this instead.
     const layer = document.createElement("div");
     layer.setAttribute("aria-hidden", "true");
-    Object.assign(layer.style, { position: "fixed", inset: "0", overflow: "hidden", pointerEvents: "none", zIndex: "41" });
+    Object.assign(layer.style, {
+      position: "fixed",
+      inset: "0",
+      overflow: "hidden",
+      pointerEvents: "none",
+      zIndex: "41",
+    });
     const copy = (el: HTMLElement | null) => {
       if (!el) return null;
       const c = el.cloneNode(true) as HTMLElement;
@@ -95,12 +109,14 @@ export function Nav({
       layer.appendChild(c);
       return c;
     };
-    const pairs = [
-      { src: big, dst: logoText, c: copy(big) },
-      ...(bigMark && logoMark
-        ? [{ src: bigMark, dst: logoMark, c: copy(bigMark) }]
-        : []),
-    ];
+    const pairs = !glideMode
+      ? []
+      : [
+          { src: big, dst: logoText, c: copy(big) },
+          ...(bigMark && logoMark
+            ? [{ src: bigMark, dst: logoMark, c: copy(bigMark) }]
+            : []),
+        ];
     document.body.appendChild(layer);
     const px = (el: HTMLElement) => parseFloat(getComputedStyle(el).fontSize);
     type Box = { x: number; y: number; size: number };
@@ -117,9 +133,11 @@ export function Nav({
     // on a clock at one speed. Up into the bar it glides in screen coordinates (the bar doesn't
     // move), so a fast flick can't leave it behind; back down it lands on the name's live spot.
     // If a fast fling has already carried the name off screen, it switches without a glide.
-    const DURATION = reduce ? 0 : 420; // ms
-    const TO_BAR = 24; // name within 24px of the bar → into the bar
-    const TO_HERO = 72; // name's spot back 72px below the bar → back to the hero
+    const DURATION = reduce ? 0 : 400; // ms
+    // Gap between the big name's top and the bar's bottom that switches stages (two thresholds, so
+    // stopping on the line can't flicker). "fade" and "expand" wait until the name is half under the bar.
+    const TO_BAR = morph !== "glide" ? -Math.round(big.offsetHeight * 0.6) : 24;
+    const TO_HERO = TO_BAR + 48;
     let current = "",
       raf = 0,
       anim = 0,
@@ -128,19 +146,26 @@ export function Nav({
       from: Box[] = [];
     const show = (next: string) => {
       if (next !== current) setStage((current = next) as never);
-      heroName.style.visibility = next === "hero" ? "" : "hidden";
+      const flying = next === "moving" || next === "leaving";
+      // Only the glide hides the real name (its copy does the travelling); the other modes leave
+      // the big name scrolling with the page.
+      heroName.style.visibility = !glideMode || next === "hero" ? "" : "hidden";
       pairs.forEach(
-        ({ c }) =>
-          c && (c.style.visibility = next === "moving" ? "visible" : "hidden"),
+        ({ c }) => c && (c.style.visibility = flying ? "visible" : "hidden"),
       );
     };
+    // Starts quickly and settles gently (ease-out), so it answers the scroll at once.
+    const ease = (t: number) => 1 - Math.pow(1 - t, 4);
+    const MARK_LAG = 50; // ms: "Vincennes, Indiana" follows the name a beat behind
     const frame = (now: number) => {
       anim = 0;
-      const t = DURATION ? Math.min(1, (now - startAt) / DURATION) : 1;
-      if (t >= 1) return show(dir ? "bar" : "hero");
-      const e = t * t * (3 - 2 * t);
+      const el = now - startAt;
+      if (!DURATION || el >= DURATION + MARK_LAG)
+        return show(dir ? "bar" : "hero");
       pairs.forEach(({ src, dst, c }, k) => {
         if (!c) return;
+        const t = Math.max(0, Math.min(1, (el - k * MARK_LAG) / DURATION));
+        const e = ease(t);
         const a = from[k],
           b = boxOf(dir ? dst : src);
         draw(c, {
@@ -149,7 +174,8 @@ export function Nav({
           size: a.size + (b.size - a.size) * e,
         });
       });
-      show("moving");
+      // The bar fades in while the name is on its way (and out on the way back), as one motion.
+      show(dir ? "moving" : "leaving");
       anim = requestAnimationFrame(frame);
     };
     const glide = (to: 0 | 1) => {
@@ -157,7 +183,7 @@ export function Nav({
       dir = to;
       // Start from wherever the name is drawn right now (mid-glide: the copy's current spot).
       from = pairs.map(({ src, dst, c }) => {
-        if (current === "moving" && c) {
+        if ((current === "moving" || current === "leaving") && c) {
           const r = c.getBoundingClientRect();
           return { x: r.left, y: r.top, size: parseFloat(c.style.fontSize) };
         }
@@ -189,6 +215,12 @@ export function Nav({
       const gap =
         big.getBoundingClientRect().top -
         navRef.current!.getBoundingClientRect().bottom;
+      if (!glideMode) {
+        // "fade" and "expand": a stage switch; CSS does the motion.
+        if (gap < TO_BAR && dir !== 1) show(((dir = 1), "bar"));
+        else if (gap > TO_HERO && dir !== 0) show(((dir = 0), "hero"));
+        return;
+      }
       if (gap < TO_BAR) glide(1);
       else if (gap > TO_HERO) glide(0);
     };
@@ -207,7 +239,7 @@ export function Nav({
       layer.remove();
       heroName.style.visibility = "";
     };
-  }, []);
+  }, [morph]);
   const heroMode = stage !== "none";
 
   // While the menu is open, the sticky Call / Request bar at the bottom steps aside (the menu has
@@ -238,19 +270,31 @@ export function Nav({
           "glass-strong mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-[24px] pl-4 pr-2.5 transition-all duration-300 ease-[var(--ease-soft)] sm:pl-5",
           scrolled ? "py-1.5 shadow-lg" : "py-2.5",
           heroMode && "nav-hero",
-          heroMode && stage !== "bar" && "nav-clear",
+          // See-through until the name hands over (the glide fades the bar in while it flies).
+          heroMode &&
+            morph !== "expand" &&
+            (stage === "hero" || stage === "leaving") &&
+            "nav-clear",
+          // "expand": only the call/menu capsule shows, then it stretches into the full bar.
+          heroMode && morph === "expand" && stage === "hero" && "nav-collapsed",
         )}
       >
         <a href="#top" className="min-w-0 shrink rounded-xl">
           <span
             className={cx(
-              "block origin-left transition-transform duration-300",
+              "block origin-left duration-300",
+              morph === "fade" && heroMode
+                ? "transition-[transform,opacity]"
+                : "transition-transform",
               // The shrink-on-scroll is skipped on phones with the hero name, so the gliding name lands
               // on the logo at its exact size.
               scrolled && (heroMode ? "sm:scale-[0.94]" : "scale-[0.94]"),
               heroMode &&
+                morph !== "expand" &&
                 stage !== "bar" &&
-                "max-sm:pointer-events-none max-sm:opacity-0",
+                (morph === "fade"
+                  ? "max-sm:pointer-events-none max-sm:translate-y-1.5 max-sm:opacity-0"
+                  : "max-sm:pointer-events-none max-sm:opacity-0"),
             )}
           >
             {logo}

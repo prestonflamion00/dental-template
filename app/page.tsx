@@ -88,7 +88,7 @@ export default function Home() {
     <BookingProvider
       settings={{ url: office.booking.url }}
     >
-      <Nav logo={<Logo practice={office.practice} />} practiceName={office.practice.name} phone={office.contact.phone} links={links} />
+      <Nav logo={<Logo practice={office.practice} />} practiceName={office.practice.name} phone={office.contact.phone} links={links} morph={office.nameMorph} />
       <main id="main">
         {office.sections.map((id) => (
           <Fragment key={id}>{SECTIONS[id]()}</Fragment>

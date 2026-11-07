@@ -40,9 +40,11 @@ if (envKey && !(envKey in offices)) {
 }
 // buildOffice fills anything the office file leaves out and fixes the section order (config/build.ts).
 const built: OfficeConfig = buildOffice(offices[(envKey as OfficeKey) || ACTIVE_OFFICE]);
-// Mockup builds only: NEXT_PUBLIC_HERO_LAYOUT tries a phone hero layout on every practice at once.
+// Mockup builds only: NEXT_PUBLIC_HERO_LAYOUT / NEXT_PUBLIC_NAME_MORPH try a phone hero layout or
+// name hand-over on every practice at once.
 const layout = process.env.NEXT_PUBLIC_HERO_LAYOUT as OfficeConfig["heroLayout"] | undefined;
-const office: OfficeConfig = layout ? { ...built, heroLayout: layout } : built;
+const morph = process.env.NEXT_PUBLIC_NAME_MORPH as OfficeConfig["nameMorph"] | undefined;
+const office: OfficeConfig = { ...built, ...(layout ? { heroLayout: layout } : {}), ...(morph ? { nameMorph: morph } : {}) };
 
 export default office;
 export type { OfficeConfig } from "./types";

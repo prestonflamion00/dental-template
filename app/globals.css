@@ -716,3 +716,14 @@ html[data-menu-open] [data-mobile-bar] { transform: translateY(120%); pointer-ev
 /* Nothing may widen the page sideways (iPhone Safari counts off-screen fixed elements). `clip`,
    unlike `hidden`, keeps the sticky top bar working. */
 html, body { overflow-x: clip; }
+
+/* "expand" hand-over (components/sections/Nav.tsx): at the top only the call/menu capsule shows;
+   as the hero name scrolls up, it stretches leftward into the full bar, revealing the logo. */
+@media (max-width: 639.98px) {
+  nav.nav-hero { transition: clip-path 0.5s cubic-bezier(0.22, 1, 0.36, 1), padding 0.3s, box-shadow 0.3s, background-color 0.3s; clip-path: inset(0 round 24px); }
+  nav.nav-hero.nav-collapsed { clip-path: inset(10px 0 10px calc(100% - 92px) round 999px); box-shadow: none; }
+  nav.nav-hero.nav-collapsed .nav-actions { background: transparent; box-shadow: none; }
+}
+@media (max-width: 639.98px) and (prefers-reduced-motion: reduce) {
+  nav.nav-hero { transition: none; }
+}
