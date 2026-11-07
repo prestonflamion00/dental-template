@@ -22,7 +22,8 @@ import { aiChecks } from "./ai.mjs";
 
 const run = promisify(execFile);
 const { chromium, devices } = createRequire(import.meta.url)("playwright");
-const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
+// We say who we are, so a site owner can see (and block) us.
+const UA = "Mozilla/5.0 (compatible; butterbite-FirstBite/0.1; +https://butterbitedigital.com)";
 const CHROME = process.env.CHROME_PATH || "/opt/pw-browsers/chromium";
 
 const args = process.argv.slice(2);
@@ -35,6 +36,40 @@ if (!site) {
 }
 const origin = new URL(site).origin;
 const host = new URL(site).hostname.replace(/^www\./, "");
+
+/* ── Being gentle with their site ──
+ * Two requests at a time at most, a pause between each, pages robots.txt asks robots to skip are
+ * skipped, and if the site says it's busy (429 or 503) we wait, and stop after the second time.
+ * A full run is a few hundred small requests over a couple of minutes, about what a few visitors
+ * browsing at once cost the site. */
+const WORKERS = 2, GAP_MS = 400;
+let slowDowns = 0, stopped = false;
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+async function polite(fn) {
+  if (stopped) return { status: 0, final: "", body: "", error: "stopped: the site asked us to slow down" };
+  await wait(GAP_MS);
+  const r = await fn();
+  const code = typeof r === "number" ? r : r.status;
+  if (code === 429 || code === 503) {
+    if (++slowDowns >= 2) stopped = true;
+    else await wait(30_000);
+  }
+  return r;
+}
+const disallowed = [];
+async function readRobots() {
+  try {
+    const { stdout } = await run("curl", ["-sS", "-L", "--max-time", "15", "-A", UA, `${origin}/robots.txt`]);
+    let mine = false;
+    for (const line of stdout.split(/\r?\n/)) {
+      const [k, ...v] = line.split(":");
+      const key = k.trim().toLowerCase(), val = v.join(":").trim();
+      if (key === "user-agent") mine = val === "*" || /butterbite/i.test(val);
+      else if (mine && key === "disallow" && val) disallowed.push(val);
+    }
+  } catch {}
+}
+const allowed = (u) => { try { const p = new URL(u).pathname; return !disallowed.some((d) => p.startsWith(d)); } catch { return false; } };
 
 /* ── Small helpers ── */
 async function get(url) {
@@ -73,13 +108,13 @@ const check = (name, max, got, detail) => ({ name, max, points: pts(got, max), d
 async function crawl() {
   const seen = new Set([site]), queue = [site], pages = [];
   while (queue.length && pages.length < MAX_PAGES) {
-    const batch = queue.splice(0, 6);
-    const got = await pool(batch, 6, async (u) => ({ u, ...(await get(u)) }));
+    const batch = queue.splice(0, WORKERS);
+    const got = await pool(batch, WORKERS, async (u) => ({ u, ...(await polite(() => get(u))) }));
     for (const r of got) {
       pages.push({ url: r.u, status: r.status, html: r.body });
       for (const l of linksIn(r.body, r.final || r.u)) {
         const clean = l.split("#")[0];
-        if (own(clean) && isPage(clean) && !seen.has(clean)) { seen.add(clean); queue.push(clean); }
+        if (own(clean) && isPage(clean) && allowed(clean) && !seen.has(clean)) { seen.add(clean); queue.push(clean); }
       }
     }
   }
@@ -87,8 +122,8 @@ async function crawl() {
   const linkSet = new Map();
   for (const p of pages) for (const l of linksIn(p.html, p.url)) { const c = l.split("#")[0]; if (own(c) && !/\/(wp-json|xmlrpc\.php|feed)/.test(c)) { if (!linkSet.has(c)) linkSet.set(c, new Set()); linkSet.get(c).add(p.url); } }
   const known = new Map(pages.map((p) => [p.url, p.status]));
-  const todo = [...linkSet.keys()].filter((u) => !known.has(u));
-  const st = await pool(todo, 6, status);
+  const todo = [...linkSet.keys()].filter((u) => !known.has(u) && allowed(u));
+  const st = await pool(todo, WORKERS, (u) => polite(() => status(u)));
   todo.forEach((u, i) => known.set(u, st[i]));
   const broken = [...linkSet.entries()].filter(([u]) => known.get(u) >= 400 || known.get(u) === 0).map(([u, from]) => ({ url: u, status: known.get(u), foundOn: [...from].slice(0, 3) }));
   return { pages, broken, linksChecked: linkSet.size };
@@ -145,6 +180,7 @@ async function firstScreen() {
 
 /* ── Score it ── */
 const t0 = Date.now();
+await readRobots();
 const [site_, lh, fold] = await Promise.all([crawl(), lighthouse(), firstScreen().catch((e) => ({ error: String(e.message).slice(0, 120) }))]);
 const pages = site_.pages.filter((p) => p.status === 200);
 const allHtml = pages.map((p) => p.html).join("\n");
