@@ -43,7 +43,9 @@ Context for a new Claude session. Written by the previous session so nothing is 
 - Pages: each doctor has a page (big photo, bio); all 26 services grouped (preventive, restorative, cosmetic, gum, specialty) with a page each; team page (25 people); payments & financing; careers; town pages (Vincennes, Washington, Lawrenceville); video section; Facebook + YouTube links.
 - Phone menu: the sticky bottom bar hides while the menu is open.
 - Decisions: tooth drawing removed everywhere (pen underline stays); no rotating quotes, no moving background, no greeting; button glows toned down; if a practice has photos, use them; demos without photos show a "Your photo here" placeholder; ask for photos before go-live; a demo must not lose content from the practice's current site unless redundant.
-- Still to decide: roll option B + name morph out to other sites; merge the branch (needs my "approved").
+- Name handover decided (Nov 7): **refined glide** (the default, `nameMorph: "glide"`). Fade and expand were tried and not chosen.
+- Town and doctor pages: Request, then Call + Emergency side by side (same as home).
+- Still to decide: roll option B + glide out to other sites; merge the branch (needs my "approved").
 
 ## Herman: their current state (for my call with Dr. Eric Herman)
 - 4 dentists, 21 staff, hiring; 4.9 from 183 Google reviews; site by Marketing & Media Solutions (Evansville ad agency); Google Ads paid by "RK Creative Design LLC" (Google Ads Transparency Center), one ad shows "Open 24 hours" (their Google profile hours may be wrong; check in Maps).
