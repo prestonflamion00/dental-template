@@ -712,3 +712,7 @@
 
 /* The menu is open (components/sections/Nav.tsx): the sticky bottom bar steps aside. */
 html[data-menu-open] [data-mobile-bar] { transform: translateY(120%); pointer-events: none; }
+
+/* Nothing may widen the page sideways (iPhone Safari counts off-screen fixed elements). `clip`,
+   unlike `hidden`, keeps the sticky top bar working. */
+html, body { overflow-x: clip; }

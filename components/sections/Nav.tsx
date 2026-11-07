@@ -71,14 +71,17 @@ export function Nav({
 
     // The travelling copies: fixed to the screen, line height 1 like both ends, and resized by font
     // size (not by scaling), so the last frame is drawn exactly like the bar's own logo.
+    // A screen-sized frame that clips: iPhone Safari lets an off-screen fixed element widen the
+    // page (shifting everything sideways), so the copies live inside this instead.
     const layer = document.createElement("div");
     layer.setAttribute("aria-hidden", "true");
+    Object.assign(layer.style, { position: "fixed", inset: "0", overflow: "hidden", pointerEvents: "none", zIndex: "41" });
     const copy = (el: HTMLElement | null) => {
       if (!el) return null;
       const c = el.cloneNode(true) as HTMLElement;
       c.removeAttribute("id");
       Object.assign(c.style, {
-        position: "fixed",
+        position: "absolute",
         left: "0",
         top: "0",
         margin: "0",
