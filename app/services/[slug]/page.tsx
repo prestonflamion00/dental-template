@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Phone } from "lucide-react";
 import office from "@/config/office";
 import { BookButton } from "@/components/booking/BookButton";
+import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { ContentBlocks, PageShell } from "@/components/ui/PageShell";
 import { cx, telHref, withBase } from "@/lib/format";
 import { allCategories, findService } from "@/lib/catalog";
@@ -63,6 +64,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <a href={telHref(office.contact.phone)} className="btn btn-glass w-full">
                 <Phone size={17} aria-hidden="true" className="text-accent" /> {office.contact.phone}
               </a>
+              {/* An emergency-care page is where someone in pain lands, so it gets the red button too. */}
+              {/emergenc/i.test(`${service.id} ${service.name}`) && <EmergencyButton label="Dental emergency" className="w-full" />}
             </div>
           </div>
           {siblings.length > 0 && (

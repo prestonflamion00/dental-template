@@ -45,7 +45,7 @@ Context for a new Claude session. Written by the previous session so nothing is 
 - Decisions: tooth drawing removed everywhere (pen underline stays); no rotating quotes, no moving background, no greeting; button glows toned down; if a practice has photos, use them; demos without photos show a "Your photo here" placeholder; ask for photos before go-live; a demo must not lose content from the practice's current site unless redundant.
 - Name handover decided (Nov 7): **refined glide** (the default, `nameMorph: "glide"`), **0.3 s**. Fade and expand were tried and not chosen.
 - Real logos (Nov 7): when a practice's logo clearly spells out its name, use it in place of the text (`practice.logo.image`, with `width`/`height`); it shows big in the phone hero and glides into the bar. Herman uses theirs (silver parts darkened to read on our light bar); the "Vincennes, Indiana" line is dropped when a logo image is used.
-- Town and doctor pages: Request, then Call + Emergency side by side (same as home).
+- Emergency button rule (Nov 7): the big red button goes only where someone in pain lands: the home page, town/location pages, and an emergency-care service page. Not on doctor, team, careers, payments or other service pages (Emergency stays in the phone menu everywhere). Doctor pages: Request, then a full-width "Call the office · number".
 - Still to decide: roll option B + glide out to other sites; merge the branch (needs my "approved").
 
 ## Herman: their current state (for my call with Dr. Eric Herman)
