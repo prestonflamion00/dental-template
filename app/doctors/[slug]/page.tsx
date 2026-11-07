@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Phone } from "lucide-react";
 import office from "@/config/office";
 import { BookButton } from "@/components/booking/BookButton";
+import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { PageShell } from "@/components/ui/PageShell";
 import {
@@ -145,6 +146,8 @@ export default async function DoctorPage({
               Call
               <span className="max-sm:sr-only"> {office.contact.phone}</span>
             </a>
+            {/* Same buttons as the home page: Request on top; Call and Emergency side by side. */}
+            <EmergencyButton label="Emergency" size="lg" className="min-w-0 max-sm:px-4" />
           </div>
         </div>
       </article>

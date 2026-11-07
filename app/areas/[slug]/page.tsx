@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, MapPin, Phone } from "lucide-react";
 import office from "@/config/office";
 import { BookButton } from "@/components/booking/BookButton";
+import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { PageShell } from "@/components/ui/PageShell";
 import { doctorSlug, mapsHref, telHref, withBase } from "@/lib/format";
 import { allCategories } from "@/lib/catalog";
@@ -65,6 +66,8 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
             <a href={telHref(office.contact.phone)} className="btn btn-glass btn-lg max-sm:px-4">
               <Phone size={18} aria-hidden="true" className="text-accent" /> Call<span className="max-sm:sr-only"> {office.contact.phone}</span>
             </a>
+            {/* Same buttons as the home page: Request on top; Call and Emergency side by side. */}
+            <EmergencyButton label="Emergency" size="lg" className="min-w-0 max-sm:px-4" />
           </div>
         </header>
 
