@@ -5,6 +5,7 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
+  MapPin,
   Phone,
   Smile,
 } from "lucide-react";
@@ -80,7 +81,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   alt={practice.name}
                   width={practice.logo.width}
                   height={practice.logo.height}
-                  className="block h-auto w-[min(100%,280px)]"
+                  className="block h-auto w-[min(100%,260px)]"
                 />
               ) : (
                 <span
@@ -90,14 +91,22 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   {practice.logo.text}
                 </span>
               )}
-              {practice.logo.mark && !practice.logo.image && (
-                <span
-                  data-name-mark
-                  className="mt-2 block w-fit whitespace-nowrap text-xs leading-none font-bold uppercase tracking-[0.16em] text-muted"
-                >
-                  {practice.logo.mark}
-                </span>
-              )}
+              {practice.logo.mark &&
+                (practice.logo.image ? (
+                  // Under a logo image: the town, as a location line (the bar shows only the logo),
+                  // so it still reads on the first screen.
+                  <span className="mt-1.5 flex w-fit items-center gap-1.5 whitespace-nowrap text-sm leading-none font-semibold text-muted">
+                    <MapPin size={15} aria-hidden="true" className="text-accent" />
+                    {practice.logo.mark}
+                  </span>
+                ) : (
+                  <span
+                    data-name-mark
+                    className="mt-2 block w-fit whitespace-nowrap text-xs leading-none font-bold uppercase tracking-[0.16em] text-muted"
+                  >
+                    {practice.logo.mark}
+                  </span>
+                ))}
             </p>
           )}
           {/* Phones: the rating, the strongest trust signal, sits above the headline so it's always on the first screen. */}

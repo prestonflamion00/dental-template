@@ -154,7 +154,9 @@ export function Nav({
       const flying = next === "moving" || next === "leaving";
       // Only the glide hides the real name (its copy does the travelling); the other modes leave
       // the big name scrolling with the page.
-      heroName.style.visibility = !glideMode || next === "hero" ? "" : "hidden";
+      // An image logo hides only itself: the town line under it has no twin in the bar, so it just
+      // scrolls away with the page.
+      (isImg ? big : heroName).style.visibility = !glideMode || next === "hero" ? "" : "hidden";
       pairs.forEach(
         ({ c }) => c && (c.style.visibility = flying ? "visible" : "hidden"),
       );
@@ -213,7 +215,7 @@ export function Nav({
         dir = 0;
         if (current !== "none") setStage((current = "none"));
         pairs.forEach(({ c }) => c && (c.style.visibility = "hidden"));
-        heroName.style.visibility = "";
+        heroName.style.visibility = big.style.visibility = "";
         return;
       }
       if (!current || current === "none") show(dir ? "bar" : "hero");
@@ -242,7 +244,7 @@ export function Nav({
       cancelAnimationFrame(raf);
       cancelAnimationFrame(anim);
       layer.remove();
-      heroName.style.visibility = "";
+      heroName.style.visibility = big.style.visibility = "";
     };
   }, [morph]);
   const heroMode = stage !== "none";
