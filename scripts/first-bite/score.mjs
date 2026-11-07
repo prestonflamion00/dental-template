@@ -329,7 +329,7 @@ for (const p of parts) {
 const measured = parts.filter((p) => p.score != null);
 const coveredWeight = measured.reduce((s, p) => s + p.weight * p.coverage, 0);
 const overall = coveredWeight ? Math.round((measured.reduce((s, p) => s + p.score * p.weight * p.coverage, 0) / coveredWeight) * 10) / 10 : null;
-const band = (s) => (s >= 8.5 ? "Golden" : s >= 7 ? "Spreadable" : s >= 5 ? "Softening" : "Cold butter");
+const band = (s) => (s >= 8.5 ? "Golden" : s >= 7 ? "Spreadable" : s >= 5 ? "Warming up" : "Cold butter");
 
 const report = {
   site, scoredAt: new Date().toISOString(), version: "first-bite 0.1",

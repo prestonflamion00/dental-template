@@ -68,7 +68,15 @@ const notYet = [];
 for (const p of r.parts) for (const c of p.checks ?? []) if (typeof c.detail === "string" && c.detail.startsWith("not measured")) notYet.push(c.name);
 if (r.ai?.gemini?.error) notYet.push("Gemini's answers");
 
-const bands = [["Golden", "8.5+"], ["Spreadable", "7–8.4"], ["Softening", "5–6.9"], ["Cold butter", "under 5"]];
+// Each band says what it means for patients, in plain words, so nobody has to guess.
+const bands = [
+  ["Golden", "8.5+", "Patients find and choose you easily."],
+  ["Spreadable", "7–8.4", "Strong, with a few gaps to close."],
+  ["Warming up", "5–6.9", "You're losing some patients to fixable gaps."],
+  ["Cold butter", "under 5", "Many patients are choosing other practices."],
+];
+// Older reports said "Softening" for 5–6.9.
+const bandName = r.band === "Softening" ? "Warming up" : r.band;
 const bar = (p) => `
   <div class="part">
     <div class="pname">${esc(p.name)}${p.coverage != null && p.coverage < 1 ? `<span class="cov"> · ${Math.round(p.coverage * 100)}% measured</span>` : p.score == null ? `<span class="cov"> · not measured yet</span>` : ""}</div>
@@ -98,8 +106,12 @@ const html = `<!doctype html>
   .big { font-size: 56px; line-height: 1; margin-top: 6px; }
   .big small { font-size: 20px; color: var(--muted); }
   .band { display: inline-block; margin-top: 8px; background: var(--sand); color: var(--honey); font-weight: 700; border-radius: 999px; padding: 3px 12px; }
-  .bands { margin-top: 12px; font-size: 10.5px; color: var(--muted); display: grid; gap: 2px; }
-  .bands .on { color: var(--ink); font-weight: 700; }
+  .means { margin-top: 6px; color: var(--ink); font-weight: 600; font-size: 12px; line-height: 1.3; }
+  .bands { margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 10.5px; line-height: 1.3; color: var(--muted); }
+  .bands > div { border-top: 3px solid var(--line); padding-top: 5px; }
+  .bands b { font-weight: 700; color: var(--ink); }
+  .bands span { display: block; }
+  .bands .on { border-top-color: var(--honey); color: var(--ink); }
   .parts { display: grid; gap: 6px; margin-top: 10px; }
   .cov { color: var(--muted); font-weight: 400; font-size: 10.5px; }
   .part { display: grid; grid-template-columns: 215px 1fr 30px; gap: 10px; align-items: center; }
@@ -124,9 +136,9 @@ const html = `<!doctype html>
   .compare th { font-size: 11px; color: var(--muted); font-weight: 600; }
   .note { background: var(--sand); border-radius: 12px; padding: 10px 12px; }
   footer { margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--muted); }
-  @media (max-width: 640px) { body { padding: 20px 16px; } .top, .row, .working { grid-template-columns: 1fr; } .part { grid-template-columns: 110px 1fr 28px; } }
+  @media (max-width: 640px) { body { padding: 20px 16px; } .top, .row, .working { grid-template-columns: 1fr; } .bands { grid-template-columns: 1fr 1fr; } .part { grid-template-columns: 110px 1fr 28px; } }
   @page { size: letter; margin: 0; }
-  @media print { html, body { background: var(--cream); -webkit-print-color-adjust: exact; print-color-adjust: exact; } body { padding: 20px 34px 0; } h1 { font-size: 22px; } .big { font-size: 50px; } h2 { margin: 15px 0 6px; } .fix p { margin-top: 2px; } }
+  @media print { html, body { background: var(--cream); -webkit-print-color-adjust: exact; print-color-adjust: exact; } body { padding: 18px 34px 0; } h1 { font-size: 21px; } .working { gap: 4px 22px; } h2 { font-size: 15.5px; } .big { font-size: 50px; } h2 { margin: 15px 0 6px; } .fix p { margin-top: 2px; } }
 </style></head><body>
 <header>
   <div class="brand">butter<b>bite</b> digital</div>
@@ -137,16 +149,17 @@ const html = `<!doctype html>
   <div class="scorecard">
     <div class="kicker">First Bite score</div>
     <div class="big">${r.overall?.toFixed(1) ?? "–"}<small> / 10</small></div>
-    <div class="band">${esc(r.band ?? "")}</div>
-    <div class="bands">${bands.map(([b, range]) => `<div class="${b === r.band ? "on" : ""}">${b} · ${range}</div>`).join("")}</div>
+    <div class="band">${esc(bandName ?? "")}</div>
+    <p class="means">${esc(bands.find(([b]) => b === bandName)?.[2] ?? "")}</p>
   </div>
   <div>
-    <div class="kicker">${esc(town)}</div>
-    <h1>How patients find and choose ${esc(name)} online</h1>
+    <div class="kicker">${esc(name)}${town ? ` · ${esc(town)}` : ""}</div>
+    <h1>How patients find and choose you online</h1>
     <div class="parts">${r.parts.map(bar).join("")}</div>
-    <p class="coverage">Measured automatically from ${Math.round(r.measuredShare * 100)}% of our checklist. Parts we couldn't measure yet don't count for or against you.</p>
+    <p class="coverage">Based on ${Math.round(r.measuredShare * 100)}% of our checklist; what we couldn't measure yet doesn't count for or against you.</p>
   </div>
 </section>
+<div class="bands">${bands.map(([b, range, means]) => `<div class="${b === bandName ? "on" : ""}"><b>${b}</b> · ${range}<span>${esc(means)}</span></div>`).join("")}</div>
 
 <h2>What's already working</h2>
 <ul class="working">${working.slice(0, 4).map((w) => `<li>${esc(w)}</li>`).join("")}</ul>
@@ -160,10 +173,10 @@ const html = `<!doctype html>
   ${G.rankings.dentist.top.slice(0, 3).map((x, i) => `<tr><td>${i + 1}. ${x.self ? `<b>${esc(x.name.split(";")[0])}</b>` : esc(x.name.split(";")[0])}</td><td>${x.reviews}</td></tr>`).join("")}</table></div>` : "<div></div>"}
   <div><h2>Also worth knowing</h2>
   ${opt("--note") ? `<p class="note">${esc(opt("--note"))}</p>` : ""}
-  <p${opt("--note") ? ' style="margin-top:8px"' : ""}>Dollar figures assume a new patient is worth about ${money(NEW_PATIENT)} in their first year (industry average). With your own numbers, we'll redo them.</p></div>
+  <p${opt("--note") ? ' style="margin-top:8px"' : ""}>Dollar figures assume a new patient is worth about ${money(NEW_PATIENT)} in their first year (industry average); we'll redo them with your numbers.</p></div>
 </div>
 
-<footer>Not measured yet: ${esc(notYet.join(", "))}. Measured ${esc(date)} by butterbite digital · butterbitedigital.com. Scores change as Google, AI tools and your site change; we re-measure every quarter.</footer>
+<footer>Not measured yet: ${esc(notYet.join(", "))}. Measured ${esc(date)} by butterbite digital · butterbitedigital.com · We re-measure every quarter.</footer>
 </body></html>`;
 
 const out = opt("--out") ?? "snapshot.html";

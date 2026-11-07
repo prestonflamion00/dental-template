@@ -62,7 +62,7 @@ Context for a new Claude session. Written by the previous session so nothing is 
 - Tracker: https://claude.ai/artifact/R1hZsJ2Wse6JkmNkg2Pf2A
 
 ## The First Bite score (our signature grade)
-- Decided: name = butterbite **First Bite score** (bands: Golden 8.5+, Spreadable 7–8.4, Softening 5–6.9, Cold butter <5). **Everything automated.** Free snapshot for every demo call; re-score clients every quarter.
+- Decided: name = butterbite **First Bite score** (bands: Golden 8.5+, Spreadable 7–8.4, Warming up 5–6.9 (renamed from Softening, Nov 7), Cold butter <5). **Everything automated.** Free snapshot for every demo call; re-score clients every quarter.
 - 6 parts, weights add to 10: Google profile 2.5, Reviews 2, Patient experience 2, Local search 1.5, Speed & health 1, AI & listings 1. Each part scored 0–10 from fixed pass/partial/fail checks (checklist in the score doc).
 - Tool: `node scripts/first-bite/score.mjs <website> [--out report.json]` (crawl, Lighthouse on a phone, first-screen check in a browser, search basics). `scripts/first-bite/places.mjs` adds Google profile, reviews and Google Maps rankings via the Places API (New). Checks the API can't see (verified, posts, booking link, owner replies) stay "not measured"; the score reports how much of the checklist it covered.
 - Results so far (website parts only): Herman's real site 3.5; our Herman demo 8.5.
