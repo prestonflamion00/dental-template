@@ -5,7 +5,7 @@ import office from "@/config/office";
 import { BookButton } from "@/components/booking/BookButton";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { PageShell } from "@/components/ui/PageShell";
-import { doctorSlug, mapsHref, telHref, withBase } from "@/lib/format";
+import { doctorSlug, mapsProps, telHref, withBase } from "@/lib/format";
 import { allCategories } from "@/lib/catalog";
 
 /*
@@ -85,7 +85,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
               </p>
             </div>
           </div>
-          <a href={mapsHref(a)} target="_blank" rel="noopener noreferrer" className="btn btn-glass self-start sm:self-auto">
+          <a {...mapsProps(office.locations[0])} target="_blank" rel="noopener noreferrer" className="btn btn-glass self-start sm:self-auto">
             Directions <ArrowRight size={16} aria-hidden="true" />
           </a>
         </section>

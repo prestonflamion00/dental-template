@@ -2,7 +2,7 @@ import { Mail, MapPin, Navigation, Phone } from "lucide-react";
 import { SampleTag } from "@/components/ui/SampleTag";
 import type { Location, OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
-import { cx, fullAddress, mapsHref, telHref } from "@/lib/format";
+import { cx, fullAddress, mapsProps, telHref } from "@/lib/format";
 import { HoursTable } from "./OpenStatus";
 import { OfficeTabs } from "./OfficeTabs";
 
@@ -48,7 +48,7 @@ function MapPlaceholder({ name, location, real }: { name: string; location: Loca
             <strong className="block">{name}</strong>
             {a.street}
           </p>
-          <a href={mapsHref(a)} target="_blank" rel="noopener noreferrer" className="btn btn-primary !min-h-11 shrink-0 !px-4 text-sm">
+          <a {...mapsProps(location)} target="_blank" rel="noopener noreferrer" className="btn btn-primary !min-h-11 shrink-0 !px-4 text-sm">
             <Navigation size={16} aria-hidden="true" />
             Directions<span className="sr-only"> to {fullAddress(a)} (opens in a new tab)</span>
           </a>
@@ -122,7 +122,7 @@ function LocationCard({ office, location: l, main, several }: { office: OfficeCo
                 </li>
               )}
               <li>
-                <a href={mapsHref(l.address)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
+                <a {...mapsProps(l)} target="_blank" rel="noopener noreferrer" className="flex gap-3 text-ink hover:text-accent">
                   <MapPin size={18} aria-hidden="true" className="mt-1 shrink-0 text-accent" />
                   <address className="not-italic">
                     {l.address.street}
@@ -135,7 +135,7 @@ function LocationCard({ office, location: l, main, several }: { office: OfficeCo
             </ul>
             {l.directionsNote && <p className="mt-4 text-[0.95rem] text-muted">{l.directionsNote}</p>}
             <a
-              href={mapsHref(l.address)}
+              {...mapsProps(l)}
               target="_blank"
               rel="noopener noreferrer"
               className={cx("btn btn-primary mt-5 w-full", office.fictional ? "sm:hidden" : "sm:w-auto")}

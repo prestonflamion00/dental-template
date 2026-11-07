@@ -10,9 +10,18 @@ export function fullAddress(a: OfficeConfig["contact"]["address"]): string {
   return `${a.street}, ${a.city}, ${a.region} ${a.postalCode}`;
 }
 
-/** Opens native maps on phones (Apple/Google both handle this URL). */
-export function mapsHref(a: OfficeConfig["contact"]["address"]): string {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress(a))}`;
+/**
+ * Directions link props, by device and with no extra tap: the link is Google Maps (opens the Google
+ * Maps app on Android, the website on computers), and on iPhone, iPad and Mac a click handler
+ * (app/layout.tsx) swaps in `data-apple-maps`, so it opens Apple Maps, which every Apple device has.
+ * Both search the practice name plus address (and Google its listing ID), so they land on the listing.
+ */
+export function mapsProps(l: Pick<OfficeConfig["locations"][number], "address" | "label" | "placeId" | "geo">) {
+  const q = encodeURIComponent([l.label, fullAddress(l.address)].filter(Boolean).join(", "));
+  return {
+    href: `https://www.google.com/maps/search/?api=1&query=${q}${l.placeId ? `&query_place_id=${encodeURIComponent(l.placeId)}` : ""}`,
+    "data-apple-maps": `https://maps.apple.com/?q=${q}${l.geo ? `&sll=${l.geo.lat},${l.geo.lng}` : ""}`,
+  };
 }
 
 /** "Dr. Lakshmi P. Thalanki" -> "LT": shown where a doctor has no photo. */

@@ -106,6 +106,9 @@ export const viewport: Viewport = {
  */
 // A refresh always starts at the top: no restored scroll spot, no jump back to a #section from an
 // earlier tap. (A shared link with #reviews etc. still opens at that section the first time.)
+// Directions on Apple devices (iPhone, iPad, which reports itself as a Mac, and Mac): just before
+// the tap goes through, point the link at Apple Maps (lib/format.ts mapsProps). No extra tap.
+const mapsScript = `(function(){if(!/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent))return;document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[data-apple-maps]');if(a)a.href=a.getAttribute('data-apple-maps');},true);})();`;
 const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'){history.scrollRestoration='manual';if(location.hash)history.replaceState(null,'',location.pathname+location.search);scrollTo(0,0);addEventListener('load',function(){scrollTo(0,0)});}}catch(e){}try{var q=new URLSearchParams(location.search),t=q.get('theme'),g=q.get('design');if(t&&${JSON.stringify(
   THEME_PRESETS,
 )}.indexOf(t)>-1){d.setAttribute('data-theme',t);d.style.cssText='';}if(g&&${JSON.stringify(DESIGNS)}.indexOf(g)>-1){d.setAttribute('data-design',g);d.style.cssText='';}}catch(e){}})();`;
@@ -125,6 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <style dangerouslySetInnerHTML={{ __html: `${allThemesCss()}\n${allDesignsCss()}` }} />
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        <script dangerouslySetInnerHTML={{ __html: mapsScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(dentistJsonLd(office)).replace(/</g, "\\u003c") }}

@@ -71,6 +71,10 @@ export interface Location {
   hours: Record<Day, DayHours>;
   directionsNote?: string;
   geo?: { lat: number; lng: number };
+  /** Their Google Maps listing ID (Places API "id"), so Directions lands on the listing itself, not a street pin. */
+  placeId?: string;
+  /** Name shown on maps (the practice name); filled in by the build. */
+  label?: string;
 }
 
 /** Sets the default wording, services and FAQs for details an office file leaves out (config/generic.ts). */
@@ -214,6 +218,8 @@ export interface OfficeConfig {
     locationName?: string;
     /** Optional lat/lng used by the JSON-LD schema. */
     geo?: { lat: number; lng: number };
+    /** Their Google Maps listing ID (Places API "id"): Directions opens that listing, not a street pin. */
+    placeId?: string;
     /** Free-text parking / access notes shown under the map. */
     directionsNote?: string;
   };

@@ -25,6 +25,9 @@ const hermanFamilyDentistry: OfficeInput = {
   contact: {
     phone: "(812) 882-1572",
     address: { street: "608 South Quail Run Road", city: "Vincennes", region: "IN", postalCode: "47591", country: "US" },
+    // Their main Google listing (not the duplicate "Eric L. Herman DDS" one), from the Places API.
+    geo: { lat: 38.65216, lng: -87.49646 },
+    placeId: "ChIJiV1-jpz_bYgR6LhK4blmppg",
   },
 
   timezone: "America/Indiana/Vincennes",

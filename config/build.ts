@@ -73,8 +73,8 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
   const description = input.practice.description ?? `${name} is a dental practice in ${city}, ${region}.`;
   const hours = stand(input.hours, PLACEHOLDER_HOURS, "hours");
   const locations: Location[] = [
-    { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo },
-    ...(input.otherLocations ?? []).map((l) => ({ ...l, hours: stand(l.hours, PLACEHOLDER_HOURS, "hours") })),
+    { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo, placeId: input.contact.placeId, label: name },
+    ...(input.otherLocations ?? []).map((l) => ({ label: name, ...l, hours: stand(l.hours, PLACEHOLDER_HOURS, "hours") })),
   ];
   const area = serviceArea(input.practice.area, locations, name);
 
