@@ -70,7 +70,10 @@ export function Nav({
     const phone = () => window.innerWidth < 640;
 
     // The big name sits on one line, as large as fits, so it can shrink straight into the bar.
+    // An image logo is sized by CSS instead and travels by height.
+    const isImg = big instanceof HTMLImageElement;
     const fit = () => {
+      if (isImg) return;
       big.style.fontSize = "";
       if (!phone()) return;
       const max = parseFloat(getComputedStyle(big).fontSize);
@@ -118,14 +121,16 @@ export function Nav({
             : []),
         ];
     document.body.appendChild(layer);
-    const px = (el: HTMLElement) => parseFloat(getComputedStyle(el).fontSize);
+    const px = (el: HTMLElement) =>
+      isImg ? el.getBoundingClientRect().height : parseFloat(getComputedStyle(el).fontSize);
     type Box = { x: number; y: number; size: number };
     const boxOf = (el: HTMLElement): Box => {
       const r = el.getBoundingClientRect();
       return { x: r.left, y: r.top, size: px(el) };
     };
     const draw = (c: HTMLElement, b: Box) => {
-      c.style.fontSize = `${b.size}px`;
+      if (isImg && c === pairs[0]?.c) Object.assign(c.style, { height: `${b.size}px`, width: "auto", maxWidth: "none" });
+      else c.style.fontSize = `${b.size}px`;
       c.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
     };
 
@@ -133,7 +138,7 @@ export function Nav({
     // on a clock at one speed. Up into the bar it glides in screen coordinates (the bar doesn't
     // move), so a fast flick can't leave it behind; back down it lands on the name's live spot.
     // If a fast fling has already carried the name off screen, it switches without a glide.
-    const DURATION = reduce ? 0 : 400; // ms
+    const DURATION = reduce ? 0 : 300; // ms
     // Gap between the big name's top and the bar's bottom that switches stages (two thresholds, so
     // stopping on the line can't flicker). "fade" and "expand" wait until the name is half under the bar.
     const TO_BAR = morph !== "glide" ? -Math.round(big.offsetHeight * 0.6) : 24;
@@ -182,10 +187,10 @@ export function Nav({
       if (dir === to) return;
       dir = to;
       // Start from wherever the name is drawn right now (mid-glide: the copy's current spot).
-      from = pairs.map(({ src, dst, c }) => {
+      from = pairs.map(({ src, dst, c }, k) => {
         if ((current === "moving" || current === "leaving") && c) {
           const r = c.getBoundingClientRect();
-          return { x: r.left, y: r.top, size: parseFloat(c.style.fontSize) };
+          return { x: r.left, y: r.top, size: isImg && k === 0 ? r.height : parseFloat(c.style.fontSize) };
         }
         return boxOf(to ? src : dst);
       });

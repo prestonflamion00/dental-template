@@ -71,13 +71,26 @@ export function Hero({ office }: { office: OfficeConfig }) {
               moves into the sticky top bar (components/sections/Nav.tsx watches #hero-name). */}
           {photoFirst && (
             <p id="hero-name" className="hero-name sm:hidden">
-              <span
-                data-name-text
-                className="block w-fit whitespace-nowrap font-serif text-[2.6rem] font-medium leading-none tracking-tight text-ink"
-              >
-                {practice.logo.text}
-              </span>
-              {practice.logo.mark && (
+              {practice.logo.image ? (
+                // Their logo artwork, big; it glides into the bar's logo the same way the text does.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  data-name-text
+                  src={withBase(practice.logo.image)}
+                  alt={practice.name}
+                  width={practice.logo.width}
+                  height={practice.logo.height}
+                  className="block h-auto w-[min(100%,280px)]"
+                />
+              ) : (
+                <span
+                  data-name-text
+                  className="block w-fit whitespace-nowrap font-serif text-[2.6rem] font-medium leading-none tracking-tight text-ink"
+                >
+                  {practice.logo.text}
+                </span>
+              )}
+              {practice.logo.mark && !practice.logo.image && (
                 <span
                   data-name-mark
                   className="mt-2 block w-fit whitespace-nowrap text-xs leading-none font-bold uppercase tracking-[0.16em] text-muted"

@@ -185,8 +185,12 @@ export interface OfficeConfig {
   practice: {
     name: string;
     tagline: string;
-    /** Text logo is the default. Set `image` (path under /public) to use an image logo instead. */
-    logo: { text: string; mark?: string; image?: string };
+    /**
+     * Text logo is the default. Set `image` (path under /public) to use their logo artwork instead, but
+     * only when it clearly spells out the practice name, since it replaces the text (and the `mark`
+     * line) in the bar and the phone hero. `width`/`height`: the image's pixel size.
+     */
+    logo: { text: string; mark?: string; image?: string; width?: number; height?: number };
     /** Shown only when known. */
     yearsInPractice?: number;
     acceptingNewPatients: boolean;

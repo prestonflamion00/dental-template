@@ -43,7 +43,8 @@ Context for a new Claude session. Written by the previous session so nothing is 
 - Pages: each doctor has a page (big photo, bio); all 26 services grouped (preventive, restorative, cosmetic, gum, specialty) with a page each; team page (25 people); payments & financing; careers; town pages (Vincennes, Washington, Lawrenceville); video section; Facebook + YouTube links.
 - Phone menu: the sticky bottom bar hides while the menu is open.
 - Decisions: tooth drawing removed everywhere (pen underline stays); no rotating quotes, no moving background, no greeting; button glows toned down; if a practice has photos, use them; demos without photos show a "Your photo here" placeholder; ask for photos before go-live; a demo must not lose content from the practice's current site unless redundant.
-- Name handover decided (Nov 7): **refined glide** (the default, `nameMorph: "glide"`). Fade and expand were tried and not chosen.
+- Name handover decided (Nov 7): **refined glide** (the default, `nameMorph: "glide"`), **0.3 s**. Fade and expand were tried and not chosen.
+- Real logos (Nov 7): when a practice's logo clearly spells out its name, use it in place of the text (`practice.logo.image`, with `width`/`height`); it shows big in the phone hero and glides into the bar. Herman uses theirs (silver parts darkened to read on our light bar); the "Vincennes, Indiana" line is dropped when a logo image is used.
 - Town and doctor pages: Request, then Call + Emergency side by side (same as home).
 - Still to decide: roll option B + glide out to other sites; merge the branch (needs my "approved").
 

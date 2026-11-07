@@ -7,7 +7,9 @@ import { withBase } from "@/lib/format";
 export function Logo({ practice, compact = false }: { practice: OfficeConfig["practice"]; compact?: boolean }) {
   const { logo, name } = practice;
   if (logo.image) {
-    return <Image src={withBase(logo.image)} alt={name} width={180} height={48} className="h-10 w-auto" priority />;
+    // Their own logo artwork, used only when it clearly spells out the practice name (it replaces the
+    // text). `data-logo-text` lets the phone hero's big logo glide into this one (Nav.tsx).
+    return <Image data-logo-text src={withBase(logo.image)} alt={name} width={logo.width ?? 180} height={logo.height ?? 48} className="h-10 w-auto max-w-none" priority />;
   }
   // Phones: a long name drops the tooth tile (and a very long one gets slightly smaller) so it fits
   // on one line and the bar stays short.

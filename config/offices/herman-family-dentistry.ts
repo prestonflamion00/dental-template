@@ -14,7 +14,8 @@ const hermanFamilyDentistry: OfficeInput = {
   practice: {
     name: "Herman Family Dentistry",
     tagline: "Modern family dental care in Vincennes",
-    logo: { text: "Herman Family Dentistry", mark: "Vincennes, Indiana" },
+    // Their logo (vincennesdentalpractice.com), with the silver parts darkened so they read on our light bar.
+    logo: { text: "Herman Family Dentistry", mark: "Vincennes, Indiana", image: "/offices/herman/logo.png", width: 578, height: 144 },
     description:
       "Herman Family Dentistry offers modern family dental care in Vincennes, IN: cleanings, CEREC same-day crowns, implants, clear aligners, sedation and more.",
     // "Serving the Vincennes area for over 25 years"; Dr. Herman since 2001.
