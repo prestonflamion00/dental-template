@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { createRequire } from "node:module";
 import { promisify } from "node:util";
 import { placesAvailable, placesChecks } from "./places.mjs";
+import { aiChecks } from "./ai.mjs";
 
 const run = promisify(execFile);
 const { chromium, devices } = createRequire(import.meta.url)("playwright");
@@ -190,6 +191,16 @@ if (placesAvailable) {
 }
 const G = g?.found ? g.raw : null;
 const noPlaces = !placesAvailable ? "needs GOOGLE_PLACES_API_KEY" : g && !g.found ? g.why : "";
+// AI answers (ChatGPT, Gemini): needs the town, so only once the Google listing is found.
+let ai = null;
+if (G) {
+  const text = allHtml.replace(/<[^>]+>/g, " ");
+  const accepting = /not (currently )?accepting new patients/i.test(text) ? false : /accepting new patients/i.test(text) ? true : undefined;
+  ai = await aiChecks({ name: g.place.name, town: g.place.town, state: g.place.state, siteHost: host, phone: sitePhones[0], street: g.place.address?.split(",")[0], accepting });
+}
+const aiOk = ai ? Object.values(ai).filter((e) => !e.error) : [];
+const aiWhy = !G ? `needs the Google listing first (${noPlaces || "not found"})` : Object.values(ai).map((e) => `${e.label}: ${e.error}`).join("; ");
+const avg = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
 const rankPts = (r) => (r?.rank == null ? 0 : r.rank <= 3 ? 1 : r.rank <= 10 ? 0.5 : 0);
 const parts = [
   G
@@ -255,7 +266,19 @@ const parts = [
           check("Light: under 1.5 MB", 1, lh.bytes <= 1.5e6 ? 1 : lh.bytes <= 3e6 ? 0.5 : 0, `${(lh.bytes / 1e6).toFixed(1)} MB`),
         ],
   },
-  { id: "ai", name: "AI and listings", weight: 1, ...NOT_YET("Needs AI search APIs (ChatGPT, Google AI) and directory checks.") },
+  {
+    id: "ai", name: "AI and listings", weight: 1, measured: aiOk.length ? "partly" : false,
+    checks: [
+      aiOk.length
+        ? check("AI answers: named when asked for a dentist in town", 4, avg(aiOk.map((e) => (e.named.every(Boolean) ? 1 : e.named.some(Boolean) ? 0.5 : 0))), Object.fromEntries(Object.entries(ai).map(([k, e]) => [k, e.error ? `not measured: ${e.error}` : `named in ${e.named.filter(Boolean).length} of ${e.named.length} answers`])))
+        : check("AI answers", 4, null, NOT(aiWhy)),
+      aiOk.length && aiOk.some((e) => e.accuracy != null)
+        ? check("AI accuracy: phone, address, taking new patients", 2, avg(aiOk.filter((e) => e.accuracy != null).map((e) => e.accuracy)), Object.fromEntries(aiOk.map((e) => [e.label, e.facts])))
+        : check("AI accuracy", 2, null, NOT(aiWhy || "no facts to compare")),
+      check("Health directories", 2, null, NOT("directory checks not built yet")),
+      check("Maps beyond Google", 2, null, NOT("Apple Maps and Bing checks not built yet")),
+    ],
+  },
 ];
 
 // A part's score counts only the checks we measured, scaled back up to 10 (so unmeasured checks
@@ -278,6 +301,7 @@ const report = {
   measuredShare: Math.round(coveredWeight * 10) / 100, // of the full 10 points
   parts,
   google: g,
+  ai,
   findings: { brokenLinks: site_.broken.slice(0, 50), pagesCrawled: pages.length, lighthouse: lh },
   seconds: Math.round((Date.now() - t0) / 1000),
 };
