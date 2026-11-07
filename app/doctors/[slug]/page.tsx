@@ -39,7 +39,7 @@ export async function generateMetadata({
   if (!d) return {};
   const a = office.contact.address;
   return {
-    title: `${d.name}${d.credentials ? `, ${d.credentials}` : ""} | ${office.practice.name}`,
+    title: `${d.name}${d.credentials ? `, ${d.credentials}` : ""}`,
     description:
       d.bio ??
       `${d.name}, ${d.title} at ${office.practice.name} in ${a.city}, ${a.region}.`,

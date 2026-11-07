@@ -5,7 +5,7 @@ import { PageShell } from "@/components/ui/PageShell";
 import { telHref } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: `Careers | ${office.practice.name}`,
+  title: `Careers`,
   description: `Join the team at ${office.practice.name} in ${office.contact.address.city}, ${office.contact.address.region}.`,
   alternates: { canonical: "/careers/" },
 };

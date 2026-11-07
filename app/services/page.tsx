@@ -6,7 +6,7 @@ import { withBase } from "@/lib/format";
 import { allCategories } from "@/lib/catalog";
 
 export const metadata: Metadata = {
-  title: `Dental services | ${office.practice.name}`,
+  title: `Dental services`,
   description: `Everything ${office.practice.name} offers in ${office.contact.address.city}, ${office.contact.address.region}: ${allCategories(office)
     .map((c) => c.name.toLowerCase())
     .join(", ")}.`,

@@ -7,7 +7,7 @@ import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { doctorShortName, doctorSlug, initials, withBase } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: `Our team | ${office.practice.name}`,
+  title: `Our team`,
   description: `Meet the dentists, hygienists and team at ${office.practice.name} in ${office.contact.address.city}, ${office.contact.address.region}.`,
   alternates: { canonical: "/team/" },
 };

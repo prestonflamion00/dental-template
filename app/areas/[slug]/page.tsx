@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowRight, MapPin, Phone } from "lucide-react";
 import office from "@/config/office";
+import { areaList } from "@/lib/areas";
 import { BookButton } from "@/components/booking/BookButton";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { PageShell } from "@/components/ui/PageShell";
@@ -15,10 +16,7 @@ import { allCategories } from "@/lib/catalog";
 
 export const dynamicParams = false;
 
-const areas = () => {
-  const a = office.contact.address;
-  return office.areas?.length ? office.areas : [{ slug: `${a.city}-${a.region}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), town: a.city, region: a.region }];
-};
+const areas = () => areaList(office);
 
 export function generateStaticParams() {
   return areas().map((a) => ({ slug: a.slug }));
@@ -30,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const area = find((await params).slug);
   if (!area) return {};
   return {
-    title: `Dentist for ${area.town}, ${area.region} | ${office.practice.name}`,
+    title: `Dentist for ${area.town}, ${area.region}`,
     description: `${office.practice.name} cares for patients from ${area.town}, ${area.region} and the surrounding area: ${allCategories(office)
       .map((c) => c.name.toLowerCase())
       .join(", ")}.`,

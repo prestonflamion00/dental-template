@@ -17,6 +17,7 @@ import { Stars } from "@/components/ui/Stars";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { HighlightSwoosh } from "@/components/ui/HeroFlourish";
 import { HeroPhoto } from "@/components/ui/HeroPhoto";
+import { homeArea } from "@/lib/areas";
 import { doctorShortName, initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
@@ -94,11 +95,14 @@ export function Hero({ office }: { office: OfficeConfig }) {
               {practice.logo.mark &&
                 (practice.logo.image ? (
                   // Under a logo image: the town, as a location line (the bar shows only the logo),
-                  // so it still reads on the first screen.
-                  <span className="mt-1.5 flex w-fit items-center gap-1.5 whitespace-nowrap text-sm leading-none font-semibold text-muted">
+                  // so it still reads on the first screen. Tapping it opens that town's page.
+                  <a
+                    href={withBase(`/areas/${homeArea(office).slug}/`)}
+                    className="-my-2 flex w-fit items-center gap-1.5 whitespace-nowrap py-2 pt-3.5 text-sm leading-none font-semibold text-muted hover:text-ink"
+                  >
                     <MapPin size={15} aria-hidden="true" className="text-accent" />
-                    {practice.logo.mark}
-                  </span>
+                    <span className="underline decoration-ink/20 underline-offset-4">{practice.logo.mark}</span>
+                  </a>
                 ) : (
                   <span
                     data-name-mark

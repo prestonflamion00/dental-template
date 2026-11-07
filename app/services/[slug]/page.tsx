@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!found) return {};
   const a = office.contact.address;
   return {
-    title: `${found.service.name} in ${a.city}, ${a.region} | ${office.practice.name}`,
+    title: `${found.service.name} in ${a.city}, ${a.region}`,
     description: found.service.summary,
     alternates: { canonical: `/services/${found.service.id}/` },
   };

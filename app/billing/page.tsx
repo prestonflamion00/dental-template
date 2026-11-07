@@ -5,7 +5,7 @@ import { PageShell } from "@/components/ui/PageShell";
 import { telHref } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: `Payments & financing | ${office.practice.name}`,
+  title: `Payments & financing`,
   description: `Pay your bill online, accepted payment methods and financing options at ${office.practice.name}.`,
   alternates: { canonical: "/billing/" },
 };
