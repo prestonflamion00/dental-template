@@ -89,7 +89,7 @@ export default async function DoctorPage({
       <article className="mx-auto grid max-w-6xl items-start gap-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
         {/* One big portrait, right up front. */}
         <div className="glass rounded-[30px] p-2.5 lg:sticky lg:top-28">
-          <div className="relative aspect-[4/4.3] overflow-hidden rounded-[24px] bg-accent-soft">
+          <div className="relative aspect-[4/4.3] w-full overflow-hidden rounded-[24px] bg-accent-soft">
             {photo(d.photo, d.name, "(min-width: 1024px) 520px, 100vw", true)}
           </div>
         </div>

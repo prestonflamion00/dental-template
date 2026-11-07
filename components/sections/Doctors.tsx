@@ -25,16 +25,18 @@ export function Doctors({ office }: { office: OfficeConfig }) {
       title="Friendly faces, gentle hands"
       intro={copy.doctorsIntro}
     >
-      <ul className={cx("grid gap-5", cols)}>
+      {/* grid-cols-1 (not an auto column) and min-w-0: iPhone Safari let the square photo widen the
+          column past the screen, so the cards sat off to the right with no margin. */}
+      <ul className={cx("grid grid-cols-1 gap-5", cols)}>
         {doctors.map((d, i) => (
           // Every screen: a big portrait (full card width on phones), with the name and details under it.
           <li
             key={d.name}
-            className="glass glass-hover relative flex flex-col rounded-[28px] p-3"
+            className="glass glass-hover relative flex min-w-0 flex-col rounded-[28px] p-3"
             data-reveal
             style={{ ["--d" as string]: `${i * 90}ms` }}
           >
-            <div className="relative aspect-[4/4.2] overflow-hidden rounded-[22px] bg-accent-soft">
+            <div className="relative aspect-[4/4.2] w-full overflow-hidden rounded-[22px] bg-accent-soft">
               {d.photo ? (
                 <Image
                   src={withBase(d.photo)}

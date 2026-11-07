@@ -58,7 +58,7 @@ export default function TeamPage() {
             {doctors.map((d) => {
               const inner = (
                 <>
-                  <div className="relative aspect-[4/4.3] overflow-hidden rounded-[18px] bg-accent-soft">{face(d.photo, d.name, "(min-width: 1024px) 280px, 50vw")}</div>
+                  <div className="relative aspect-[4/4.3] w-full overflow-hidden rounded-[18px] bg-accent-soft">{face(d.photo, d.name, "(min-width: 1024px) 280px, 50vw")}</div>
                   <span className="block px-2 pb-2 pt-3">
                     <span className="block text-[1.1rem] font-semibold leading-tight text-ink">{d.name}</span>
                     <span className="mt-0.5 block text-sm text-muted">{d.title}</span>
