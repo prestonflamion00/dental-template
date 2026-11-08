@@ -11,16 +11,19 @@ export function fullAddress(a: OfficeConfig["contact"]["address"]): string {
 }
 
 /**
- * Directions link props, by device and with no extra tap: the link is Google Maps (opens the Google
- * Maps app on Android, the website on computers), and on iPhone, iPad and Mac a click handler
- * (app/layout.tsx) swaps in `data-apple-maps`, so it opens Apple Maps, which every Apple device has.
- * Both search the practice name plus address (and Google its listing ID), so they land on the listing.
+ * Directions link props, by device: the link is Google Maps (opens the Google Maps app on Android,
+ * the website on computers). On a Mac a click handler (app/layout.tsx) swaps in `data-apple-maps`.
+ * On iPhone and iPad a chooser opens instead (components/ui/MapsChooser.tsx): Apple Maps, Google
+ * Maps, Waze or copy the address, with "Remember my choice". Every link searches the practice name
+ * plus address (Google also its listing ID, Waze its coordinates), so they land on the practice.
  */
 export function mapsProps(l: Pick<OfficeConfig["locations"][number], "address" | "label" | "placeId" | "geo">) {
   const q = encodeURIComponent([l.label, fullAddress(l.address)].filter(Boolean).join(", "));
   return {
     href: `https://www.google.com/maps/search/?api=1&query=${q}${l.placeId ? `&query_place_id=${encodeURIComponent(l.placeId)}` : ""}`,
     "data-apple-maps": `https://maps.apple.com/?q=${q}${l.geo ? `&sll=${l.geo.lat},${l.geo.lng}` : ""}`,
+    "data-waze": `https://waze.com/ul?${l.geo ? `ll=${l.geo.lat},${l.geo.lng}&` : `q=${q}&`}navigate=yes`,
+    "data-address": [l.label, fullAddress(l.address)].filter(Boolean).join(", "),
   };
 }
 
