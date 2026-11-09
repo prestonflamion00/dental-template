@@ -36,7 +36,7 @@ const engines = {
   gemini: {
     label: "Gemini (model only, no Google Search)",
     async ask(q) {
-      const r = await post("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", process.env.GEMINI_API_KEY, { model: "gemini-2.5-flash", messages: [{ role: "user", content: q }] });
+      const r = await post("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", process.env.GEMINI_API_KEY, { model: "gemini-flash-latest", messages: [{ role: "user", content: q }] });
       return r.choices?.[0]?.message?.content ?? "";
     },
   },
