@@ -14,7 +14,7 @@ export function fullAddress(a: OfficeConfig["contact"]["address"]): string {
  * Directions link props, by device: the link is Google Maps (opens the Google Maps app on Android,
  * the website on computers). On a Mac a click handler (app/layout.tsx) swaps in `data-apple-maps`.
  * On iPhone and iPad a chooser opens instead (components/ui/MapsChooser.tsx): Apple Maps, Google
- * Maps, Waze or copy the address, with "Remember my choice". Every link searches the practice name
+ * Maps, Waze or copy the address. Every link searches the practice name
  * plus address (Google also its listing ID, Waze its coordinates), so they land on the practice.
  */
 export function mapsProps(l: Pick<OfficeConfig["locations"][number], "address" | "label" | "placeId" | "geo">) {
