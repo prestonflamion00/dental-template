@@ -186,6 +186,23 @@ const hermanFamilyDentistry: OfficeInput = {
   heroLayout: "bleed",
 
   // Their 30-second video, from their website (compressed for the web).
+  // The private page we send Eric (/welcome/): automatic walkthrough + snapshot highlights.
+  welcome: {
+    greeting: "Dr. Herman",
+    video: "/offices/herman/welcome.mp4",
+    poster: "/offices/herman/welcome-poster.jpg",
+    captions: "/offices/herman/welcome.vtt",
+    snapshot: {
+      score: 6.1,
+      band: "Warming up",
+      url: "https://claude.ai/artifact/YAVhVLJPx4343m9JY5favS",
+      findings: [
+        "Patients can't request a visit online; every request is a phone call.",
+        "Your current site takes about 9 seconds to show on a phone.",
+        "24 links on your current site lead to \"page not found\".",
+      ],
+    },
+  },
   video: {
     src: "/offices/herman/video.mp4",
     poster: "/offices/herman/video-poster.jpg",

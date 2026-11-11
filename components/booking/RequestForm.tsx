@@ -132,15 +132,19 @@ export function RequestForm({
     return () => window.removeEventListener(REQUEST_EVENT, onStart);
   }, [services, animate]);
 
-  // Expanding form: open up only once name, phone and email all have something typed in.
+  // Expanding form: open up once name, phone and email all have something typed in, but not
+  // mid-keystroke: wait until they pause typing (or leave the field), so the page never moves
+  // under someone while they're typing.
   const basicsStarted = !!(
     values.name.trim() &&
     values.phone.trim() &&
     values.email.trim()
   );
   useEffect(() => {
-    if (animate && basicsStarted) setEngaged(true);
-  }, [animate, basicsStarted]);
+    if (!animate || !basicsStarted || engaged) return;
+    const t = setTimeout(() => setEngaged(true), 900);
+    return () => clearTimeout(t);
+  }, [animate, basicsStarted, engaged, values.name, values.phone, values.email]);
 
   const update = <K extends keyof RequestValues>(k: K, v: RequestValues[K]) => {
     setValues((s) => ({ ...s, [k]: v }));
@@ -279,6 +283,7 @@ export function RequestForm({
     <form
       ref={formRef}
       onSubmit={onSubmit}
+      onBlur={() => animate && basicsStarted && setEngaged(true)}
       onFocusCapture={() => {
         if (!animate || basicsStarted) setEngaged(true);
       }}
@@ -356,7 +361,7 @@ export function RequestForm({
             (always rendered, so it can animate). */}
         <div
           className={cx(
-            "grid transition-[grid-template-rows,opacity,margin-top] duration-500 ease-[var(--ease-soft)] motion-reduce:transition-none sm:col-span-2",
+            "grid transition-[grid-template-rows,opacity,margin-top] duration-700 ease-[var(--ease-soft)] motion-reduce:transition-none sm:col-span-2",
             engaged
               ? "mt-0 grid-rows-[1fr] opacity-100"
               : "-mt-4 grid-rows-[0fr] opacity-0",
@@ -668,7 +673,7 @@ export function RequestForm({
       </div>
       <div
         className={cx(
-          "grid transition-[grid-template-rows,opacity] duration-500 ease-[var(--ease-soft)] motion-reduce:transition-none",
+          "grid transition-[grid-template-rows,opacity] duration-700 ease-[var(--ease-soft)] motion-reduce:transition-none",
           engaged ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100",
         )}
         aria-hidden={engaged}

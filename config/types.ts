@@ -318,6 +318,22 @@ export interface OfficeConfig {
   /** Optional video tour (their own, path under /public), shown in its own section with a still frame until played. */
   video?: { src: string; poster: string; title: string; caption?: string };
 
+  /**
+   * Prospects only: the private page we send them (/welcome/), with the automatic walkthrough of
+   * their demo (scripts/demo-video/record.mjs) and the highlights of their First Bite snapshot.
+   * Not linked from the site and kept out of search.
+   */
+  welcome?: {
+    /** How we address them, e.g. "Dr. Herman". */
+    greeting: string;
+    video: string;
+    poster: string;
+    captions: string;
+    /** Our shared "who we are" clip, once it's recorded. */
+    intro?: { video: string; poster: string };
+    snapshot?: { score: number; band: string; url: string; findings: string[] };
+  };
+
   experiments?: {
     /** The pen underline that draws itself under the hero headline's highlight. On unless set to false. */
     smileLine?: boolean;
