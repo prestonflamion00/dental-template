@@ -86,6 +86,12 @@
   .pillar .tag { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--honey); margin-bottom: 6px; }
   .pillar li + li { margin-top: 6px; }
   .pillar-extra { margin-top: 24px; color: var(--muted); }
+  /* Home page: one card per city, each a link to that city's page. */
+  .city { display: grid; gap: 0; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; }
+  .city:hover { border-color: var(--honey); transform: translateY(-2px); }
+  .city .open { margin-top: 16px; font-weight: 700; color: var(--honey); }
+  .towns { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
+  .towns li { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 600; }
   @media (max-width: 760px) { .pillars { grid-template-columns: 1fr; } }
   .dark .card { background: #3a2d22; border-color: #4f3f31; }
   .dark .card p, .dark .card li { color: var(--on-dark); }
