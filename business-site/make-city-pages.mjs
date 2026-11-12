@@ -74,6 +74,11 @@ for (const c of cities) {
   // Hero phones: the example demo from this area up front.
   h = replaceOnce(h, '<img src="/img/pelican-top.webp" alt="" width="585" height="1266"></div></div>\n        <div class="phone b iphone"><div class="screen"><img src="/img/prairie-top.webp"',
     `<img src="/img/${c.phones[0]}-top.webp" alt="" width="585" height="1266"></div></div>\n        <div class="phone b iphone"><div class="screen"><img src="/img/${c.phones[1]}-top.webp"`);
+  // Examples: this area's demo first, then the others in their usual order.
+  const cards = h.match(/        <a class="example"[\s\S]*?<\/a>\n/g);
+  if (!cards || cards.length !== 3) throw new Error("make-city-pages: expected 3 example cards on the home page");
+  const first = cards.find((a) => a.includes(`data-demo="${c.phones[0]}"`));
+  h = replaceOnce(h, cards.join(""), [first, ...cards.filter((a) => a !== first)].join(""));
   // Hero: the city's own headline and pitch.
   h = replaceOnce(h, '<p class="eyebrow">For local businesses in Tampa Bay, Denver and Indianapolis</p>', `<p class="eyebrow">${c.name} · Websites and local marketing</p>`);
   h = replaceOnce(h, "<h1>More customers, <em>less hassle.</em></h1>", `<h1>${c.h1}</h1>`);
