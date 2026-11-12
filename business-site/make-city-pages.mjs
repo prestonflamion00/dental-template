@@ -18,7 +18,7 @@ const cities = [
     slug: "tampa-bay",
     phones: ["pelican", "prairie"], // hero phones: the demo from this area first name: "Tampa Bay", region: "across Tampa Bay",
     h1: "Get found by customers <em>across Tampa Bay.</em>",
-    lead: "From St. Pete to Brandon, when someone needs a plumber, an AC tech or a roofer, they search Google and call one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
+    lead: "From St. Pete to Brandon, when someone needs a plumber, a scooter repair or a new favorite lunch spot, they search Google and pick one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Tampa Bay customers search when it counts",
     why: [
       ["Storm season", "After a storm, people search for roofers, tree crews and water cleanup right away. Your Google profile, reviews and phone need to be ready before it hits."],
@@ -32,7 +32,7 @@ const cities = [
     slug: "denver",
     phones: ["timberline", "pelican"], // hero phones: the demo from this area first name: "Denver", region: "across the Denver metro",
     h1: "Get found by customers <em>across the Denver metro.</em>",
-    lead: "From Arvada to Centennial, when someone needs a roofer, a furnace repair or a landscaper, they search Google and call one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
+    lead: "From Arvada to Centennial, when someone needs a roofer, a bike shop or a dog groomer, they search Google and pick one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Denver customers search when it counts",
     why: [
       ["Hail season", "After a hailstorm, searches for roofers, gutters and window repair jump. The businesses that show up with strong reviews get the calls."],
@@ -46,7 +46,7 @@ const cities = [
     slug: "indianapolis",
     phones: ["prairie", "timberline"], // hero phones: the demo from this area first name: "Indianapolis", region: "across Indianapolis",
     h1: "Get found by customers <em>across Indianapolis.</em>",
-    lead: "From Carmel to Greenwood, when someone needs a plumber, an HVAC tech or a landscaper, they search Google and call one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
+    lead: "From Carmel to Greenwood, when someone needs a plumber, a salon or a landscaper, they search Google and pick one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Indy customers search when it counts",
     why: [
       ["Winter calls", "Furnaces, frozen pipes and ice dams: in a cold snap, people call the first trustworthy business they find on Google."],
@@ -95,7 +95,7 @@ ${c.why.map(([t, p]) => `        <div class="card"><h3>${t}</h3><p>${p}</p></div
       <ul class="towns">
 ${c.towns.map((t) => `        <li>${t}</li>`).join("\n")}
       </ul>
-      <p class="pillar-extra">For plumbers, HVAC, electricians, landscapers, roofers, cleaners, pest control and other local service businesses.</p>
+      <p class="pillar-extra">For local shops, repair and service businesses, contractors, salons, restaurants and other small businesses.</p>
     </div>
   </section>`);
   // About us: the short, local version for this city.
