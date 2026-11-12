@@ -20,19 +20,19 @@ export function PageShell({ children }: { children: React.ReactNode }) {
     { href: office.catalog ? withBase("/services/") : home("#services"), label: "Services" },
     ...(has("reviews") ? [{ href: home("#reviews"), label: "Reviews" }] : []),
     ...(has("doctors") ? [{ href: home("#doctors"), label: "Our Team" }] : []),
-    { href: home("#new-patients"), label: "New Patients" },
+    { href: home("#new-patients"), label: office.terms.newCustomersNav },
     ...(has("faq") ? [{ href: home("#faq"), label: "FAQ" }] : []),
-    { href: "#emergency", label: "Emergency", mobileOnly: true, urgent: true },
+    ...(office.terms.emergency ? [{ href: "#emergency", label: office.terms.emergency, mobileOnly: true, urgent: true }] : []),
   ];
   return (
-    <BookingProvider settings={{ url: office.booking.url }}>
+    <BookingProvider settings={{ url: office.booking.url, requestLabel: office.terms.request, emergency: office.terms.emergency }}>
       <Nav logo={<Logo practice={office.practice} />} practiceName={office.practice.name} phone={office.contact.phone} links={links} />
       <main id="main" className="px-4 pb-16 pt-5 sm:px-6 sm:pt-10">
         {children}
       </main>
       <Footer office={office} />
-      <MobileBar phone={office.contact.phone} />
-      <EmergencyDialog headline={office.copy.emergencyHeadline} text={office.copy.emergencyText} locations={office.locations} />
+      <MobileBar phone={office.contact.phone} label={office.terms.requestShort} />
+      {office.terms.emergency && <EmergencyDialog headline={office.copy.emergencyHeadline} text={office.copy.emergencyText} warning={office.terms.emergencyWarning} locations={office.locations} />}
       <RevealObserver />
     </BookingProvider>
   );

@@ -36,13 +36,13 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
       eyebrow="Services"
       title={
         <>
-          Care for every smile
+          {office.terms.servicesTitle}
           <SampleTag office={office} what="services" />
         </>
       }
       intro={office.copy.servicesIntro}
     >
-      <ServicesGrid services={office.services} phone={office.contact.phone} />
+      <ServicesGrid services={office.services} phone={office.contact.phone} note={office.terms.servicesNote} />
       {office.catalog && <CatalogList categories={office.catalog} />}
     </Section>
   ),
@@ -51,10 +51,10 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
   reviews: () => <Reviews office={office} />,
   gallery: () =>
     office.gallery?.length ? (
-      <Section id="gallery" eyebrow="Smile gallery" title="Before & after" intro="Slide to compare. Every plan is designed around the person.">
+      <Section id="gallery" eyebrow={office.terms.galleryEyebrow} title="Before & after" intro={office.terms.galleryIntro}>
         {/* Phones: the gallery opens from a button, so it doesn't add screens of scrolling. */}
-        <MobileReveal label="See smile gallery" className="w-full">
-          <GalleryGrid items={office.gallery} />
+        <MobileReveal label={`See ${office.terms.galleryEyebrow.toLowerCase()}`} className="w-full">
+          <GalleryGrid items={office.gallery} note={office.terms.galleryNote} />
         </MobileReveal>
       </Section>
     ) : null,
@@ -69,7 +69,7 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
 
 const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string; wideOnly?: boolean }>> = {
   services: { href: "#services", label: "Services" },
-  newPatients: { href: "#new-patients", label: "New Patients" },
+  newPatients: { href: "#new-patients", label: office.terms.newCustomersNav },
   doctors: { href: "#doctors", label: "Our Team" },
   video: { href: "#video", label: "Video", wideOnly: true },
   reviews: { href: "#reviews", label: "Reviews" },
@@ -81,12 +81,12 @@ const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string; wideOn
 export default function Home() {
   const links = [
     ...office.sections.map((s) => NAV_LINKS[s]).filter((l): l is NonNullable<(typeof NAV_LINKS)[SectionId]> => !!l),
-    { href: "#emergency", label: "Emergency", mobileOnly: true, urgent: true },
+    ...(office.terms.emergency ? [{ href: "#emergency", label: office.terms.emergency, mobileOnly: true, urgent: true }] : []),
   ];
 
   return (
     <BookingProvider
-      settings={{ url: office.booking.url }}
+      settings={{ url: office.booking.url, requestLabel: office.terms.request, emergency: office.terms.emergency }}
     >
       <Nav logo={<Logo practice={office.practice} />} practiceName={office.practice.name} phone={office.contact.phone} links={links} morph={office.nameMorph} />
       <main id="main">
@@ -95,8 +95,8 @@ export default function Home() {
         ))}
       </main>
       <Footer office={office} showContact={false} />
-      <MobileBar phone={office.contact.phone} />
-      <EmergencyDialog headline={office.copy.emergencyHeadline} text={office.copy.emergencyText} locations={office.locations} />
+      <MobileBar phone={office.contact.phone} label={office.terms.requestShort} />
+      {office.terms.emergency && <EmergencyDialog headline={office.copy.emergencyHeadline} text={office.copy.emergencyText} warning={office.terms.emergencyWarning} locations={office.locations} />}
       <RevealObserver />
       <DemoThemeSwitcher />
     </BookingProvider>

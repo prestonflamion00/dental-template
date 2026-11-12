@@ -1,4 +1,4 @@
-import { FileDown, ShieldCheck } from "lucide-react";
+import { Check, FileDown, ShieldCheck } from "lucide-react";
 import { MobileReveal } from "@/components/ui/MobileReveal";
 import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
@@ -8,9 +8,9 @@ import { BookButton } from "@/components/booking/BookButton";
 import { telHref, withBase } from "@/lib/format";
 
 export function NewPatients({ office }: { office: OfficeConfig }) {
-  const { copy, insurances, newPatientFormsUrl, contact } = office;
+  const { copy, insurances, newPatientFormsUrl, contact, terms } = office;
   return (
-    <Section id="new-patients" eyebrow="New patients" title="Your first visit, made easy" intro={copy.newPatientsIntro}>
+    <Section id="new-patients" eyebrow={terms.newCustomersEyebrow} title={terms.newCustomersTitle} intro={copy.newPatientsIntro}>
       <ol className="grid gap-4 md:grid-cols-3 md:gap-5">
         {copy.firstVisitSteps.map((step, i) => (
           // Phones: icon beside the text, without the big step number.
@@ -34,6 +34,26 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
         ))}
       </ol>
 
+      {!terms.insurance ? (
+        // Home services: no forms or insurance plans. One card with the promises that win the call.
+        <div className="glass mt-5 grid gap-5 rounded-[24px] p-6 sm:p-7 lg:grid-cols-[1fr_auto] lg:items-center" data-reveal>
+          <div>
+            <h3 className="font-sans text-[1.15rem] font-bold text-ink">Our promise to you</h3>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {copy.comfortPerks.map((p) => (
+                <li key={p} className="flex items-center gap-2 rounded-full border border-white bg-white/75 px-4 py-2 text-[0.95rem] font-semibold text-ink shadow-sm">
+                  <Check size={16} strokeWidth={3} aria-hidden="true" className="text-accent" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-[0.95rem] text-muted">
+              Questions first? Call <a className="font-semibold text-accent underline underline-offset-4" href={telHref(contact.phone)}>{contact.phone}</a>. A real person answers.
+            </p>
+          </div>
+          <BookButton size="lg" />
+        </div>
+      ) : (
       <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_1.3fr]">
         {/* Phones skip the forms card: the first-visit steps already cover paperwork. */}
         <div className="glass flex min-w-0 flex-col justify-between rounded-[24px] p-6 max-sm:hidden sm:p-7" data-reveal>
@@ -89,6 +109,7 @@ export function NewPatients({ office }: { office: OfficeConfig }) {
           </p>
         </div>
       </div>
+      )}
     </Section>
   );
 }

@@ -52,11 +52,15 @@ export function validateRequest(v: RequestValues, opts: { needLocation?: boolean
   return e;
 }
 
-/** The email the office receives. */
-export function requestEmail(v: RequestValues, practice: string): { subject: string; text: string } {
+/** The email the office receives. `terms`: words for this kind of business (dental when left out). */
+export function requestEmail(
+  v: RequestValues,
+  practice: string,
+  terms: { customer: string; requestSubject: string; insurance: boolean } = { customer: "patient", requestSubject: "Appointment request", insurance: true },
+): { subject: string; text: string } {
   const parsed = v.phone.trim() ? parsePhone(v.phone) : null;
   const phone = parsed?.ok ? parsed.display : "not given";
-  const who = v.patientType === "new" ? "new patient" : "returning patient";
+  const who = v.patientType === "new" ? `new ${terms.customer}` : `returning ${terms.customer}`;
   if (v.kind === "question") {
     return {
       subject: `Website question (${v.name})`,
@@ -74,20 +78,20 @@ export function requestEmail(v: RequestValues, practice: string): { subject: str
   }
   const days = v.days.length ? DAY_ORDER.filter((d) => v.days.includes(d)).map((d) => DAY_LABELS[d]).join(", ") : "any day";
   return {
-    subject: `Appointment request: ${v.name} (${who})`,
+    subject: `${terms.requestSubject}: ${v.name} (${who})`,
     text: [
-      `${v.name} asked for an appointment on the ${practice} website. Please call or text to confirm a time.`,
+      `${v.name} sent a ${terms.requestSubject.toLowerCase()} on the ${practice} website. Please call or text to confirm a time.`,
       "Nothing has been booked yet.",
       "",
       `Name:       ${v.name}`,
       `Phone:      ${phone}`,
       `Email:      ${v.email}`,
       ...(v.location ? [`Office:     ${v.location}`] : []),
-      `Patient:    ${who}`,
+      `${(terms.customer[0].toUpperCase() + terms.customer.slice(1) + ":").padEnd(11)} ${who}`,
       `Reason:     ${v.reason}`,
       `Best days:  ${days}`,
       `Best time:  ${v.time || "any time"}`,
-      `Insurance:  ${v.insurance.trim() || "not given"}`,
+      ...(terms.insurance ? [`Insurance:  ${v.insurance.trim() || "not given"}`] : []),
       ...(v.message.trim() ? ["", v.message.trim()] : []),
     ].join("\n"),
   };

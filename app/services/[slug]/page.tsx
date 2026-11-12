@@ -60,12 +60,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <p className="font-serif text-2xl leading-tight text-ink">Ready when you are</p>
             <p className="mt-2 text-[0.95rem] text-muted">Request a visit online, or call and we’ll help you pick a time.</p>
             <div className="mt-5 grid gap-2.5">
-              <BookButton className="w-full">Request appointment</BookButton>
+              <BookButton className="w-full" />
               <a href={telHref(office.contact.phone)} className="btn btn-glass w-full">
                 <Phone size={17} aria-hidden="true" className="text-accent" /> {office.contact.phone}
               </a>
               {/* An emergency-care page is where someone in pain lands, so it gets the red button too. */}
-              {/emergenc/i.test(`${service.id} ${service.name}`) && <EmergencyButton label="Dental emergency" className="w-full" />}
+              {/emergenc/i.test(`${service.id} ${service.name}`) && <EmergencyButton className="w-full" />}
             </div>
           </div>
           {siblings.length > 0 && (

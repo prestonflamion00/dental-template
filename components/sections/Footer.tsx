@@ -101,7 +101,7 @@ export function Footer({ office, showContact = true }: { office: OfficeConfig; s
 
         <div className="mt-10 flex flex-col gap-2 border-t border-ink/10 pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} {practice.name}. All rights reserved.</p>
-          <p>The information on this site is general and not a substitute for professional dental advice.</p>
+          {office.terms.disclaimer && <p>{office.terms.disclaimer}</p>}
         </div>
         {office.stage === "demo" && !office.fictional && (
           <p className="mt-4 text-sm text-muted">

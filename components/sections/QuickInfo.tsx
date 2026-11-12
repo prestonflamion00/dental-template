@@ -115,7 +115,7 @@ function AcceptingNote({ office }: { office: OfficeConfig }) {
       <span className="grid size-5 place-items-center rounded-full bg-success text-white" aria-hidden="true">
         <Check size={13} strokeWidth={3} />
       </span>
-      Accepting new patients
+      {office.terms.accepting}
     </a>
   );
 }

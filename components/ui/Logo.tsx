@@ -1,6 +1,9 @@
 import Image from "next/image";
 import type { OfficeConfig } from "@/config/types";
-import { Tooth } from "./Icon";
+import { Icon, Tooth } from "./Icon";
+
+/** Home-services trades show their own icon in the logo tile; dental keeps the tooth. */
+const TRADE_ICON = { plumbing: "wrench", hvac: "thermometer", landscaping: "leaf" } as const;
 import { withBase } from "@/lib/format";
 
 /** Text logo (default) or image logo when `practice.logo.image` is set. */
@@ -17,7 +20,7 @@ export function Logo({ practice, compact = false }: { practice: OfficeConfig["pr
   return (
     <span className="flex items-center gap-2.5">
       <span className={`icon-tile !size-10 !rounded-[14px] max-[359px]:!hidden ${long ? "max-sm:!hidden" : ""}`} aria-hidden="true">
-        <Tooth size={22} />
+        {practice.specialty in TRADE_ICON ? <Icon name={TRADE_ICON[practice.specialty as keyof typeof TRADE_ICON]} size={22} /> : <Tooth size={22} />}
       </span>
       <span className="flex flex-col leading-none">
         <span data-logo-text className={`font-serif text-[1.3rem] font-medium tracking-tight text-ink ${logo.text.length > 20 ? "max-sm:text-[1.1rem]" : ""}`}>{logo.text}</span>{" "}

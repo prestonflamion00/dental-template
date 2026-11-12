@@ -8,7 +8,7 @@ import { doctorShortName, doctorSlug, initials, withBase } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: `Our team`,
-  description: `Meet the dentists, hygienists and team at ${office.practice.name} in ${office.contact.address.city}, ${office.contact.address.region}.`,
+  description: `Meet the ${office.terms.insurance ? "dentists, hygienists and " : ""}team at ${office.practice.name} in ${office.contact.address.city}, ${office.contact.address.region}.`,
   alternates: { canonical: "/team/" },
 };
 
@@ -19,7 +19,7 @@ function groups(staff: NonNullable<typeof office.staff>) {
   const front = staff.filter((p) => !hygienists.includes(p) && !assistants.includes(p));
   return [
     { title: "Hygienists", people: hygienists },
-    { title: "Dental assistants", people: assistants },
+    { title: office.terms.insurance ? "Dental assistants" : "Assistants", people: assistants },
     { title: "Front office & administration", people: front },
   ].filter((g) => g.people.length);
 }
@@ -44,7 +44,7 @@ export default function TeamPage() {
       <div className="mx-auto max-w-6xl">
         <header className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">Our team</p>
-          <h1 className="mt-3 text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">Friendly faces, gentle hands</h1>
+          <h1 className="mt-3 text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">{office.terms.insurance ? "Friendly faces, gentle hands" : "The people behind the work"}</h1>
           <p className="mt-4 text-lg text-muted">
             {doctors.length + staff.length} people who’ll take care of you at {office.practice.name}.
           </p>
@@ -52,7 +52,7 @@ export default function TeamPage() {
 
         <section aria-labelledby="dentists" className="mt-12">
           <h2 id="dentists" className="text-3xl text-ink sm:text-4xl">
-            Our dentists
+            {office.terms.teamTitle}
           </h2>
           <ul className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {doctors.map((d) => {

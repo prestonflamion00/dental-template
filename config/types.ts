@@ -29,7 +29,11 @@ export type IconName =
   | "leaf"
   | "star"
   | "scan"
-  | "wand";
+  | "wand"
+  // Home services
+  | "wrench" | "droplet" | "flame" | "snowflake" | "fan" | "thermometer" | "house" | "trees" | "shovel"
+  | "sprout" | "truck" | "bath" | "waves" | "zap" | "hammer" | "flower" | "clock" | "dollar" | "search"
+  | "vent" | "fence" | "shower" | "toilet" | "wind" | "scissors";
 
 /**
  * Homepage sections. Some have fixed places (config/build.ts): hero and quick info open the page;
@@ -78,7 +82,70 @@ export interface Location {
 }
 
 /** Sets the default wording, services and FAQs for details an office file leaves out (config/generic.ts). */
-export type Specialty = "general" | "orthodontics" | "pediatric";
+export type Specialty = "general" | "orthodontics" | "pediatric" | "plumbing" | "hvac" | "landscaping";
+
+/**
+ * The words the site uses for this kind of business (config/generic.ts sets them per specialty; an
+ * office file can override any). Dental: patients and appointments; home services: customers and
+ * service calls or estimates.
+ */
+export interface Terms {
+  /** "Dentist", "Plumber": page titles such as "Plumber in Clearwater, FL". */
+  trade: string;
+  /** "dental care", "plumbing": "Plumbing in Clearwater". */
+  craft: string;
+  /** "a dental office", "a plumbing company": the demo banner and default description. */
+  business: string;
+  customer: string;
+  customers: string;
+  /** The main button: "Request appointment", "Request service", "Get a free estimate". */
+  request: string;
+  /** The short version on the phone's sticky bar: "Request visit", "Request service", "Free estimate". */
+  requestShort: string;
+  /** The form's heading: "Request an appointment". */
+  requestTitle: string;
+  /** Small label above it: "Appointments". */
+  requestEyebrow: string;
+  /** The form's first tab: "Appointment", "Service", "Estimate". */
+  requestKind: string;
+  /** Email subject start: "Appointment request". */
+  requestSubject: string;
+  /** "I’m a new patient". */
+  newCustomer: string;
+  /** Whether insurance fields and the insurance list show (dental only). */
+  insurance: boolean;
+  /** What not to type in the form. */
+  privacyNote: string;
+  /** Side note next to the form: why requesting online is easy. */
+  requestAside: { title: string; text: string };
+  /** The red button's label, or null for businesses without emergencies (no red button anywhere). */
+  emergency: string | null;
+  /** Under the emergency pop-up: when to call 911 instead. */
+  emergencyWarning: string;
+  /** "Accepting new patients", "Taking new customers". */
+  accepting: string;
+  /** Nav label and section heading for the first-visit section. */
+  newCustomersNav: string;
+  newCustomersEyebrow: string;
+  newCustomersTitle: string;
+  /** "dentists", "team": "Meet our 4 dentists". */
+  team: string;
+  teamTitle: string;
+  reviewsEyebrow: string;
+  reviewsTitle: string;
+  servicesTitle: string;
+  servicesNote: string;
+  servicesPageTitle: string;
+  galleryEyebrow: string;
+  galleryIntro: string;
+  galleryNote: string;
+  /** Footer disclaimer, if any. */
+  disclaimer: string | null;
+  /** schema.org type for Google: "Dentist", "Plumber", "HVACBusiness", "HomeAndConstructionBusiness". */
+  schemaType: string;
+  /** The trade's icon, used in the text logo and the hero card. */
+  icon: IconName;
+}
 
 export interface Doctor {
   name: string;
@@ -166,6 +233,8 @@ export interface GalleryItem {
 export type Stage = "demo" | "live";
 
 export interface OfficeConfig {
+  /** Words for this kind of business (see Terms). */
+  terms: Terms;
   /** Short slug, used for keys and analytics. */
   id: string;
 
@@ -259,7 +328,7 @@ export interface OfficeConfig {
 
   /** Features being tried on one practice before they go to every site. */
   /**
-   * Optional hero photo (path under /public): the practice's own office or team, never stock. Desktop
+   * Optional hero photo (path under /public): the business's own office, team or work (never stock on a real business's site; fictional samples use public-domain stock). Desktop
    * shows it in a framed card beside the headline; phones show it above the headline where it fits.
    */
   heroImage?: {
@@ -267,6 +336,8 @@ export interface OfficeConfig {
     alt: string;
     /** CSS object-position, e.g. "50% 40%". */
     position?: string;
+    /** Line under the small photo card on computers; "Our office · <street>" for dental, the tagline otherwise. */
+    caption?: string;
     /**
      * Optional team photo: when set it greets visitors first (the big hero card on bigger screens,
      * the first image on phones) and the building photo sits alongside it.

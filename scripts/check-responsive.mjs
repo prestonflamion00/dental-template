@@ -27,7 +27,7 @@ const FOLD_MUST_SHOW = {
   // The bar's logo, or the big name in a photo-first hero (the bar's logo steps aside while it shows).
   "practice name": '#hero-name, header a[href="#top"]',
   headline: "#hero-title",
-  "Request appointment": '#hero-actions a[href="#request"]',
+  "Request button": '#hero-actions a[href="#request"]',
   Call: '#hero-actions a[href^="tel:"]',
   "open/closed status": '#top a[href="#contact"]',
   Emergency: '#top a[href="#emergency"]',
@@ -108,7 +108,10 @@ for (const url of args) {
       const out = [];
       // The first-screen rule is for home pages (they have the hero); inner pages only get the width checks.
       if (!document.getElementById("hero-title")) return out;
+      // Businesses without emergencies (e.g. landscaping) have no emergency link anywhere: nothing to show.
+      const noEmergency = !document.querySelector('a[href="#emergency"]');
       for (const [name, sel] of Object.entries(must)) {
+        if (name === "Emergency" && noEmergency) continue;
         const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
         const r = el?.getBoundingClientRect();
         if (!r || r.top < 0 || r.bottom > innerHeight) out.push(r ? `${name} (ends at ${Math.round(r.bottom)}px)` : `${name} (not shown)`);

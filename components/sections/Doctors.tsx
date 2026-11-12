@@ -22,7 +22,7 @@ export function Doctors({ office }: { office: OfficeConfig }) {
     <Section
       id="doctors"
       eyebrow="Meet the team"
-      title="Friendly faces, gentle hands"
+      title={office.terms.insurance ? "Friendly faces, gentle hands" : "The people behind the work"}
       intro={copy.doctorsIntro}
     >
       {/* grid-cols-1 (not an auto column) and min-w-0: iPhone Safari let the square photo widen the

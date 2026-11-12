@@ -28,8 +28,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const area = find((await params).slug);
   if (!area) return {};
   return {
-    title: `Dentist for ${area.town}, ${area.region}`,
-    description: `${office.practice.name} cares for patients from ${area.town}, ${area.region} and the surrounding area: ${allCategories(office)
+    title: `${office.terms.trade} for ${area.town}, ${area.region}`,
+    description: `${office.practice.name} serves ${office.terms.customers} in ${area.town}, ${area.region} and the surrounding area: ${allCategories(office)
       .map((c) => c.name.toLowerCase())
       .join(", ")}.`,
     alternates: { canonical: `/areas/${area.slug}/` },
@@ -43,6 +43,8 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
   const home = area.town === a.city && area.region === a.region;
   const years = office.practice.yearsInPractice;
   const pages = !!office.experiments?.doctorPages;
+  const t = office.terms;
+  const Craft = t.craft[0].toUpperCase() + t.craft.slice(1);
   return (
     <PageShell>
       <div className="mx-auto max-w-5xl">
@@ -51,21 +53,21 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
             {area.town}, {area.region}
           </p>
           <h1 className="mt-3 text-[2.5rem] leading-[1.05] text-ink sm:text-6xl">
-            {home ? `Your ${area.town} dentists` : `Dental care for ${area.town}, ${area.region}`}
+            {t.insurance
+              ? home ? `Your ${area.town} dentists` : `Dental care for ${area.town}, ${area.region}`
+              : home ? `Your ${area.town} ${t.trade.toLowerCase()}` : `${Craft} for ${area.town}, ${area.region}`}
           </h1>
           <p className="mt-4 text-lg text-muted">
-            {years ? `Over ${years} years of dental care in the ${area.town} area. ` : ""}
+            {years ? `Over ${years} years of ${t.craft} in the ${area.town} area. ` : ""}
             {office.practice.description}
           </p>
           <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-3 sm:flex sm:max-w-none sm:justify-center">
-            <BookButton size="lg" className="col-span-2">
-              Request appointment
-            </BookButton>
-            <a href={telHref(office.contact.phone)} className="btn btn-glass btn-lg max-sm:px-4">
+            <BookButton size="lg" className="col-span-2" />
+            <a href={telHref(office.contact.phone)} className={`btn btn-glass btn-lg max-sm:px-4 ${t.emergency ? "" : "col-span-2"}`}>
               <Phone size={18} aria-hidden="true" className="text-accent" /> Call<span className="max-sm:sr-only"> {office.contact.phone}</span>
             </a>
             {/* Same buttons as the home page: Request on top; Call and Emergency side by side. */}
-            <EmergencyButton label="Emergency" size="lg" className="min-w-0 max-sm:px-4" />
+            <EmergencyButton size="lg" className="min-w-0 max-sm:px-4" />
           </div>
         </header>
 
@@ -107,7 +109,7 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
         {office.doctors.length > 0 && (
           <section aria-labelledby="doctors" className="mt-12">
             <h2 id="doctors" className="text-3xl text-ink sm:text-4xl">
-              Your dentists
+              {t.insurance ? "Your dentists" : "Your team"}
             </h2>
             <p className="mt-3 text-muted">
               {office.doctors.map((d, i) => (
@@ -122,7 +124,9 @@ export default async function AreaPage({ params }: { params: Promise<{ slug: str
                   )}
                 </span>
               ))}{" "}
-              and their caring team appreciate all honest and candid feedback from patients, and use it to keep improving their care.
+              {t.insurance
+                ? "and their caring team appreciate all honest and candid feedback from patients, and use it to keep improving their care."
+                : `and the team look forward to helping you in ${area.town}.`}
             </p>
           </section>
         )}

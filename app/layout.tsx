@@ -139,8 +139,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {office.fictional && (
           <p className="demo-banner">
-            <span className="sm:hidden">Demo site · fictional practice</span>
-            <span className="max-sm:hidden">Demo website: {office.practice.name} is a fictional practice, not a real dental office.</span>
+            <span className="sm:hidden">Demo site · fictional {office.terms.insurance ? "practice" : "business"}</span>
+            <span className="max-sm:hidden">Demo website: {office.practice.name} is a fictional {office.terms.insurance ? "practice" : "business"}, not a real {office.terms.business.replace(/^an? /, "")}.</span>
           </p>
         )}
         {office.stage === "demo" && !office.fictional && (

@@ -9,7 +9,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
-import type { Day } from "@/config/types";
+import type { Day, Terms } from "@/config/types";
 import { contactIsLive, sendContactMessage } from "@/lib/integrations";
 import {
   DAY_LABELS,
@@ -42,6 +42,8 @@ export interface RequestFormProps {
   /** Expanding form (on in RequestSection): extra fields slide open, and the
    * surrounding [data-request-layout] widens the form to full width on larger screens. */
   animate?: boolean;
+  /** Words for this kind of business (office.terms); dental wording when left out. */
+  terms?: Pick<Terms, "requestKind" | "requestTitle" | "newCustomer" | "insurance" | "privacyNote">;
 }
 
 const inputCls = (err?: string) =>
@@ -61,6 +63,7 @@ export function RequestForm({
   titleId,
   heading = true,
   animate = false,
+  terms = { requestKind: "Appointment", requestTitle: "Request an appointment", newCustomer: "I’m a new patient", insurance: true, privacyNote: "Please don’t include medical details or insurance numbers." },
 }: RequestFormProps) {
   const uid = useId();
   const initialReason =
@@ -299,7 +302,7 @@ export function RequestForm({
       >
         {(
           [
-            ["appointment", "Appointment"],
+            ["appointment", terms.requestKind],
             ["question", "Question"],
           ] as const
         ).map(([k, label]) => (
@@ -320,7 +323,7 @@ export function RequestForm({
 
       {heading && (
         <h3 id={titleId} className="mt-5 text-[1.85rem] leading-tight text-ink">
-          {isAppt ? "Request an appointment" : "Ask us a question"}
+          {isAppt ? terms.requestTitle : "Ask us a question"}
         </h3>
       )}
       <p
@@ -333,7 +336,7 @@ export function RequestForm({
             ? "Tell us what works for you and we’ll call or text to confirm a time. "
             : "We usually reply within one business day. "}
         </span>
-        Please don’t include medical details or insurance numbers.
+        {terms.privacyNote}
       </p>
       <div aria-live="assertive" className="sr-only">
         {errorCount > 0
@@ -428,7 +431,7 @@ export function RequestForm({
                     <div className="flex flex-wrap gap-2">
                       {(
                         [
-                          ["new", "I’m a new patient"],
+                          ["new", terms.newCustomer],
                           ["returning", "I’ve been here before"],
                         ] as const
                       ).map(([k, label]) => (
@@ -452,7 +455,7 @@ export function RequestForm({
                       htmlFor={reasonId}
                       className="mb-1.5 block font-semibold text-ink"
                     >
-                      Reason for your visit{" "}
+                      {terms.insurance ? "Reason for your visit" : "What do you need help with?"}{" "}
                       <span className="text-danger" aria-hidden="true">
                         *
                       </span>
@@ -511,7 +514,7 @@ export function RequestForm({
                   >
                     {showPrefs
                       ? "− Hide extra details"
-                      : "+ Add days, times & insurance"}
+                      : terms.insurance ? "+ Add days, times & insurance" : "+ Add days, times & details"}
                   </button>
                   <div
                     id={`${uid}-extras`}
@@ -573,12 +576,14 @@ export function RequestForm({
                           </div>
                         </fieldset>
 
-                        <div className="sm:col-span-2">
-                          {text("insurance", "Insurance provider", {
-                            optional: true,
-                            max: LIMITS.insurance,
-                          })}
-                        </div>
+                        {terms.insurance && (
+                          <div className="sm:col-span-2">
+                            {text("insurance", "Insurance provider", {
+                              optional: true,
+                              max: LIMITS.insurance,
+                            })}
+                          </div>
+                        )}
                         <div className="sm:col-span-2">
                           <label
                             htmlFor={messageId}

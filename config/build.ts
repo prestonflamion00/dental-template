@@ -19,7 +19,7 @@
  *
  * Section order is partly fixed (`resolveSections`), whatever the office file lists.
  */
-import { PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, SPECIALTY } from "./generic.ts";
+import { DENTAL_TERMS, PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, SPECIALTY } from "./generic.ts";
 import type { Location, OfficeConfig, OfficeInput, SectionId } from "./types.ts";
 
 /**
@@ -70,7 +70,8 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
   const stage = input.stage ?? "live";
   const specialty = input.practice.specialty ?? "general";
   const defaults = SPECIALTY[specialty];
-  const description = input.practice.description ?? `${name} is a dental practice in ${city}, ${region}.`;
+  const terms = { ...(defaults.terms ?? DENTAL_TERMS), ...input.terms } as OfficeConfig["terms"];
+  const description = input.practice.description ?? `${name} is ${terms.business} in ${city}, ${region}.`;
   const hours = stand(input.hours, PLACEHOLDER_HOURS, "hours");
   const locations: Location[] = [
     { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo, placeId: input.contact.placeId, label: name },
@@ -82,9 +83,10 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     ...input,
     stage,
     placeholders,
+    terms,
     practice: {
       name,
-      tagline: input.practice.tagline ?? `Dental care in ${area}`,
+      tagline: input.practice.tagline ?? `${terms.craft[0].toUpperCase()}${terms.craft.slice(1)} in ${area}`,
       logo: { text: name, ...input.practice.logo },
       yearsInPractice: input.practice.yearsInPractice,
       acceptingNewPatients: stand(input.practice.acceptingNewPatients, true, "acceptingNewPatients"),
@@ -96,7 +98,8 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     locations,
     doctors: input.doctors ?? [],
     services: stand(input.services?.length ? input.services : undefined, defaults.services, "services"),
-    insurances: stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurances"),
+    // Insurance plans are a dental thing; home-services sites have none (and no placeholder).
+    insurances: terms.insurance ? stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurances") : [],
     rating: input.rating?.value && input.rating.count ? { value: input.rating.value, count: input.rating.count, source: input.rating.source ?? "Google" } : undefined,
     reviews: input.reviews ?? [],
     faqs: input.faqs?.length ? input.faqs : defaults.faqs,

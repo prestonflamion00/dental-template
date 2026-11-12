@@ -10,9 +10,13 @@ export type RequestEventDetail = { serviceId?: string };
 export interface BookingSettings {
   /** External scheduler URL; when set, buttons link out instead of going to the request form. */
   url?: string;
+  /** The main button's words, e.g. "Request appointment" or "Get a free estimate" (office.terms.request). */
+  requestLabel?: string;
+  /** The red button's words, or null when this kind of business has no emergencies (no red button). */
+  emergency?: string | null;
 }
 
-const Ctx = createContext<{ open: (serviceId?: string) => void; url?: string } | null>(null);
+const Ctx = createContext<{ open: (serviceId?: string) => void; url?: string; requestLabel: string; emergency: string | null } | null>(null);
 
 /**
  * Every "Request appointment" button scrolls to the request form near the bottom of the page
@@ -48,7 +52,10 @@ export function BookingProvider({ settings, children }: { settings: BookingSetti
       window.dispatchEvent(new CustomEvent<RequestEventDetail>(REQUEST_EVENT, { detail: { serviceId } }));
     });
   }, []);
-  const value = useMemo(() => ({ open, url: settings.url }), [open, settings.url]);
+  const value = useMemo(
+    () => ({ open, url: settings.url, requestLabel: settings.requestLabel ?? "Request appointment", emergency: settings.emergency === undefined ? "Emergency" : settings.emergency }),
+    [open, settings.url, settings.requestLabel, settings.emergency],
+  );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

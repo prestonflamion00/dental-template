@@ -6,9 +6,9 @@ import { SocialIcon } from "@/components/ui/Icon";
 
 /** Demo-only stand-ins: clearly samples, never mistaken for real patients. */
 const SAMPLE_REVIEWS = [
-  { name: "Your next happy patient", text: "Your Google reviews here! This is where patients rave about their visits.", meta: "Sample review" },
+  { name: "Your next happy customer", text: "Your Google reviews here! This is where customers rave about working with you.", meta: "Sample review" },
   { name: "A future five-star fan", text: "Imagine a glowing review right here. We pull your newest ones in automatically.", meta: "Sample review" },
-  { name: "Probably your mom", text: "Best practice in town, obviously. (Your real reviews will be much more convincing.)", meta: "Sample review" },
+  { name: "Probably your mom", text: "Best in town, obviously. (Your real reviews will be much more convincing.)", meta: "Sample review" },
 ];
 
 /**
@@ -19,7 +19,7 @@ const SAMPLE_REVIEWS = [
 export function Reviews({ office }: { office: OfficeConfig }) {
   const { reviews, rating, copy, social, stage } = office;
   return (
-    <Section id="reviews" eyebrow="Patient stories" title={reviews.length ? "Smiles, in their own words" : "What patients say"} intro={copy.reviewsIntro}>
+    <Section id="reviews" eyebrow={office.terms.reviewsEyebrow} title={reviews.length ? office.terms.reviewsTitle : `What ${office.terms.customers} say`} intro={copy.reviewsIntro}>
       {/* Rating badge */}
       {rating && (
       <div className="mb-8 flex justify-center" data-reveal>
@@ -72,7 +72,7 @@ export function Reviews({ office }: { office: OfficeConfig }) {
       <div
         className="snap-row -mx-4 -my-6 flex gap-4 overflow-x-auto px-4 py-6 pb-10 md:mx-0 md:my-0 md:py-0 md:pb-4 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3"
         role="region"
-        aria-label="Patient reviews, scroll horizontally for more"
+        aria-label={`${office.terms.customer[0].toUpperCase()}${office.terms.customer.slice(1)} reviews, scroll horizontally for more`}
         tabIndex={0}
       >
         {reviews.slice(0, 6).map((r, i) => (

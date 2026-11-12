@@ -46,7 +46,7 @@ function Compare({ item }: { item: GalleryItem }) {
   );
 }
 
-export function GalleryGrid({ items }: { items: GalleryItem[] }) {
+export function GalleryGrid({ items, note = "Illustrations shown as placeholders. Real patient photos are shared with consent. Individual results vary." }: { items: GalleryItem[]; note?: string }) {
   return (
     <>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +55,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
         ))}
       </div>
       <p className="mt-6 text-center text-sm text-muted">
-        Illustrations shown as placeholders. Real patient photos are shared with consent. Individual results vary.
+        {note}
       </p>
     </>
   );

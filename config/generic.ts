@@ -5,7 +5,8 @@
  * PLACEHOLDERS stand in for that practice's real facts: fine on a demo, but buildOffice refuses to
  * build a live site while any remain. Never invent doctors, reviews, ratings or awards here.
  */
-import type { Day, DayHours, Faq, Service, Specialty, Step } from "./types.ts";
+import type { Day, DayHours, Faq, Service, Specialty, Step, Terms } from "./types.ts";
+import { TRADES } from "./trades.ts";
 
 /** Typical office hours, shown when we couldn't find theirs. */
 export const PLACEHOLDER_HOURS: Record<Day, DayHours> = {
@@ -172,10 +173,49 @@ export const PEDIATRIC_STEPS: Step[] = [
 ];
 
 /** Everything a specialty changes. `copy` takes the practice name and city. */
+/** Dental wording (patients, appointments, insurance); the home-services trades have their own in config/trades.ts. */
+export const DENTAL_TERMS: Terms = {
+  trade: "Dentist",
+  craft: "dental care",
+  business: "a dental office",
+  customer: "patient",
+  customers: "patients",
+  request: "Request appointment",
+  requestShort: "Request visit",
+  requestTitle: "Request an appointment",
+  requestEyebrow: "Appointments",
+  requestKind: "Appointment",
+  requestSubject: "Appointment request",
+  newCustomer: "I’m a new patient",
+  insurance: true,
+  privacyNote: "Please don’t include medical details or insurance numbers.",
+  requestAside: { title: "We check your insurance", text: "" },
+  emergency: "Emergency",
+  emergencyWarning: "Severe swelling, trouble breathing or a serious injury? Call 911 or go to the nearest emergency room.",
+  accepting: "Accepting new patients",
+  newCustomersNav: "New Patients",
+  newCustomersEyebrow: "New patients",
+  newCustomersTitle: "Your first visit, made easy",
+  team: "dentists",
+  teamTitle: "Our dentists",
+  reviewsEyebrow: "Patient stories",
+  reviewsTitle: "Smiles, in their own words",
+  servicesTitle: "Care for every smile",
+  servicesNote: "Every smile is different. We’ll talk through options and costs before any treatment.",
+  servicesPageTitle: "Dental services",
+  galleryEyebrow: "Smile gallery",
+  galleryIntro: "Slide to compare. Every plan is designed around the person.",
+  galleryNote: "Illustrations shown as placeholders. Real patient photos are shared with consent. Individual results vary.",
+  disclaimer: "The information on this site is general and not a substitute for professional dental advice.",
+  schemaType: "Dentist",
+  icon: "tooth",
+};
+
 export const SPECIALTY: Record<
   Specialty,
-  { label: string; services: Service[]; faqs: Faq[]; steps: Step[]; perks: string[]; copy: (name: string, city: string) => ReturnType<typeof genericCopy> }
+  { label: string; services: Service[]; faqs: Faq[]; steps: Step[]; perks: string[]; terms?: Terms; copy: (name: string, city: string) => Omit<ReturnType<typeof genericCopy>, "heroHighlight"> & { heroHighlight?: string } }
 > = {
+  ...TRADES,
   general: { label: "Dentist", services: GENERIC_SERVICES, faqs: GENERIC_FAQS, steps: GENERIC_STEPS, perks: GENERIC_PERKS, copy: genericCopy },
   orthodontics: {
     label: "Orthodontist",

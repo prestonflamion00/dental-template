@@ -10,7 +10,7 @@ import { mapsProps, telHref } from "@/lib/format";
  * Emergency info as a pop-up instead of a page section: opened by any link to #emergency (the
  * "Emergency?" button in the quick-info strip, the phone menu, or a link shared by the practice).
  */
-export function EmergencyDialog({ headline, text, locations }: { headline: string; text: string; locations: Location[] }) {
+export function EmergencyDialog({ headline, text, warning, locations }: { headline: string; text: string; warning: string; locations: Location[] }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     const sync = () => setOpen(window.location.hash === "#emergency");
@@ -49,7 +49,7 @@ export function EmergencyDialog({ headline, text, locations }: { headline: strin
           </a>
         </div>
         <p className="mt-6 text-[0.95rem] text-muted">
-          Severe swelling, trouble breathing or a serious injury? Call 911 or go to the nearest emergency room.
+          {warning}
         </p>
       </div>
     </Modal>

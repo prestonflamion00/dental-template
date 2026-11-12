@@ -17,8 +17,9 @@ import { Stars } from "@/components/ui/Stars";
 import { EmergencyButton } from "@/components/ui/EmergencyButton";
 import { HighlightSwoosh } from "@/components/ui/HeroFlourish";
 import { HeroPhoto } from "@/components/ui/HeroPhoto";
+import { Icon } from "@/components/ui/Icon";
 import { homeArea } from "@/lib/areas";
-import { doctorShortName, initials, telHref, withBase } from "@/lib/format";
+import { cx, doctorShortName, initials, telHref, withBase } from "@/lib/format";
 import { HeroStatus } from "./OpenStatus";
 
 export function Hero({ office }: { office: OfficeConfig }) {
@@ -150,12 +151,14 @@ export function Hero({ office }: { office: OfficeConfig }) {
             id="hero-actions"
             className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:flex-wrap"
           >
-            <BookButton size="lg" className="col-span-2 max-sm:px-4 lg:px-6">
-              Request appointment
-            </BookButton>
+            <BookButton size="lg" className="col-span-2 max-sm:px-4 lg:px-6" />
             <a
               href={telHref(contact.phone)}
-              className="btn btn-glass btn-lg max-sm:min-w-0 max-sm:px-4 lg:px-6"
+              className={cx(
+                "btn btn-glass btn-lg max-sm:min-w-0 max-sm:px-4 lg:px-6",
+                // No red Emergency button for this kind of business: Call takes the whole row on phones.
+                !office.terms.emergency && "col-span-2",
+              )}
             >
               <Phone size={18} aria-hidden="true" className="text-accent" />
               {/* The number shows on tablets; phones and computers (number in the top bar) just say Call. */}
@@ -181,7 +184,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
           {/* Phones skip this strip: the rating is above the headline and "Accepting new patients" sits in the info strip. */}
           <ul
             className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-[0.95rem] text-muted max-sm:hidden"
-            aria-label="Why patients trust us"
+            aria-label={`Why ${office.terms.customers} trust us`}
           >
             {rating && (
               <li className="max-sm:hidden">
@@ -214,7 +217,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                     <strong className="text-ink">
                       {practice.yearsInPractice} years
                     </strong>{" "}
-                    in practice
+                    {office.terms.insurance ? "in practice" : "in business"}
                   </span>
                 </a>
               </li>
@@ -228,7 +231,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   >
                     <Check size={13} strokeWidth={3} />
                   </span>
-                  <strong className="text-ink">Accepting new patients</strong>
+                  <strong className="text-ink">{office.terms.accepting}</strong>
                 </a>
               </li>
             )}
@@ -262,7 +265,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                     className="inline-flex items-center gap-1 font-semibold text-ink hover:text-accent"
                   >
                     {doctors.length > 1
-                      ? `Meet our ${doctors.length} dentists`
+                      ? office.terms.insurance ? `Meet our ${doctors.length} ${office.terms.team}` : "Meet the team"
                       : `Meet ${doctors[0]?.name ?? "the team"}`}
                     <ChevronRight size={16} aria-hidden="true" />
                   </a>
@@ -280,7 +283,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   />
                 </div>
                 <figcaption className="px-1.5 pb-0.5 pt-1.5 text-xs font-semibold text-muted">
-                  Our office · {office.contact.address.street}
+                  {office.heroImage.caption ?? (office.terms.insurance ? `Our office · ${office.contact.address.street}` : practice.tagline)}
                 </figcaption>
               </figure>
             </div>
@@ -332,7 +335,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
               <div className="flex items-center gap-3">
                 {doctors.length === 0 && (
                   <span className="icon-tile shrink-0" aria-hidden="true">
-                    <Smile size={22} />
+                    {office.terms.icon === "tooth" ? <Smile size={22} /> : <Icon name={office.terms.icon} size={22} />}
                   </span>
                 )}
                 <div className="flex shrink-0 -space-x-3">
@@ -408,8 +411,8 @@ export function Hero({ office }: { office: OfficeConfig }) {
                 <p className="text-[0.95rem] leading-snug text-muted">
                   <strong className="block text-ink">
                     {practice.acceptingNewPatients
-                      ? "New patients welcome"
-                      : "Request a visit"}
+                      ? office.terms.accepting
+                      : office.terms.request}
                   </strong>
                   Send a request online and we’ll call or text to confirm.
                 </p>

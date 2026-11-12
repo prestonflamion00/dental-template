@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { BookButton } from "@/components/booking/BookButton";
 import { withBase } from "@/lib/format";
 
-export function ServicesGrid({ services, phone }: { services: Service[]; phone: string }) {
+export function ServicesGrid({ services, phone, note = "Every smile is different. We’ll talk through options and costs before any treatment." }: { services: Service[]; phone: string; note?: string }) {
   const [active, setActive] = useState<Service | null>(null);
   const close = useCallback(() => setActive(null), []);
 
@@ -95,9 +95,9 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
               </ul>
             )}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <BookButton serviceId={active.id}>Request {active.name.length > 24 ? "this visit" : active.name}</BookButton>
+              <BookButton serviceId={active.id}>Request {active.name.length > 24 ? "this service" : active.name}</BookButton>
             </div>
-            <p className="mt-5 text-sm text-muted">Every smile is different. We’ll talk through options and costs before any treatment.</p>
+            <p className="mt-5 text-sm text-muted">{note}</p>
           </div>
         )}
       </Modal>

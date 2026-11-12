@@ -17,7 +17,7 @@ export default function BillingPage() {
     <PageShell>
       <div className="mx-auto max-w-4xl">
         <header className="text-center">
-          <p className="eyebrow">Patients</p>
+          <p className="eyebrow">{office.terms.customers[0].toUpperCase() + office.terms.customers.slice(1)}</p>
           <h1 className="mt-3 text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">Payments & financing</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted">
             {b?.intro ?? "Questions about a bill or your options? Give us a call and we’ll help."}
@@ -56,7 +56,7 @@ export default function BillingPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[0.95rem] text-muted">We also accept most dental insurance plans.</p>
+              {office.terms.insurance && <p className="mt-4 text-[0.95rem] text-muted">We also accept most dental insurance plans.</p>}
             </section>
           ) : null}
         </div>

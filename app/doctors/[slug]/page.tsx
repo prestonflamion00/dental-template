@@ -134,9 +134,7 @@ export default async function DoctorPage({
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:flex">
-            <BookButton size="lg" className="col-span-2">
-              Request appointment
-            </BookButton>
+            <BookButton size="lg" className="col-span-2" />
             <a
               href={telHref(office.contact.phone)}
               className="btn btn-glass btn-lg col-span-2"
