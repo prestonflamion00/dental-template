@@ -15,7 +15,7 @@ const prairieOak: OfficeInput = {
   practice: {
     name: "Prairie Oak Landscaping",
     specialty: "landscaping",
-    logo: { text: "Prairie Oak", mark: "Landscaping" },
+    logo: { text: "Prairie Oak", mark: "Carmel, IN", image: "/offices/prairie-oak/logo.svg", width: 353, height: 96 },
     yearsInPractice: 11,
     acceptingNewPatients: true,
     description:
@@ -78,7 +78,13 @@ const prairieOak: OfficeInput = {
 
   design: "butter",
   theme: { preset: "sage-blue", accent: "#3f6b3a" },
-  sections: ["services", "reviews", "newPatients", "doctors", "faq"],
+  sections: ["services", "gallery", "reviews", "newPatients", "doctors", "faq"],
+  // Recent work: no photos yet, so each shows a clearly-marked "before/after photo here" placeholder.
+  gallery: [
+    { title: "Backyard patio", caption: "Paver patio and planting beds" },
+    { title: "Front yard refresh", caption: "New beds, edging and fresh mulch" },
+    { title: "Lawn renovation", caption: "Patchy lawn aerated and overseeded" },
+  ],
 
   copy: {
     heroEyebrow: "Landscaping in Carmel & Hamilton County",

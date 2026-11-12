@@ -14,7 +14,7 @@ const pelicanPlumbing: OfficeInput = {
   practice: {
     name: "Pelican Point Plumbing",
     specialty: "plumbing",
-    logo: { text: "Pelican Point", mark: "Plumbing" },
+    logo: { text: "Pelican Point", mark: "St. Petersburg, FL", image: "/offices/pelican-plumbing/logo.svg", width: 389, height: 96 },
     yearsInPractice: 14,
     acceptingNewPatients: true,
     description:
@@ -83,7 +83,13 @@ const pelicanPlumbing: OfficeInput = {
 
   design: "honey",
   theme: { preset: "sage-blue", accent: "#1f5d86" },
-  sections: ["services", "reviews", "newPatients", "doctors", "faq"],
+  sections: ["services", "gallery", "reviews", "newPatients", "doctors", "faq"],
+  // Recent work: no photos yet, so each shows a clearly-marked "before/after photo here" placeholder.
+  gallery: [
+    { title: "Water heater swap", caption: "Old 40-gallon tank out, new one in the same day" },
+    { title: "Bathroom repipe", caption: "Corroded galvanized lines replaced with PEX" },
+    { title: "Kitchen drain", caption: "Slow drain cleared and the trap rebuilt" },
+  ],
 
   copy: {
     heroEyebrow: "Plumbing in St. Petersburg & Pinellas County",

@@ -28,7 +28,8 @@ function groups(staff: NonNullable<typeof office.staff>) {
 export default function TeamPage() {
   const { doctors, staff = [] } = office;
   const pages = !!office.experiments?.doctorPages;
-  const samplePhotos = office.stage === "demo" && !office.fictional;
+  // Demos (fictional samples too): a clearly-marked placeholder where a person's photo belongs.
+  const samplePhotos = office.stage === "demo";
   const face = (photo: string | undefined, name: string, sizes: string) =>
     photo ? (
       <Image src={withBase(photo)} alt={`Portrait of ${name}`} fill sizes={sizes} className="object-cover" />

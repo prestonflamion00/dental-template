@@ -9,7 +9,8 @@ import { cx, doctorShortName, doctorSlug, initials, withBase } from "@/lib/forma
 export function Doctors({ office }: { office: OfficeConfig }) {
   const { doctors, copy } = office;
   // Demos of real practices show a placeholder where a photo will go, unless we've added theirs.
-  const samplePhotos = office.stage === "demo" && !office.fictional;
+  // Demos (fictional samples too): a clearly-marked placeholder where a person's photo belongs.
+  const samplePhotos = office.stage === "demo";
   // With doctor pages on, each whole card opens that doctor's page (app/doctors/[slug]).
   const pages = !!office.experiments?.doctorPages;
   const cols =

@@ -222,8 +222,9 @@ export interface Step {
 export interface GalleryItem {
   title: string;
   caption: string;
-  before: string;
-  after: string;
+  /** Leave out on a demo to show a clearly-marked "before photo here" placeholder. */
+  before?: string;
+  after?: string;
 }
 
 /**

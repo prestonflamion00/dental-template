@@ -4,7 +4,7 @@ import type { OfficeInput } from "../types";
 const littleSprouts: OfficeInput = {
   id: "little-sprouts",
   stage: "demo",
-  showcase: true, // fictional demo practice: shown on the public examples page
+  showcase: false, // kept for reference; maple-grove is the one dental example on the public page
   fictional: true, // shows the demo banner
 
   practice: {

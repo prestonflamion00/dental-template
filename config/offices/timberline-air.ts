@@ -14,7 +14,7 @@ const timberlineAir: OfficeInput = {
   practice: {
     name: "Timberline Heating & Air",
     specialty: "hvac",
-    logo: { text: "Timberline", mark: "Heating & Air" },
+    logo: { text: "Timberline", mark: "Lakewood, CO", image: "/offices/timberline-air/logo.svg", width: 345, height: 96 },
     yearsInPractice: 22,
     acceptingNewPatients: true,
     description:
@@ -101,7 +101,13 @@ const timberlineAir: OfficeInput = {
 
   design: "cinnamon",
   theme: { preset: "warm-neutral", accent: "#a2412a" },
-  sections: ["services", "reviews", "newPatients", "doctors", "faq"],
+  sections: ["services", "gallery", "reviews", "newPatients", "doctors", "faq"],
+  // Recent work: no photos yet, so each shows a clearly-marked "before/after photo here" placeholder.
+  gallery: [
+    { title: "Furnace replacement", caption: "20-year-old furnace swapped for a high-efficiency model" },
+    { title: "Heat pump install", caption: "A quiet heat pump that heats and cools" },
+    { title: "Duct cleanup", caption: "Tangled ductwork rerouted and sealed" },
+  ],
 
   copy: {
     heroEyebrow: "Heating & cooling in Lakewood & west Denver",

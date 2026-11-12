@@ -340,7 +340,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                 )}
                 <div className="flex shrink-0 -space-x-3">
                   {doctors.slice(0, 3).map((d) =>
-                    samplePhotos && !d.photo ? (
+                    office.stage === "demo" && !d.photo ? (
                       <PhotoPlaceholder
                         key={d.name}
                         small

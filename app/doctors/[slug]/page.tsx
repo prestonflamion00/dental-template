@@ -55,7 +55,8 @@ export default async function DoctorPage({
   const d = find((await params).slug);
   if (!d) notFound();
   const others = office.doctors.filter((o) => o !== d);
-  const samplePhotos = office.stage === "demo" && !office.fictional;
+  // Demos (fictional samples too): a clearly-marked placeholder where a person's photo belongs.
+  const samplePhotos = office.stage === "demo";
   const home = (hash: string) => withBase(`/${hash}`);
   const paragraphs = d.about?.length ? d.about : d.bio ? [d.bio] : [];
   const photo = (
