@@ -50,7 +50,7 @@ const cities = [
       ["Spring storms", "Wind and hail bring roof, siding and tree damage. Searches spike, and reviews decide who gets the job."],
       ["Growing suburbs", "Fishers, Westfield, Noblesville: new homeowners pick their contractors from Google ratings and reviews."],
     ],
-    about: ["Indy is home", "butterbite is two brothers who grew up right here in Indianapolis. We’re back all the time, especially around the holidays, and Indy businesses are the ones we care about most. You’ll always deal with one of us directly, by text, call or email, never a call center."],
+    about: ["Indy is home", "butterbite is two brothers who grew up right here in Indianapolis. We’re back all the time, especially around the holidays, and it means a lot to help Indy businesses grow. You’ll always deal with one of us directly, by text, call or email, never a call center."],
     towns: ["Indianapolis", "Carmel", "Fishers", "Noblesville", "Greenwood", "Westfield", "Avon", "Plainfield", "Zionsville", "Brownsburg"],
   },
 ];
