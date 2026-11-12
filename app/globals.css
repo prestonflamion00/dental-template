@@ -687,6 +687,11 @@
   #top[data-hero="soft"] .hero-main > div:first-child > a:first-of-type { justify-content: center; }
   #top[data-hero="soft"] #hero-actions { width: 100%; }
   #top[data-hero="soft"] #hero-actions + div { justify-content: center; }
+  /* A stacked (centred) logo: centre the phone hero's text around it, whatever the photo layout. */
+  #top[data-hero][data-logo="stacked"] .hero-main > div:first-child { text-align: center; align-items: center; }
+  #top[data-hero][data-logo="stacked"] .hero-name > a { margin-inline: auto; }
+  #top[data-hero][data-logo="stacked"] #hero-actions { width: 100%; }
+  #top[data-hero][data-logo="stacked"] #hero-actions + div { justify-content: center; }
 }
 /* Opening: the photo settles in with a very slow zoom; team ⇄ building crossfade after that. */
 @media (prefers-reduced-motion: no-preference) {

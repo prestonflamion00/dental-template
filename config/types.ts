@@ -266,7 +266,11 @@ export interface OfficeConfig {
      */
     logo: { text: string; mark?: string; image?: string; width?: number; height?: number;
       /** Square mark alone (path under /public), used for the browser-tab icon. Without it: a tooth for dental, else the first letter. */
-      icon?: string };
+      icon?: string;
+      /** The logo's shape, so the page can fit it: "wide" (default), "stacked" (mark above the name) or "seal" (round). */
+      shape?: "wide" | "stacked" | "seal";
+      /** A wide, compact version for the top bar, when the main logo is stacked or round. */
+      bar?: { image: string; width: number; height: number } };
     /** Shown only when known. */
     yearsInPractice?: number;
     acceptingNewPatients: boolean;

@@ -7,12 +7,17 @@ const TRADE_ICON = { plumbing: "wrench", hvac: "thermometer", landscaping: "leaf
 import { withBase } from "@/lib/format";
 
 /** Text logo (default) or image logo when `practice.logo.image` is set. */
-export function Logo({ practice, compact = false }: { practice: OfficeConfig["practice"]; compact?: boolean }) {
+export function Logo({ practice, compact = false, full = false }: { practice: OfficeConfig["practice"]; compact?: boolean; full?: boolean }) {
   const { logo, name } = practice;
   if (logo.image) {
     // Their own logo artwork, used only when it clearly spells out the practice name (it replaces the
     // text). `data-logo-text` lets the phone hero's big logo glide into this one (Nav.tsx).
-    return <Image data-logo-text src={withBase(logo.image)} alt={name} width={logo.width ?? 180} height={logo.height ?? 48} className="h-10 w-auto max-w-none" priority />;
+    // The bar takes the compact version of a stacked or round logo; `full` (the footer) shows it whole.
+    if (full && logo.shape && logo.shape !== "wide") {
+      return <Image src={withBase(logo.image)} alt={name} width={logo.width ?? 180} height={logo.height ?? 48} className={logo.shape === "seal" ? "h-28 w-auto" : "h-24 w-auto"} />;
+    }
+    const art = logo.bar ?? { image: logo.image, width: logo.width ?? 180, height: logo.height ?? 48 };
+    return <Image data-logo-text src={withBase(art.image)} alt={name} width={art.width} height={art.height} className="h-10 w-auto max-w-none" priority />;
   }
   // Phones: a long name drops the tooth tile (and a very long one gets slightly smaller) so it fits
   // on one line and the bar stays short.

@@ -45,3 +45,28 @@ def text(name, s, size, x=0, y=0, track=0, anchor="start", **axes):
         gs[order[i.codepoint]].draw(TransformPen(pen, (sc, 0, 0, -sc, x + cx + p.x_offset * sc, y - p.y_offset * sc)))
         cx += p.x_advance * sc + track
     return pen.getCommands(), w
+
+def arc_text(name, s, size, cx, cy, r, track=0, bottom=False, **axes):
+    """Text around a circle, centred on the top (reading clockwise) or the bottom (reading left to
+    right, letters upright). r is the baseline radius."""
+    import math
+    f, hf = font(name, **axes)
+    sc = size / f["head"].unitsPerEm
+    buf = hb.Buffer(); buf.add_str(s); buf.guess_segment_properties()
+    hb.shape(hf, buf, {"kern": True})
+    order, gs = f.getGlyphOrder(), f.getGlyphSet()
+    advs = [p.x_advance * sc for p in buf.glyph_positions]
+    L = sum(advs) + track * (len(advs) - 1)
+    pen = SVGPathPen(gs, ntos=lambda v: f"{v:.2f}".rstrip("0").rstrip("."))
+    s_off = 0
+    for i, a in zip(buf.glyph_infos, advs):
+        mid = (s_off + a / 2) / r
+        if bottom:
+            th = math.pi / 2 + (L / 2) / r - mid; ph = th - math.pi / 2
+        else:
+            th = -math.pi / 2 - (L / 2) / r + mid; ph = th + math.pi / 2
+        px, py = cx + r * math.cos(th), cy + r * math.sin(th)
+        c, si = math.cos(ph), math.sin(ph)
+        gs[order[i.codepoint]].draw(TransformPen(pen, (sc * c, sc * si, sc * si, -sc * c, px - a / 2 * c, py - a / 2 * si)))
+        s_off += a + track
+    return pen.getCommands()
