@@ -1,6 +1,6 @@
 /**
  * Butterbite's own contact form: POST /api/contact emails the request to us, with reply-to set to
- * the dentist. Stores nothing. Everything else is the static site in public/.
+ * the person who filled it in. Stores nothing. Everything else is the static site in public/.
  * Runtime variables (set in Cloudflare, kept across deploys): CONTACT_TO (a verified Email Routing
  * destination) and CONTACT_FROM (a sender on a domain with Email Routing enabled).
  */
@@ -59,7 +59,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
       to: env.CONTACT_TO,
       from: { email: env.CONTACT_FROM, name: "butterbite digital website" },
       replyTo: { email, name },
-      subject: `${source === "dental page" ? "Free demo request" : "New inquiry"}${source && source !== "home page" && source !== "dental page" ? ` (${source.replace(/ page$/, "")})` : ""}: ${practice} (${name})`,
+      subject: `New inquiry${source && source !== "home page" ? ` (${source.replace(/ page$/, "")})` : ""}: ${practice} (${name})`,
       text: [
         `${name} from ${practice} got in touch through the website. Reply to this email to answer them directly.`,
         "",
