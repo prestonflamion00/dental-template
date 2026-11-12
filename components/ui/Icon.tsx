@@ -15,6 +15,8 @@ import {
   Stethoscope,
   Sun,
   WandSparkles,
+  Wrench, Droplet, Flame, Snowflake, Fan, Thermometer, House, Trees, Shovel, Sprout, Truck, Bath, Waves, Zap,
+  Hammer, Flower2, Clock, BadgeDollarSign, Search, AirVent, Fence, ShowerHead, Toilet, Wind, Scissors,
   type LucideProps,
 } from "lucide-react";
 import type { IconName } from "@/config/types";
@@ -78,6 +80,10 @@ const lucide: Record<string, React.ComponentType<LucideProps>> = {
   star: Star,
   scan: ScanLine,
   wand: WandSparkles,
+  wrench: Wrench, droplet: Droplet, flame: Flame, snowflake: Snowflake, fan: Fan, thermometer: Thermometer,
+  house: House, trees: Trees, shovel: Shovel, sprout: Sprout, truck: Truck, bath: Bath, waves: Waves, zap: Zap,
+  hammer: Hammer, flower: Flower2, clock: Clock, dollar: BadgeDollarSign, search: Search, vent: AirVent,
+  fence: Fence, shower: ShowerHead, toilet: Toilet, wind: Wind, scissors: Scissors,
 };
 
 export function Icon({ name, size = 24, className }: { name: IconName; size?: number; className?: string }) {

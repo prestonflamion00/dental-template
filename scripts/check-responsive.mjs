@@ -24,9 +24,10 @@ const WIDTHS = [320, 360, 390, 430, 600, 768, 834, 1024, 1180, 1280, 1440, 1920]
 // Screens for the first-screen rule: small iPhone, iPhone, large iPhone, iPad, laptop, desktop.
 const FOLD_SCREENS = [[375, 667], [390, 844], [430, 932], [768, 1024], [1280, 800], [1440, 900]];
 const FOLD_MUST_SHOW = {
-  "practice name": 'header a[href="#top"]',
+  // The bar's logo, or the big name in a photo-first hero (the bar's logo steps aside while it shows).
+  "practice name": '#hero-name, header a[href="#top"]',
   headline: "#hero-title",
-  "Request appointment": '#hero-actions a[href="#request"]',
+  "Request button": '#hero-actions a[href="#request"]',
   Call: '#hero-actions a[href^="tel:"]',
   "open/closed status": '#top a[href="#contact"]',
   Emergency: '#top a[href="#emergency"]',
@@ -105,7 +106,12 @@ for (const url of args) {
     await page.goto(url, { waitUntil: "networkidle" });
     const missing = await page.evaluate((must) => {
       const out = [];
+      // The first-screen rule is for home pages (they have the hero); inner pages only get the width checks.
+      if (!document.getElementById("hero-title")) return out;
+      // Businesses without emergencies (e.g. landscaping) have no emergency link anywhere: nothing to show.
+      const noEmergency = !document.querySelector('a[href="#emergency"]');
       for (const [name, sel] of Object.entries(must)) {
+        if (name === "Emergency" && noEmergency) continue;
         const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
         const r = el?.getBoundingClientRect();
         if (!r || r.top < 0 || r.bottom > innerHeight) out.push(r ? `${name} (ends at ${Math.round(r.bottom)}px)` : `${name} (not shown)`);

@@ -29,6 +29,8 @@ const outDir = join(root, "site");
 const slugs = readdirSync(join(root, "config/offices"))
   .filter((f) => f.endsWith(".ts"))
   .map((f) => f.replace(/\.ts$/, ""))
+  // ONLY=a,b builds just those practices (handy for mockup previews).
+  .filter((s) => !process.env.ONLY || process.env.ONLY.split(",").includes(s))
   .sort();
 
 // Every file must also be registered in config/office.ts (that's what the app imports).
@@ -64,8 +66,19 @@ for (const slug of slugs) {
     },
   });
   if (res.status !== 0) process.exit(res.status ?? 1);
-  cpSync(join(root, "out"), join(outDir, slug), { recursive: true });
   const office = buildOffice((await import(pathToFileURL(join(root, "config/offices", `${slug}.ts`)).href)).default);
+  // public/offices/<folder>/ holds each practice's own photos and video; keep only the files this
+  // practice's config points to, so one practice's media isn't copied into every other site.
+  const used = new Set(JSON.stringify(office).match(/\/offices\/[^"]+/g) ?? []);
+  const media = join(root, "out", "offices");
+  if (existsSync(media)) {
+    for (const f of readdirSync(media, { recursive: true, withFileTypes: true })) {
+      if (!f.isFile()) continue;
+      const rel = "/offices/" + join(f.parentPath ?? f.path, f.name).slice(media.length + 1).split("\\").join("/");
+      if (!used.has(rel)) rmSync(join(f.parentPath ?? f.path, f.name));
+    }
+  }
+  cpSync(join(root, "out"), join(outDir, slug), { recursive: true });
   built.push({ slug, office });
 }
 

@@ -15,7 +15,8 @@ const NOTES: Partial<Record<Key, string>> = {
  */
 export function SampleTag({ office, what }: { office: OfficeConfig; what: Key }) {
   const note = NOTES[what];
-  if (!note || !office.placeholders.includes(what)) return null;
+  // Fictional samples aren't anyone's business, so "we couldn't find yours" would make no sense there.
+  if (!note || office.fictional || !office.placeholders.includes(what)) return null;
   return (
     <span className="sample-tag" tabIndex={0}>
       Sample

@@ -19,7 +19,7 @@ export default function PrivacyPage() {
       </p>
       <h2>Information you share</h2>
       <p>
-        When you request an appointment or send a message, we receive the details you enter, such as your name, phone number
+        When you send a request or a message through this site, we receive the details you enter, such as your name, phone number
         and email. We use them only to respond to you and schedule care.
       </p>
       <h2>Health information</h2>

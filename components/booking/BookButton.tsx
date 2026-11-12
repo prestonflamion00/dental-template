@@ -4,9 +4,9 @@ import { CalendarDays } from "lucide-react";
 import { useBooking } from "./BookingProvider";
 import { cx } from "@/lib/format";
 
-/** The primary "Request appointment" button. Goes to the request form, or links to `booking.url` if configured. */
+/** The primary request button ("Request appointment", "Request service"...). Goes to the request form, or links to `booking.url` if configured. */
 export function BookButton({
-  children = "Request appointment",
+  children,
   serviceId,
   className,
   size = "md",
@@ -20,7 +20,8 @@ export function BookButton({
   variant?: "primary" | "glass";
   icon?: boolean;
 }) {
-  const { open, url } = useBooking();
+  const { open, url, requestLabel } = useBooking();
+  children ??= requestLabel;
   const cls = cx("btn", variant === "primary" ? "btn-primary" : "btn-glass", size === "lg" && "btn-lg", className);
   const content = (
     <>

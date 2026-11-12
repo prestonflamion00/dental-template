@@ -55,7 +55,8 @@ export function Highlighted({
   return (
     <>
       {breakBefore ? keepLastWordsTogether(before.trimEnd()) : before}
-      {breakBefore && <br />}
+      {/* The space keeps the words apart where the line break is hidden (photo-first phone hero). */}
+      {breakBefore && <> <br /></>}
       {decorate ? (
         <Decorated highlight={highlight} after={after} decorate={decorate} />
       ) : (

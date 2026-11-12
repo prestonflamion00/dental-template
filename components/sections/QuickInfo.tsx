@@ -1,7 +1,7 @@
 import { Check, Clock, MapPin, Phone } from "lucide-react";
 import { SampleTag } from "@/components/ui/SampleTag";
 import type { OfficeConfig } from "@/config/types";
-import { mapsHref, telHref } from "@/lib/format";
+import { mapsProps, telHref } from "@/lib/format";
 import { OpenBadge } from "./OpenStatus";
 
 /** Glass "at a glance" card: live open/closed status, address and phone (one column per office when there are several). */
@@ -35,7 +35,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
           <div>
             <h2 className="mb-1.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Visit us</h2>
             <a
-              href={mapsHref(a)}
+              {...mapsProps(office.locations[0])}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold leading-snug text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-accent"
@@ -85,7 +85,7 @@ function QuickInfoLocations({ office }: { office: OfficeConfig }) {
               </h2>
               <OpenBadge timezone={office.timezone} hours={l.hours} />
               <a
-                href={mapsHref(l.address)}
+                {...mapsProps(l)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 block font-semibold leading-snug text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-accent"
@@ -115,7 +115,7 @@ function AcceptingNote({ office }: { office: OfficeConfig }) {
       <span className="grid size-5 place-items-center rounded-full bg-success text-white" aria-hidden="true">
         <Check size={13} strokeWidth={3} />
       </span>
-      Accepting new patients
+      {office.terms.accepting}
     </a>
   );
 }

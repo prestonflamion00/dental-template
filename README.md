@@ -78,7 +78,7 @@ On Vercel or another host, set `NEXT_PUBLIC_OFFICE=<key>` to build a single prac
    - `contact`: email, `hours` (24h `"HH:MM"`, `null` = closed)
    - `otherLocations`: more offices, each with a `name`, phone, address and hours. The quick-info strip, contact section and request form ("Which office?") adapt automatically; name the main office with `contact.locationName`.
    - `practice.area`: how the hero names where they are ("Orthodontics in ___"). Left out, it names every office when there are 3 or fewer ("Hudson & North Cambridge"), or the state with more. With 4+ offices across states it must be set: borrow their own wording if they have it.
-   - `experiments.smileLine`: the hero's pen drawing, on by default (`false` turns it off). A pen underline draws itself under the headline's highlighted words with a small sketched tooth beside them; on taller phones with room to spare, one pen line is drawn across the top of the hero instead, dipping into a smile under a tooth. Afterwards the sparkles twinkle and the tooth floats, gently. See `components/ui/HeroFlourish.tsx`.
+   - `experiments.smileLine`: the hero's pen underline, on by default (`false` turns it off): a hand-drawn line draws itself under the headline's highlighted words. See `components/ui/HeroFlourish.tsx`.
    - `doctors`, `services` (pick an `icon` from the `IconName` list in `config/types.ts`), `insurances`, `reviews`, `rating`, `faqs`
    - `copy`: hero headline, intros and first-visit steps. `heroHighlight` is the phrase rendered in italic accent.
    - `seo`: `siteUrl`, `title`, `description`
@@ -254,3 +254,7 @@ scripts/
 - Respects `prefers-reduced-motion` and `prefers-reduced-transparency`. Glass falls back to solid surfaces when `backdrop-filter` isn't supported.
 - Scroll-reveal only applies when JS is running, and above-the-fold content never waits on it.
 - Lighthouse (mobile) at build time: Performance 93–97, Accessibility 100, Best Practices 100, SEO 100.
+
+## First Bite score
+
+`node scripts/first-bite/score.mjs <website url> [--out report.json]` grades a practice online with the butterbite First Bite score (method: "The butterbite score" doc). It crawls the site, runs Lighthouse on a phone, checks the first screen in a real browser and scores every check it can measure. The Google profile, reviews, map rankings and AI answers need API keys and show "not measured yet" until those are set up; the overall score says how much of the checklist it covers.

@@ -19,7 +19,7 @@
  *
  * Section order is partly fixed (`resolveSections`), whatever the office file lists.
  */
-import { PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, SPECIALTY } from "./generic.ts";
+import { DENTAL_TERMS, PLACEHOLDER_HOURS, PLACEHOLDER_INSURANCES, SPECIALTY } from "./generic.ts";
 import type { Location, OfficeConfig, OfficeInput, SectionId } from "./types.ts";
 
 /**
@@ -30,7 +30,7 @@ import type { Location, OfficeConfig, OfficeInput, SectionId } from "./types.ts"
 /** Always open the page: who you are (with Request and Call buttons), then hours, location and phone. */
 export const TOP_SECTIONS: SectionId[] = ["hero", "quickInfo"];
 /** Ordered per practice (by `sections`), between the fixed top and bottom. */
-export const MIDDLE_SECTIONS: SectionId[] = ["services", "reviews", "doctors", "newPatients", "gallery"];
+export const MIDDLE_SECTIONS: SectionId[] = ["services", "reviews", "doctors", "video", "newPatients", "gallery"];
 /** Always close the page: the request form, FAQ (when shown), then contact and the map. */
 export const BOTTOM_SECTIONS: SectionId[] = ["request", "faq", "contact"];
 
@@ -41,6 +41,7 @@ export function resolveSections(o: Omit<OfficeConfig, "sections">, wanted?: Sect
     // Demos always show it: real reviews, or obviously-sample cards marking where theirs will go.
     reviews: o.reviews.length > 0 || !!o.rating || o.stage === "demo",
     gallery: !!o.gallery?.length,
+    video: !!o.video,
   };
   const middle = (wanted ?? MIDDLE_SECTIONS).filter((s) => MIDDLE_SECTIONS.includes(s) && hasContent[s] !== false);
   const faq = (!wanted || wanted.includes("faq")) && o.faqs.length > 0;
@@ -69,11 +70,12 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
   const stage = input.stage ?? "live";
   const specialty = input.practice.specialty ?? "general";
   const defaults = SPECIALTY[specialty];
-  const description = input.practice.description ?? `${name} is a dental practice in ${city}, ${region}.`;
+  const terms = { ...(defaults.terms ?? DENTAL_TERMS), ...input.terms } as OfficeConfig["terms"];
+  const description = input.practice.description ?? `${name} is ${terms.business} in ${city}, ${region}.`;
   const hours = stand(input.hours, PLACEHOLDER_HOURS, "hours");
   const locations: Location[] = [
-    { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo },
-    ...(input.otherLocations ?? []).map((l) => ({ ...l, hours: stand(l.hours, PLACEHOLDER_HOURS, "hours") })),
+    { name: input.contact.locationName ?? city, phone: input.contact.phone, address: input.contact.address, hours, directionsNote: input.contact.directionsNote, geo: input.contact.geo, placeId: input.contact.placeId, label: name },
+    ...(input.otherLocations ?? []).map((l) => ({ label: name, ...l, hours: stand(l.hours, PLACEHOLDER_HOURS, "hours") })),
   ];
   const area = serviceArea(input.practice.area, locations, name);
 
@@ -81,9 +83,10 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     ...input,
     stage,
     placeholders,
+    terms,
     practice: {
       name,
-      tagline: input.practice.tagline ?? `Dental care in ${area}`,
+      tagline: input.practice.tagline ?? `${terms.craft[0].toUpperCase()}${terms.craft.slice(1)} in ${area}`,
       logo: { text: name, ...input.practice.logo },
       yearsInPractice: input.practice.yearsInPractice,
       acceptingNewPatients: stand(input.practice.acceptingNewPatients, true, "acceptingNewPatients"),
@@ -95,7 +98,8 @@ export function buildOffice(input: OfficeInput): OfficeConfig {
     locations,
     doctors: input.doctors ?? [],
     services: stand(input.services?.length ? input.services : undefined, defaults.services, "services"),
-    insurances: stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurances"),
+    // Insurance plans are a dental thing; home-services sites have none (and no placeholder).
+    insurances: terms.insurance ? stand(input.insurances?.length ? input.insurances : undefined, PLACEHOLDER_INSURANCES, "insurances") : [],
     rating: input.rating?.value && input.rating.count ? { value: input.rating.value, count: input.rating.count, source: input.rating.source ?? "Google" } : undefined,
     reviews: input.reviews ?? [],
     faqs: input.faqs?.length ? input.faqs : defaults.faqs,

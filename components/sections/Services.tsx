@@ -6,8 +6,9 @@ import type { Service } from "@/config/types";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { BookButton } from "@/components/booking/BookButton";
+import { withBase } from "@/lib/format";
 
-export function ServicesGrid({ services, phone }: { services: Service[]; phone: string }) {
+export function ServicesGrid({ services, phone, note = "Every smile is different. We’ll talk through options and costs before any treatment." }: { services: Service[]; phone: string; note?: string }) {
   const [active, setActive] = useState<Service | null>(null);
   const close = useCallback(() => setActive(null), []);
 
@@ -29,15 +30,26 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
             <div className="flex flex-1 flex-col">
             <h3 className="mt-3 font-sans text-base font-bold leading-snug tracking-tight text-ink sm:mt-5 sm:text-[1.15rem]">{s.name}</h3>
             <p className="mt-2 flex-1 text-[0.975rem] leading-relaxed text-muted max-sm:hidden">{s.short}</p>
-            <button
-              type="button"
-              onClick={() => setActive(s)}
-              aria-haspopup="dialog"
-              className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-1 sm:mt-5 rounded-full text-sm font-bold text-accent sm:text-[0.95rem] after:absolute after:inset-0 after:rounded-[24px] after:content-['']"
-            >
-              Learn more<span className="sr-only"> about {s.name}</span>
-              <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
-            </button>
+            {s.page ? (
+              // With a full catalog, the card opens the service's own page.
+              <a
+                href={withBase(s.page)}
+                className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-1 sm:mt-5 rounded-full text-sm font-bold text-accent sm:text-[0.95rem] after:absolute after:inset-0 after:rounded-[24px] after:content-['']"
+              >
+                Learn more<span className="sr-only"> about {s.name}</span>
+                <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setActive(s)}
+                aria-haspopup="dialog"
+                className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-1 sm:mt-5 rounded-full text-sm font-bold text-accent sm:text-[0.95rem] after:absolute after:inset-0 after:rounded-[24px] after:content-['']"
+              >
+                Learn more<span className="sr-only"> about {s.name}</span>
+                <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+              </button>
+            )}
             </div>
           </li>
         ))}
@@ -83,9 +95,9 @@ export function ServicesGrid({ services, phone }: { services: Service[]; phone: 
               </ul>
             )}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <BookButton serviceId={active.id}>Request {active.name.length > 24 ? "this visit" : active.name}</BookButton>
+              <BookButton serviceId={active.id}>Request {active.name.length > 24 ? "this service" : active.name}</BookButton>
             </div>
-            <p className="mt-5 text-sm text-muted">Every smile is different. We’ll talk through options and costs before any treatment.</p>
+            <p className="mt-5 text-sm text-muted">{note}</p>
           </div>
         )}
       </Modal>

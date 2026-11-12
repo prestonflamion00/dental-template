@@ -5,11 +5,11 @@ import { RequestForm } from "@/components/booking/RequestForm";
 import { openDays } from "@/lib/hours";
 import { telHref } from "@/lib/format";
 
-/** "Request an appointment", high on the page: the same form the buttons open, shown inline. */
+/** "Request an appointment" (or service, or an estimate), high on the page: the same form the buttons open, shown inline. */
 export function RequestSection({ office }: { office: OfficeConfig }) {
-  const { contact, practice } = office;
+  const { contact, practice, terms } = office;
   return (
-    <Section id="request" eyebrow="Appointments" title="Request an appointment" intro={office.copy.requestIntro ?? "Tell us a little about you and the team will call or text to find a time that works."}>
+    <Section id="request" eyebrow={terms.requestEyebrow} title={terms.requestTitle} intro={office.copy.requestIntro ?? "Tell us a little about you and the team will call or text to find a time that works."}>
       {/* CSS in app/globals.css ([data-request-layout]) widens the form once it's in use. */}
       <div
         className="grid gap-5"
@@ -31,8 +31,8 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
               <ShieldCheck size={22} />
             </span>
             <div>
-              <h3 className="font-sans text-[1.05rem] font-bold text-ink">We check your insurance</h3>
-              <p className="mt-1 text-[0.95rem] text-muted">Tell us your provider and we’ll look up your benefits before your visit.</p>
+              <h3 className="font-sans text-[1.05rem] font-bold text-ink">{terms.requestAside.title}</h3>
+              <p className="mt-1 text-[0.95rem] text-muted">{terms.requestAside.text || "Tell us your provider and we’ll look up your benefits before your visit."}</p>
             </div>
           </li>
           <li className="glass flex gap-4 rounded-[24px] p-5">
@@ -55,6 +55,7 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
             locations={office.locations.map((l) => ({ name: l.name, openDays: openDays(l.hours) }))}
             titleId="request-title"
             heading={false}
+            terms={terms}
             animate
           />
         </div>

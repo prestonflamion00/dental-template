@@ -10,7 +10,7 @@ import { cx, telHref } from "@/lib/format";
  * way while the hero's own Request and Call buttons are on screen, so the first screen never shows
  * the same two buttons twice, and while the request form is on screen.
  */
-export function MobileBar({ phone }: { phone: string }) {
+export function MobileBar({ phone, label = "Request visit" }: { phone: string; label?: string }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     const heroButtons = document.getElementById("hero-actions");
@@ -45,7 +45,7 @@ export function MobileBar({ phone }: { phone: string }) {
           <Phone size={18} aria-hidden="true" className="text-accent" />
           Call
         </a>
-        <BookButton>Request visit</BookButton>
+        <BookButton>{label}</BookButton>
       </div>
     </div>
   );

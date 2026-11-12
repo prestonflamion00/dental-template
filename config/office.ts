@@ -19,6 +19,9 @@ import littleSprouts from "./offices/little-sprouts";
 import familyOrthodonticsHudson from "./offices/family-orthodontics-hudson";
 import copelinDental from "./offices/copelin-dental";
 import hermanFamilyDentistry from "./offices/herman-family-dentistry";
+import pelicanPlumbing from "./offices/pelican-plumbing";
+import timberlineAir from "./offices/timberline-air";
+import prairieOak from "./offices/prairie-oak";
 
 /** Registry: key = file name in config/offices/ = URL slug. */
 export const offices = {
@@ -28,6 +31,10 @@ export const offices = {
   "family-orthodontics-hudson": familyOrthodonticsHudson,
   "copelin-dental": copelinDental,
   "herman-family-dentistry": hermanFamilyDentistry,
+  // Home services (fictional samples)
+  "pelican-plumbing": pelicanPlumbing,
+  "timberline-air": timberlineAir,
+  "prairie-oak": prairieOak,
 } satisfies Record<string, OfficeInput>;
 export type OfficeKey = keyof typeof offices;
 
@@ -39,7 +46,12 @@ if (envKey && !(envKey in offices)) {
   );
 }
 // buildOffice fills anything the office file leaves out and fixes the section order (config/build.ts).
-const office: OfficeConfig = buildOffice(offices[(envKey as OfficeKey) || ACTIVE_OFFICE]);
+const built: OfficeConfig = buildOffice(offices[(envKey as OfficeKey) || ACTIVE_OFFICE]);
+// Mockup builds only: NEXT_PUBLIC_HERO_LAYOUT / NEXT_PUBLIC_NAME_MORPH try a phone hero layout or
+// name hand-over on every practice at once.
+const layout = process.env.NEXT_PUBLIC_HERO_LAYOUT as OfficeConfig["heroLayout"] | undefined;
+const morph = process.env.NEXT_PUBLIC_NAME_MORPH as OfficeConfig["nameMorph"] | undefined;
+const office: OfficeConfig = { ...built, ...(layout ? { heroLayout: layout } : {}), ...(morph ? { nameMorph: morph } : {}) };
 
 export default office;
 export type { OfficeConfig } from "./types";

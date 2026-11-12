@@ -75,20 +75,38 @@ export function Footer({ office, showContact = true }: { office: OfficeConfig; s
           <nav aria-label="Footer">
             <h2 className="font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Info</h2>
             <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1.5 text-ink md:grid">
+              {/* The practice's extra pages, when it has them. */}
+              {office.catalog && <li><a href={withBase("/services/")} className="inline-block py-1 hover:text-accent">All services</a></li>}
+              {office.staff?.length ? <li><a href={withBase("/team/")} className="inline-block py-1 hover:text-accent">Our team</a></li> : null}
+              {office.billing && <li><a href={withBase("/billing/")} className="inline-block py-1 hover:text-accent">Payments &amp; financing</a></li>}
+              {office.careers && <li><a href={withBase("/careers/")} className="inline-block py-1 hover:text-accent">Careers</a></li>}
               <li><a href={withBase("/privacy")} className="inline-block py-1 hover:text-accent">Privacy policy</a></li>
               <li><a href={withBase("/accessibility")} className="inline-block py-1 hover:text-accent">Accessibility</a></li>
             </ul>
+            {office.areas?.length ? (
+              <p className="mt-4 text-[0.95rem] text-muted">
+                Serving{" "}
+                {office.areas.map((a, i) => (
+                  <span key={a.slug}>
+                    {i > 0 && (i === office.areas!.length - 1 ? " and " : ", ")}
+                    <a href={withBase(`/areas/${a.slug}/`)} className="text-ink underline decoration-ink/20 underline-offset-4 hover:text-accent">
+                      {a.town}, {a.region}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            ) : null}
           </nav>
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-ink/10 pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} {practice.name}. All rights reserved.</p>
-          <p>The information on this site is general and not a substitute for professional dental advice.</p>
+          {office.terms.disclaimer && <p>{office.terms.disclaimer}</p>}
         </div>
         {office.stage === "demo" && !office.fictional && (
           <p className="mt-4 text-sm text-muted">
             This is a private sample design made for {practice.name} by butterbite digital, using public business
-            information and stock images. It isn’t affiliated with or endorsed by the practice and isn’t listed on search
+            information and images. It isn’t affiliated with or endorsed by the practice and isn’t listed on search
             engines. Want it taken down? Email hello@butterbitedigital.com.
           </p>
         )}

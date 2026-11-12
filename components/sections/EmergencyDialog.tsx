@@ -4,13 +4,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Navigation, Phone, Siren } from "lucide-react";
 import type { Location } from "@/config/types";
 import { Modal } from "@/components/ui/Modal";
-import { mapsHref, telHref } from "@/lib/format";
+import { mapsProps, telHref } from "@/lib/format";
 
 /**
  * Emergency info as a pop-up instead of a page section: opened by any link to #emergency (the
  * "Emergency?" button in the quick-info strip, the phone menu, or a link shared by the practice).
  */
-export function EmergencyDialog({ headline, text, locations }: { headline: string; text: string; locations: Location[] }) {
+export function EmergencyDialog({ headline, text, warning, locations }: { headline: string; text: string; warning: string; locations: Location[] }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     const sync = () => setOpen(window.location.hash === "#emergency");
@@ -42,14 +42,14 @@ export function EmergencyDialog({ headline, text, locations }: { headline: strin
               <span className="whitespace-nowrap">{l.phone}</span>
             </a>
           ))}
-          <a href={mapsHref(locations[0].address)} target="_blank" rel="noopener noreferrer" className="btn btn-glass btn-lg whitespace-normal text-center">
+          <a {...mapsProps(locations[0])} target="_blank" rel="noopener noreferrer" className="btn btn-glass btn-lg whitespace-normal text-center">
             <Navigation size={18} aria-hidden="true" className="text-accent" />
             Directions{several ? ` to ${locations[0].name}` : ""}
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
         <p className="mt-6 text-[0.95rem] text-muted">
-          Severe swelling, trouble breathing or a serious injury? Call 911 or go to the nearest emergency room.
+          {warning}
         </p>
       </div>
     </Modal>

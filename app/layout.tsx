@@ -5,6 +5,7 @@ import { allThemesCss, themes, themeToCssVars, THEME_PRESETS, withAccent } from 
 import { allDesignsCss, designPalettes, DESIGNS } from "@/config/designs";
 import { dentistJsonLd } from "@/lib/schema";
 import { withBase } from "@/lib/format";
+import { MapsChooser } from "@/components/ui/MapsChooser";
 import "./globals.css";
 import "./designs.css";
 
@@ -106,6 +107,10 @@ export const viewport: Viewport = {
  */
 // A refresh always starts at the top: no restored scroll spot, no jump back to a #section from an
 // earlier tap. (A shared link with #reviews etc. still opens at that section the first time.)
+// Directions on a Mac: just before the click goes through, point the link at Apple Maps
+// (lib/format.ts mapsProps). iPhone and iPad (an iPad reports itself as a Mac, but has touch) get
+// the chooser in components/ui/MapsChooser.tsx instead.
+const mapsScript = `(function(){if(!/Macintosh/.test(navigator.userAgent)||navigator.maxTouchPoints>1)return;document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[data-apple-maps]');if(a)a.href=a.getAttribute('data-apple-maps');},true);})();`;
 const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'){history.scrollRestoration='manual';if(location.hash)history.replaceState(null,'',location.pathname+location.search);scrollTo(0,0);addEventListener('load',function(){scrollTo(0,0)});}}catch(e){}try{var q=new URLSearchParams(location.search),t=q.get('theme'),g=q.get('design');if(t&&${JSON.stringify(
   THEME_PRESETS,
 )}.indexOf(t)>-1){d.setAttribute('data-theme',t);d.style.cssText='';}if(g&&${JSON.stringify(DESIGNS)}.indexOf(g)>-1){d.setAttribute('data-design',g);d.style.cssText='';}}catch(e){}})();`;
@@ -125,6 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <style dangerouslySetInnerHTML={{ __html: `${allThemesCss()}\n${allDesignsCss()}` }} />
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        <script dangerouslySetInnerHTML={{ __html: mapsScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(dentistJsonLd(office)).replace(/</g, "\\u003c") }}
@@ -133,8 +139,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {office.fictional && (
           <p className="demo-banner">
-            <span className="sm:hidden">Demo site · fictional practice</span>
-            <span className="max-sm:hidden">Demo website: {office.practice.name} is a fictional practice, not a real dental office.</span>
+            <span className="sm:hidden">Demo site · fictional {office.terms.insurance ? "practice" : "business"}</span>
+            <span className="max-sm:hidden">Demo website: {office.practice.name} is a fictional {office.terms.insurance ? "practice" : "business"}, not a real {office.terms.business.replace(/^an? /, "")}.</span>
           </p>
         )}
         {office.stage === "demo" && !office.fictional && (
@@ -152,6 +158,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="orb orb-3" />
         </div>
         {children}
+        <MapsChooser />
       </body>
     </html>
   );

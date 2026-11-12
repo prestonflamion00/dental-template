@@ -5,6 +5,7 @@ import { useId, useState } from "react";
 import { MoveHorizontal } from "lucide-react";
 import type { GalleryItem } from "@/config/types";
 import { withBase } from "@/lib/format";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 
 /** Before/after comparison: drag the handle (or use arrow keys on the slider). */
 function Compare({ item }: { item: GalleryItem }) {
@@ -13,9 +14,17 @@ function Compare({ item }: { item: GalleryItem }) {
   return (
     <figure className="glass rounded-[28px] p-3" data-reveal>
       <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-accent-soft select-none has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-accent">
-        <Image src={withBase(item.after)} alt={`After: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
+        {item.after ? (
+          <Image src={withBase(item.after)} alt={`After: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
+        ) : (
+          <PhotoPlaceholder kind="photo" label="Photo here" className="absolute inset-0 pl-[50%]" />
+        )}
         <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-          <Image src={withBase(item.before)} alt={`Before: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
+          {item.before ? (
+            <Image src={withBase(item.before)} alt={`Before: ${item.title}`} fill sizes="(min-width: 1024px) 360px, 90vw" className="object-cover" loading="lazy" />
+          ) : (
+            <PhotoPlaceholder kind="photo" label="Photo here" className="absolute inset-0 pr-[50%] [filter:grayscale(1)]" />
+          )}
         </div>
         <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">Before</span>
         <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">After</span>
@@ -46,7 +55,7 @@ function Compare({ item }: { item: GalleryItem }) {
   );
 }
 
-export function GalleryGrid({ items }: { items: GalleryItem[] }) {
+export function GalleryGrid({ items, note = "Illustrations shown as placeholders. Real patient photos are shared with consent. Individual results vary." }: { items: GalleryItem[]; note?: string }) {
   return (
     <>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +64,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
         ))}
       </div>
       <p className="mt-6 text-center text-sm text-muted">
-        Illustrations shown as placeholders. Real patient photos are shared with consent. Individual results vary.
+        {note}
       </p>
     </>
   );
