@@ -77,7 +77,7 @@ function demoCard(o, shots) {
 <div class="copy">
   <span class="chip">${label}</span>
   <div class="name serif">${esc(o.practice.name)}</div>
-  <div class="sub">${o.fictional ? "A complete dental website, built for phones first." : "Your new website, ready to see."}</div>
+  <div class="sub">${o.fictional ? (o.terms.icon === "tooth" ? "A complete dental website, built for phones first." : `A complete website for ${esc(o.terms.business)}, built for phones first.`) : "Your new website, ready to see."}</div>
   <div class="by">butterbite digital</div>
 </div>
 <div class="laptop"><div class="screen"><img src="${shots.desktop}"></div><div class="base"></div></div>
@@ -106,7 +106,7 @@ function liveCard(o, logoHtml) {
   <div class="row">
     ${r ? `<span class="stars">${stars}</span><span><strong>${r.value.toFixed(1)}</strong> · ${r.count.toLocaleString("en-US")} ${esc(r.source)} reviews</span>` : ""}
   </div>
-  ${o.practice.acceptingNewPatients ? `<div class="row"><span class="ok"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Accepting new patients</span></div>` : ""}
+  ${o.practice.acceptingNewPatients ? `<div class="row"><span class="ok"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>${esc(o.terms.accepting)}</span></div>` : ""}
 </div>`);
 }
 

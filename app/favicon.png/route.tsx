@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import office from "@/config/office";
 import { resolveTheme } from "@/config/themes";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 // /favicon.png in the office's brand colour, generated at build time.
 // (A plain route rather than app/icon.tsx so the link respects a deploy sub-folder.)
@@ -9,6 +11,31 @@ const size = { width: 64, height: 64 };
 
 export function GET() {
   const t = resolveTheme(office.theme.preset, office.theme.accent);
+  const { logo } = office.practice;
+  // Their own mark (from the logo), on white, when the config has one.
+  if (logo.icon) {
+    const svg = readFileSync(join(process.cwd(), "public", logo.icon)).toString("base64");
+    return new ImageResponse(
+      (
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", borderRadius: 16 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`data:image/svg+xml;base64,${svg}`} width={54} height={54} alt="" />
+        </div>
+      ),
+      size,
+    );
+  }
+  // No mark: a tooth for dental offices, else the business's first letter.
+  if (office.terms && office.terms.icon !== "tooth") {
+    return new ImageResponse(
+      (
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: t.accent, borderRadius: 16, color: "#fff", fontSize: 40, fontWeight: 700 }}>
+          {office.practice.name.charAt(0)}
+        </div>
+      ),
+      size,
+    );
+  }
   return new ImageResponse(
     (
       <div

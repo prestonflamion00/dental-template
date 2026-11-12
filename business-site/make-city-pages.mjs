@@ -15,7 +15,8 @@ const home = readFileSync(join(pub, "index.html"), "utf8");
 
 const cities = [
   {
-    slug: "tampa-bay", name: "Tampa Bay", region: "across Tampa Bay",
+    slug: "tampa-bay",
+    phones: ["pelican", "prairie"], // hero phones: the demo from this area first name: "Tampa Bay", region: "across Tampa Bay",
     h1: "Get found by customers <em>across Tampa Bay.</em>",
     lead: "From St. Pete to Brandon, when someone needs a plumber, an AC tech or a roofer, they search Google and call one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Tampa Bay customers search when it counts",
@@ -28,7 +29,8 @@ const cities = [
     towns: ["Tampa", "St. Petersburg", "Clearwater", "Brandon", "Largo", "Riverview", "Wesley Chapel", "Palm Harbor", "Seminole", "Lutz"],
   },
   {
-    slug: "denver", name: "Denver", region: "across the Denver metro",
+    slug: "denver",
+    phones: ["timberline", "pelican"], // hero phones: the demo from this area first name: "Denver", region: "across the Denver metro",
     h1: "Get found by customers <em>across the Denver metro.</em>",
     lead: "From Arvada to Centennial, when someone needs a roofer, a furnace repair or a landscaper, they search Google and call one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Denver customers search when it counts",
@@ -41,7 +43,8 @@ const cities = [
     towns: ["Denver", "Aurora", "Lakewood", "Arvada", "Westminster", "Littleton", "Centennial", "Thornton", "Englewood", "Highlands Ranch"],
   },
   {
-    slug: "indianapolis", name: "Indianapolis", region: "across Indianapolis",
+    slug: "indianapolis",
+    phones: ["prairie", "timberline"], // hero phones: the demo from this area first name: "Indianapolis", region: "across Indianapolis",
     h1: "Get found by customers <em>across Indianapolis.</em>",
     lead: "From Carmel to Greenwood, when someone needs a plumber, an HVAC tech or a landscaper, they search Google and call one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Indy customers search when it counts",
@@ -68,6 +71,14 @@ for (const c of cities) {
   h = replaceOnce(h, "<title>butterbite digital | Websites and local marketing for small businesses</title>", `<title>butterbite digital | Websites and local marketing for ${c.name} businesses</title>`);
   h = replaceOnce(h, "Serving Tampa Bay, Denver and Indianapolis.", `Serving ${list(c.towns.slice(0, 5))} and nearby.`);
   h = replaceOnce(h, '<meta property="og:url" content="https://butterbitedigital.com/">', `<meta property="og:url" content="https://butterbitedigital.com/${c.slug}/">`);
+  // Hero phones: the example demo from this area up front.
+  h = replaceOnce(h, '<img src="/img/pelican-top.webp" alt="" width="585" height="1266"></div></div>\n        <div class="phone b iphone"><div class="screen"><img src="/img/prairie-top.webp"',
+    `<img src="/img/${c.phones[0]}-top.webp" alt="" width="585" height="1266"></div></div>\n        <div class="phone b iphone"><div class="screen"><img src="/img/${c.phones[1]}-top.webp"`);
+  // Examples: this area's demo first, then the others in their usual order.
+  const cards = h.match(/        <a class="example"[\s\S]*?<\/a>\n/g);
+  if (!cards || cards.length !== 3) throw new Error("make-city-pages: expected 3 example cards on the home page");
+  const first = cards.find((a) => a.includes(`data-demo="${c.phones[0]}"`));
+  h = replaceOnce(h, cards.join(""), [first, ...cards.filter((a) => a !== first)].join(""));
   // Hero: the city's own headline and pitch.
   h = replaceOnce(h, '<p class="eyebrow">For local businesses in Tampa Bay, Denver and Indianapolis</p>', `<p class="eyebrow">${c.name} · Websites and local marketing</p>`);
   h = replaceOnce(h, "<h1>More customers, <em>less hassle.</em></h1>", `<h1>${c.h1}</h1>`);

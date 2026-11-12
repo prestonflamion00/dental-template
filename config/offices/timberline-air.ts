@@ -14,7 +14,11 @@ const timberlineAir: OfficeInput = {
   practice: {
     name: "Timberline Heating & Air",
     specialty: "hvac",
-    logo: { text: "Timberline", mark: "Lakewood, CO", image: "/offices/timberline-air/logo.svg", width: 345, height: 96 },
+    logo: {
+      text: "Timberline", mark: "Lakewood, CO", shape: "stacked",
+      image: "/offices/timberline-air/logo.svg", width: 295, height: 176, icon: "/offices/timberline-air/icon.svg",
+      bar: { image: "/offices/timberline-air/logo-bar.svg", width: 361, height: 96 },
+    },
     yearsInPractice: 22,
     acceptingNewPatients: true,
     description:
@@ -95,7 +99,9 @@ const timberlineAir: OfficeInput = {
     position: "60% 50%",
     team: { src: "/offices/timberline-air/house-twilight.webp", alt: "A warm, well-lit home at dusk" },
   },
+  // Stacked, centred logo: the phone hero centres everything around it, and the name fades into the bar.
   heroLayout: "bleed",
+  nameMorph: "fade",
 
   social: { facebook: "https://facebook.com/", google: "https://maps.google.com/" },
 

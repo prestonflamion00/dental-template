@@ -15,7 +15,11 @@ const prairieOak: OfficeInput = {
   practice: {
     name: "Prairie Oak Landscaping",
     specialty: "landscaping",
-    logo: { text: "Prairie Oak", mark: "Carmel, IN", image: "/offices/prairie-oak/logo.svg", width: 353, height: 96 },
+    logo: {
+      text: "Prairie Oak", mark: "Carmel, IN", shape: "seal",
+      image: "/offices/prairie-oak/logo.svg", width: 200, height: 200, icon: "/offices/prairie-oak/icon.svg",
+      bar: { image: "/offices/prairie-oak/logo-bar.svg", width: 339, height: 96 },
+    },
     yearsInPractice: 11,
     acceptingNewPatients: true,
     description:
@@ -73,6 +77,8 @@ const prairieOak: OfficeInput = {
     team: { src: "/offices/prairie-oak/lawn-house.webp", alt: "A freshly striped lawn in front of a white house" },
   },
   heroLayout: "bleed",
+  // Round seal: on phones it overlaps the photo like a stamp, and the name fades into the bar.
+  nameMorph: "fade",
 
   social: { facebook: "https://facebook.com/", instagram: "https://instagram.com/", google: "https://maps.google.com/" },
 

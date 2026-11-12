@@ -113,6 +113,7 @@
   .browser img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; }
   /* Phone: an iPhone laid over the corner, showing the site's first screen. */
   .example .frame { position: absolute; right: 0; bottom: 0; width: 27%; }
+  .example .where { margin: 0 0 6px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
   .example h3 { font-size: 1.8rem; }
   .example p { color: var(--muted); margin-top: 8px; }
   .example .open { display: inline-block; margin-top: 16px; font-weight: 700; color: var(--honey); }

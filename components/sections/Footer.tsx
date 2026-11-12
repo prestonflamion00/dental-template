@@ -25,7 +25,7 @@ export function Footer({ office, showContact = true }: { office: OfficeConfig; s
       <div className="glass mx-auto max-w-6xl rounded-[32px] p-7 sm:p-10">
         <div className={cx("grid gap-8 md:grid-cols-2", showContact && "lg:grid-cols-[1.4fr_1fr_0.8fr]")}>
           <div>
-            <Logo practice={practice} />
+            <Logo practice={practice} full />
             <p className="mt-4 max-w-xs text-[0.95rem] text-muted">{practice.tagline}.</p>
             {Object.keys(social).length > 0 && (
               <ul className="mt-5 flex gap-2" aria-label="Social media">

@@ -40,6 +40,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
     <section
       id="top"
       data-hero={photoFirst ? office.heroLayout : undefined}
+      data-logo={practice.logo.image ? (practice.logo.shape ?? "wide") : undefined}
       aria-labelledby="hero-title"
       className="relative overflow-x-clip pb-10 pt-5 sm:pt-16 lg:pb-14 lg:pt-12"
     >
@@ -83,7 +84,14 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   alt={practice.name}
                   width={practice.logo.width}
                   height={practice.logo.height}
-                  className="block h-auto w-[min(100%,260px)]"
+                  className={
+                    practice.logo.shape === "seal"
+                      ? // Round seal: overlaps the photo's faded edge, like a stamp.
+                        "relative z-10 -mt-24 block h-auto w-[140px] drop-shadow-[0_8px_18px_rgba(0,0,0,0.22)]"
+                      : practice.logo.shape === "stacked"
+                        ? "mx-auto block h-auto w-[min(100%,200px)] [@media(max-height:700px)]:w-[150px]"
+                        : "block h-auto w-[min(100%,260px)]"
+                  }
                 />
               ) : (
                 <span
@@ -259,7 +267,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                     className="object-cover"
                   />
                 </div>
-                <figcaption className="px-3 pb-2 pt-3 text-[0.95rem] leading-snug">
+                <figcaption className="pb-2 pl-3 pr-[52%] pt-3 text-[0.95rem] leading-snug">
                   <a
                     href={has("doctors") ? "#doctors" : undefined}
                     className="inline-flex items-center gap-1 font-semibold text-ink hover:text-accent"
@@ -286,6 +294,17 @@ export function Hero({ office }: { office: OfficeConfig }) {
                   {office.heroImage.caption ?? (office.terms.insurance ? `Our office · ${office.contact.address.street}` : practice.tagline)}
                 </figcaption>
               </figure>
+              {practice.logo.image && practice.logo.shape === "seal" && (
+                // A round seal logo sits on the photos like a sticker (the bar only has room for its compact version).
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={withBase(practice.logo.image)}
+                  alt=""
+                  width={practice.logo.width}
+                  height={practice.logo.height}
+                  className="absolute -left-6 -top-7 w-28 -rotate-[8deg] drop-shadow-[0_10px_20px_rgba(0,0,0,0.25)] lg:w-32"
+                />
+              )}
             </div>
           ) : office.heroImage ? (
             // Their own photo in a framed card, with who they'll see along the bottom.

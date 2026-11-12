@@ -1,10 +1,21 @@
 # Demo logos
 
-Makes the SVG logos for the fictional demos (icon + name + small trade line). Text is turned into
-outline paths, so the logo looks the same everywhere, even where web fonts don't load (an `<img>`).
+Makes the SVG logos for the fictional demos. Text is turned into outline paths, so a logo looks the
+same everywhere, even where web fonts don't load (an `<img>`).
 
     pip install fonttools brotli uharfbuzz
-    python3 scripts/logo/build.py      # run from the repo root; writes public/offices/<slug>/logo.svg
+    python3 scripts/logo/build.py                  # from the repo root; writes public/offices/<slug>/logo.svg
+    python3 scripts/logo/build.py --preview DIR    # also one-colour and icon-only versions, for checking
 
-To add one: draw the icon in the 96×96 box (see the three in build.py), add a row to the list at the
-bottom, then set `practice.logo.image`, `width` and `height` (printed by the script) in the config.
+So they don't look machine-made:
+1. Flat colours, no gradients or shine.
+2. One idea, taken from the business's name, not the obvious trade icon.
+3. Each business gets its own font and layout (fonts/ holds Archivo, Outfit and Zilla Slab, all SIL OFL).
+4. Must still work in one colour (truck decal, shirt, stamp): check the -mono preview.
+5. One custom touch in the lettering or layout.
+6. Icon alone must read at 32px and 16px: check the -icon preview.
+7. Vary the shape, not just the art: wide, stacked or a round seal. A stacked or round logo also gets a
+   compact `logo-bar.svg` for the top bar; set `shape` and `bar` in the config and the page fits around it
+   (stacked centres the phone hero; a seal overlaps the hero photo like a stamp).
+
+Then set `practice.logo.image`, `width` and `height` (the script prints the width) in the config.
