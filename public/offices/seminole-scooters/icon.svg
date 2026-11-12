@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" width="120" height="96"><title>mark</title>
+<g>
+<path fill="#0d5560" d="M8 70C8 57 15 49 28 47L56 45C63 45 65 51 61 57L56 64H80C83 52 86 38 89 28L85 25C84 23 85 21 87 21H101C103 21 103 24 101 24L95 26C96 38 100 51 107 59C111 63 112 67 111 71H99C98 64 92 60 86 61C81 62 78 66 77 71H41C40 64 35 60 28 60C21 60 16 64 15 70Z"/>
+<path fill="#0d5560" d="M22 45C23 39 28 37 35 37H57C61 37 63 40 62 44L22 45Z"/>
+<circle cx="28" cy="73" r="12" fill="#0d5560"/><circle cx="28" cy="73" r="5" fill="#fbf3e4"/>
+<circle cx="89" cy="73" r="12" fill="#0d5560"/><circle cx="89" cy="73" r="5" fill="#fbf3e4"/>
+<circle cx="104" cy="50" r="3" fill="#fbf3e4"/>
+</g>
+</svg>

@@ -104,7 +104,23 @@ export const LANDSCAPING_FAQS: Faq[] = [
   { q: "Which areas do you serve?", a: "See the towns listed on this page. Not sure if you’re in our area? Just call and ask." },
 ];
 
-export const TRADES: Record<"plumbing" | "hvac" | "landscaping", { label: string; services: Service[]; faqs: Faq[]; steps: Step[]; perks: string[]; terms: Terms; copy: (name: string, area: string) => Copy }> = {
+/* ── Scooter sales & repair (and similar small powersports shops) ── */
+export const SCOOTER_SERVICES: Service[] = [
+  { id: "oil", name: "Oil Changes", icon: "fuel", short: "Quick oil changes for most scooters.", detail: "The most important thing for a small engine. Most are done while you wait." },
+  { id: "tires", name: "Tires & Flats", icon: "refresh", short: "New tires, tubes and flat repairs.", detail: "Common scooter tire sizes kept in stock, and flats fixed on most bikes." },
+  { id: "repairs", name: "Repairs & Tune-ups", icon: "wrench", short: "Won't start, runs rough or sounds wrong? We'll find out why.", detail: "Carbs, belts, brakes, electrical and engine work, explained in plain words before we start." },
+  { id: "buy", name: "Buy a Scooter", icon: "bike", short: "New and used scooters, ready to ride.", detail: "Come see what's on the floor, sit on a few and ask anything. We'll help you pick the right size." },
+  { id: "sell", name: "Sell or Trade In", icon: "tag", short: "Tell us what you have and we'll take a look.", detail: "Send the make, model, year and miles, and we'll let you know what we can do." },
+  { id: "financing", name: "Financing", icon: "card", short: "Ask about payment options on new scooters.", detail: "Apply before you visit so you know your payment ahead of time." },
+];
+export const SCOOTER_FAQS: Faq[] = [
+  { q: "Do I need a motorcycle license for a 50cc scooter?", a: "In many states a 50cc scooter only needs a regular driver's license, while bigger scooters need a motorcycle endorsement. Ask us and we'll explain the rules for your bike." },
+  { q: "Do you work on scooters you didn't sell?", a: "Yes, we service most makes and models. Call first for unusual brands so we can check on parts." },
+  { q: "Can I get a price before the work starts?", a: "Yes. We'll look at your scooter, explain what it needs and give you the price before we start." },
+  { q: "Do you buy used scooters or take trade-ins?", a: "Send us the make, model, year and miles through the request form and we'll let you know." },
+];
+
+export const TRADES: Record<"plumbing" | "hvac" | "landscaping" | "scooters", { label: string; services: Service[]; faqs: Faq[]; steps: Step[]; perks: string[]; terms: Terms; copy: (name: string, area: string) => Copy }> = {
   plumbing: {
     label: "Plumber",
     services: PLUMBING_SERVICES,
@@ -193,6 +209,43 @@ export const TRADES: Record<"plumbing" | "hvac" | "landscaping", { label: string
       reviewsIntro: "What homeowners say about their yards.",
       faqIntro: "Answers to the questions we hear most.",
       contactIntro: "Questions or ready for an estimate? We’re here.",
+    }),
+  },
+  scooters: {
+    label: "Scooter sales & repair",
+    services: SCOOTER_SERVICES,
+    faqs: SCOOTER_FAQS,
+    steps: [
+      { title: "Book or stop by", text: "Tell us what's going on, or come see the scooters on the floor.", icon: "calendar" },
+      { title: "We take a look", text: "We explain what your scooter needs, or help you find the right one, in plain words.", icon: "wrench" },
+      { title: "Back on the road", text: "Clear price first, honest work, and tips to keep it running.", icon: "bike" },
+    ],
+    perks: ["Honest, upfront prices", "Most makes and models", "New scooters in stock"],
+    terms: homeTerms({
+      trade: "Scooter shop", craft: "scooter repair", business: "a scooter sales and repair shop", schemaType: "MotorcycleRepair", icon: "bike",
+      request: "Book service", requestShort: "Book service", requestTitle: "Book a repair or ask a question", requestEyebrow: "Book",
+      requestKind: "Service", requestSubject: "Service request",
+      requestAside: { title: "A clear price first", text: "We'll look at your scooter and tell you the price before any work starts." },
+      emergency: null, servicesTitle: "Service & repairs", servicesPageTitle: "Scooter services",
+      servicesNote: "Every scooter is different. We'll give you a clear price before any work starts.",
+      newCustomersNav: "How it works", newCustomersTitle: "How it works", teamTitle: "Meet the shop",
+      reviewsTitle: "What riders say",
+    }),
+    copy: (name, area) => ({
+      heroEyebrow: `Scooter sales & repair in ${area}`,
+      heroHeadline: "Honest scooter repair, and the right ride for you.",
+      heroHighlight: "the right ride",
+      heroSubhead: "New scooters in stock, quick service and repairs for most makes and models.",
+      servicesIntro: "Oil changes, tires, belts, tune-ups and bigger repairs, for most makes and models.",
+      newPatientsIntro: "Here's how it works.",
+      doctorsIntro: "The people who'll take care of your scooter.",
+      ctaHeadline: "Need a repair, or ready for a new scooter?",
+      ctaText: "Book service online or give us a call.",
+      emergencyHeadline: "",
+      emergencyText: "",
+      reviewsIntro: "What riders say about the shop.",
+      faqIntro: "Answers to the questions we hear most.",
+      contactIntro: "Questions, a repair or a new scooter? Come see us.",
     }),
   },
 };

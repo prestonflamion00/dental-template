@@ -3,7 +3,7 @@ import type { OfficeConfig } from "@/config/types";
 import { Icon, Tooth } from "./Icon";
 
 /** Home-services trades show their own icon in the logo tile; dental keeps the tooth. */
-const TRADE_ICON = { plumbing: "wrench", hvac: "thermometer", landscaping: "leaf" } as const;
+const TRADE_ICON = { plumbing: "wrench", hvac: "thermometer", landscaping: "leaf", scooters: "bike" } as const;
 import { withBase } from "@/lib/format";
 
 /** Text logo (default) or image logo when `practice.logo.image` is set. */

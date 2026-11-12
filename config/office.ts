@@ -22,6 +22,7 @@ import hermanFamilyDentistry from "./offices/herman-family-dentistry";
 import pelicanPlumbing from "./offices/pelican-plumbing";
 import timberlineAir from "./offices/timberline-air";
 import prairieOak from "./offices/prairie-oak";
+import seminoleScooters from "./offices/seminole-scooters";
 
 /** Registry: key = file name in config/offices/ = URL slug. */
 export const offices = {
@@ -35,6 +36,8 @@ export const offices = {
   "pelican-plumbing": pelicanPlumbing,
   "timberline-air": timberlineAir,
   "prairie-oak": prairieOak,
+  // Real prospects (private previews)
+  "seminole-scooters": seminoleScooters,
 } satisfies Record<string, OfficeInput>;
 export type OfficeKey = keyof typeof offices;
 
