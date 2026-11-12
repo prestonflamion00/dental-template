@@ -176,4 +176,5 @@
   .faq summary { cursor: pointer; font-weight: 700; color: var(--ink); }
   .faq details p { margin: 10px 0 0; }
   .btn-light { background: var(--cream); color: var(--ink); }
+  .btn-ghost-light { border: 2px solid var(--on-dark); color: var(--cream); }
   .cta .actions { margin-top: 24px; }
