@@ -59,7 +59,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
       to: env.CONTACT_TO,
       from: { email: env.CONTACT_FROM, name: "butterbite digital website" },
       replyTo: { email, name },
-      subject: `${source === "home page" ? "New inquiry" : "Free demo request"}: ${practice} (${name})`,
+      subject: `${source === "dental page" ? "Free demo request" : "New inquiry"}${source && source !== "home page" && source !== "dental page" ? ` (${source.replace(/ page$/, "")})` : ""}: ${practice} (${name})`,
       text: [
         `${name} from ${practice} got in touch through the website. Reply to this email to answer them directly.`,
         "",
