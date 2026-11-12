@@ -14,7 +14,7 @@ const timberlineAir: OfficeInput = {
   practice: {
     name: "Timberline Heating & Air",
     specialty: "hvac",
-    logo: { text: "Timberline", mark: "Lakewood, CO", image: "/offices/timberline-air/logo.svg", width: 361, height: 96 },
+    logo: { text: "Timberline", mark: "Lakewood, CO", image: "/offices/timberline-air/logo.svg", icon: "/offices/timberline-air/icon.svg", width: 361, height: 96 },
     yearsInPractice: 22,
     acceptingNewPatients: true,
     description:

@@ -264,7 +264,9 @@ export interface OfficeConfig {
      * only when it clearly spells out the practice name, since it replaces the text (and the `mark`
      * line) in the bar and the phone hero. `width`/`height`: the image's pixel size.
      */
-    logo: { text: string; mark?: string; image?: string; width?: number; height?: number };
+    logo: { text: string; mark?: string; image?: string; width?: number; height?: number;
+      /** Square mark alone (path under /public), used for the browser-tab icon. Without it: a tooth for dental, else the first letter. */
+      icon?: string };
     /** Shown only when known. */
     yearsInPractice?: number;
     acceptingNewPatients: boolean;

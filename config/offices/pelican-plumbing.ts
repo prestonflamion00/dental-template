@@ -14,7 +14,7 @@ const pelicanPlumbing: OfficeInput = {
   practice: {
     name: "Pelican Point Plumbing",
     specialty: "plumbing",
-    logo: { text: "Pelican Point", mark: "St. Petersburg, FL", image: "/offices/pelican-plumbing/logo.svg", width: 413, height: 96 },
+    logo: { text: "Pelican Point", mark: "St. Petersburg, FL", image: "/offices/pelican-plumbing/logo.svg", icon: "/offices/pelican-plumbing/icon.svg", width: 413, height: 96 },
     yearsInPractice: 14,
     acceptingNewPatients: true,
     description:

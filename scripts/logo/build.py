@@ -71,4 +71,6 @@ if __name__ == "__main__":
             open(os.path.join(prev, f"{slug}-icon.svg"), "w").write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">{mark}</svg>')
         else:
             open(f"public/offices/{slug}/logo.svg", "w").write(svg)
+            # The mark alone: the browser-tab icon and the link-preview badge.
+            open(f"public/offices/{slug}/icon.svg", "w").write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">{mark}</svg>\n')
         print(slug, svg.split('width="')[1].split('"')[0])
