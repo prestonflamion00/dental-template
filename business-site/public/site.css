@@ -166,3 +166,15 @@
     section { padding: 64px 0; }
   }
   @media (max-width: 520px) { .compare { grid-template-columns: 1fr; } }
+
+  /* Welcome page (/hi/) */
+  .hi-hero { padding-bottom: 56px; }
+  .hi-hero .lead { max-width: 640px; }
+  .narrow { max-width: 820px; }
+  .faq { margin-top: 32px; display: grid; gap: 12px; }
+  .faq details { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 22px; }
+  .faq summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+  .faq details p { margin: 10px 0 0; }
+  .btn-light { background: var(--cream); color: var(--ink); }
+  .btn-ghost-light { border: 2px solid var(--on-dark); color: var(--cream); }
+  .cta .actions { margin-top: 24px; }
