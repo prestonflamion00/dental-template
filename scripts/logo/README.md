@@ -14,5 +14,8 @@ So they don't look machine-made:
 4. Must still work in one colour (truck decal, shirt, stamp): check the -mono preview.
 5. One custom touch in the lettering or layout.
 6. Icon alone must read at 32px and 16px: check the -icon preview.
+7. Vary the shape, not just the art: wide, stacked or a round seal. A stacked or round logo also gets a
+   compact `logo-bar.svg` for the top bar; set `shape` and `bar` in the config and the page fits around it
+   (stacked centres the phone hero; a seal overlaps the hero photo like a stamp).
 
 Then set `practice.logo.image`, `width` and `height` (the script prints the width) in the config.
