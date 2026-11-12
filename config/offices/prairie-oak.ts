@@ -15,7 +15,7 @@ const prairieOak: OfficeInput = {
   practice: {
     name: "Prairie Oak Landscaping",
     specialty: "landscaping",
-    logo: { text: "Prairie Oak", mark: "Carmel, IN", image: "/offices/prairie-oak/logo.svg", width: 353, height: 96 },
+    logo: { text: "Prairie Oak", mark: "Carmel, IN", image: "/offices/prairie-oak/logo.svg", width: 339, height: 96 },
     yearsInPractice: 11,
     acceptingNewPatients: true,
     description:

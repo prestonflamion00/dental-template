@@ -1,52 +1,74 @@
-import sys; import os; sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+"""Demo logos. Run from the repo root: python3 scripts/logo/build.py [--preview DIR]
+Each one: flat colours, one idea from the business's name, its own font, works in one colour."""
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from outline import text
-H=96
-def svg(mark, name, sub, ink, subc, name_size=44, mark_w=88):
-    nx=mark_w+18
-    nd,nw=text('serif',620,name,name_size,-0.4,nx,52)
-    sd,sw=text('sans',700,sub,12.5,3.2,nx+2,75)
-    W=round(nx+max(nw,sw+2)+4)
-    return W,f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
-<title>{name} {sub.title().replace("&","&amp;")}</title>
-{mark}
-<path fill="{ink}" d="{nd}"/>
-<path fill="{subc}" d="{sd}"/>
-</svg>'''
 
-# Pelican Point: navy roundel, white drop, coral wave + highlight
-pel='''<defs><linearGradient id="pp-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d5b86"/><stop offset="1" stop-color="#0f3352"/></linearGradient>
-<clipPath id="pp-d"><path d="M44 18C44 18 24 41 24 56a20 20 0 0 0 40 0C64 41 44 18 44 18Z"/></clipPath></defs>
-<rect x="4" y="6" width="80" height="84" rx="24" fill="url(#pp-g)"/>
-<path d="M44 18C44 18 24 41 24 56a20 20 0 0 0 40 0C64 41 44 18 44 18Z" fill="#fff"/>
-<g clip-path="url(#pp-d)"><path d="M18 60q7-6 13 0t13 0 13 0 13 0V80H18Z" fill="#ef6b4d"/><path d="M18 67q7-6 13 0t13 0 13 0 13 0V80H18Z" fill="#d9513a"/></g>
-<path d="M34 50a10 10 0 0 1 5-9" fill="none" stroke="#bfe0f4" stroke-width="4" stroke-linecap="round"/>'''
-# Timberline: cool back peak, warm front peak, snow cap, wind line
-tim='''<defs><linearGradient id="tl-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c9ec4"/><stop offset="1" stop-color="#2f6c93"/></linearGradient>
-<linearGradient id="tl-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9573a"/><stop offset="1" stop-color="#8f3622"/></linearGradient>
-<linearGradient id="tl-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe3c8"/><stop offset="1" stop-color="#f6efe7"/></linearGradient>
-<clipPath id="tl-c"><circle cx="46" cy="48" r="42"/></clipPath></defs>
-<circle cx="46" cy="48" r="42" fill="url(#tl-s)"/>
-<g clip-path="url(#tl-c)">
-<circle cx="66" cy="34" r="7" fill="#f2b56b"/>
-<path d="M56 30 100 96H12Z" fill="url(#tl-b)" stroke="url(#tl-b)" stroke-width="4" stroke-linejoin="round"/>
-<path d="M56 30l9 13.5-5-3-4 4-4-4-5 3Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
-<path d="M32 42 76 100H-12Z" fill="url(#tl-f)" stroke="url(#tl-f)" stroke-width="4" stroke-linejoin="round"/>
-<path d="M32 42l8.4 11-4.6-2.6-3.8 3.6-3.8-3.6-4.6 2.6Z" fill="#fde9dc" stroke="#fde9dc" stroke-width="2" stroke-linejoin="round"/>
-<path d="M-4 78q12-5 24 0t24 0 24 0 24 0" fill="none" stroke="#f6efe7" stroke-width="3.2" stroke-linecap="round" opacity=".9"/>
+def wrap(w, h, title, body):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.0f} {h}" width="{w:.0f}" height="{h}">\n'
+            f'<title>{title}</title>\n{body}\n</svg>\n')
+
+# ---------- Pelican Point Plumbing: a pelican, truck-door lettering ----------
+def pelican(navy="#13365a", coral="#e2562f", paper="#fff"):
+    mark = f'''<g>
+<path fill="{navy}" d="M18 94C23 76 29 62 26 48C24 40 22 33 24 26A11.2 11.2 0 0 1 43 15L90 30Q96 32 93 37L45 30C42 46 45 64 56 94Z"/>
+<path fill="{coral}" d="M45 30L92.5 36.5Q79 53 57 51Q46 47 45 30Z"/>
+<circle cx="33" cy="20.5" r="2.6" fill="{paper}"/>
 </g>'''
-# Prairie Oak: sun over horizon, oak leaf
-oak='''<defs><clipPath id="po-c"><circle cx="46" cy="48" r="42"/></clipPath>
-<linearGradient id="po-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a9a55"/><stop offset="1" stop-color="#2f5a2b"/></linearGradient></defs>
-<circle cx="46" cy="48" r="42" fill="#f3efe1"/>
-<g clip-path="url(#po-c)"><circle cx="70" cy="62" r="14" fill="#e3ad45"/>
-<path d="M0 70q24-8 46-3t50-2V96H0Z" fill="#c7d6a6"/>
-<path d="M43 46h6l1.5 26h-9Z" fill="#6b4a2b"/><path d="M46 56l-8-6M46 54l7-7" stroke="#6b4a2b" stroke-width="3" stroke-linecap="round"/>
-<g fill="url(#po-l)"><circle cx="46" cy="30" r="14"/><circle cx="33" cy="38" r="12"/><circle cx="59" cy="38" r="12"/><circle cx="38" cy="26" r="10"/><circle cx="54" cy="26" r="10"/><circle cx="46" cy="44" r="12"/><circle cx="28" cy="48" r="9"/><circle cx="64" cy="48" r="9"/></g>
-<path d="M0 78q30-7 52-2t44 0V96H0Z" fill="#8fb06f"/></g>'''
-for slug,mark,name,sub,ink,subc in [
- ("pelican-plumbing",pel,"Pelican Point","PLUMBING","#0f3352","#c2452c"),
- ("timberline-air",tim,"Timberline","HEATING & AIR","#3a2318","#2f6c93"),
- ("prairie-oak",oak,"Prairie Oak","LANDSCAPE CO.","#24401f","#7a5a14"),
-]:
-    W,s=svg(mark,name,sub,ink,subc)
-    open(f"public/offices/{slug}/logo.svg","w").write(s); print(slug,W)
+    x = 104
+    nd, nw = text("archivo", "Pelican Point", 41, x, 50, -0.6, wght=850, wdth=112)
+    sd, sw = text("archivo", "PLUMBING · ST. PETE", 12.5, 0, 0, 2.6, wght=750, wdth=110)
+    bar_w = nw
+    sx = x + (bar_w - sw) / 2
+    sd, _ = text("archivo", "PLUMBING · ST. PETE", 12.5, sx, 76.5, 2.6, wght=750, wdth=110)
+    body = (mark + f'\n<g transform="skewX(-7) translate(7 0)"><path fill="{navy}" d="{nd}"/>'
+            f'<rect x="{x}" y="60" width="{bar_w:.1f}" height="22" rx="3" fill="{coral}"/>'
+            f'<path fill="{paper}" d="{sd}"/></g>')
+    return wrap(x + nw + 10, 96, "Pelican Point Plumbing", body), mark
+
+# ---------- Timberline Heating & Air: where the trees stop ----------
+def timberline(navy="#1c3a52", rust="#b4472a"):
+    zig = "M0 61" + "".join(f"L{6 + i * 12} 50L{12 + i * 12} 61" for i in range(8)) + "L96 96L0 96Z"
+    mark = f'''<defs><clipPath id="tl-m"><path d="M4 88L48 8L92 88Z"/></clipPath></defs>
+<g clip-path="url(#tl-m)"><path fill="{navy}" d="M0 0H96V45H0Z"/><path fill="{rust}" d="{zig}"/></g>'''
+    x, base, size = 106, 52, 38
+    d1, w1 = text("outfit", "TIMBER", size, x, base, 3.2, wght=700)
+    d2, w2 = text("outfit", "LINE", size, x + w1 + 3.2, base, 3.2, wght=300)
+    nd, nw = d1 + d2, w1 + 3.2 + w2
+    sd, sw = text("outfit", "HEATING & AIR", 12.5, x + 1, 76, 4.2, wght=600)
+    body = mark + f'\n<path fill="{navy}" d="{nd}"/><path fill="{rust}" d="{sd}"/>'
+    return wrap(x + max(nw, sw) + 6, 96, "Timberline Heating &amp; Air", body), mark
+
+# ---------- Prairie Oak Landscape Co.: an acorn, seed-company stamp ----------
+def prairie(green="#2d4a2b", wheat="#b57f22"):
+    hatch = "".join(f'<path d="M{i} 0L{i + 60} 60" />' for i in range(-50, 96, 9))
+    mark = f'''<defs><mask id="po-h"><rect width="96" height="96" fill="#fff"/><g stroke="#000" stroke-width="2.4">{hatch}</g></mask></defs>
+<path fill="{green}" d="M45 4h7l-1 12h-6Z"/>
+<path fill="{green}" mask="url(#po-h)" d="M12 48Q12 16 48 15Q84 16 84 48Q84 52 80 52H16Q12 52 12 48Z"/>
+<path fill="{wheat}" d="M21 56H75Q75 82 48 93Q21 82 21 56Z"/>'''
+    x = 100
+    nd, nw = text("zilla", "PRAIRIE OAK", 36, x, 46, 1.6)
+    sd, sw = text("zilla", "LANDSCAPE CO.", 12, 0, 0, 3.4)
+    mid = x + nw / 2
+    sd, _ = text("zilla", "LANDSCAPE CO.", 12, mid - sw / 2, 68, 3.4)
+    ed, ew = text("zilla", "EST. 2015 · CARMEL, IND.", 8.5, mid, 86, 2.2, anchor="middle")
+    gap = sw / 2 + 10
+    rules = (f'<path stroke="{wheat}" stroke-width="1.6" d="M{x:.1f} 64H{mid - gap:.1f}M{mid + gap:.1f} 64H{x + nw:.1f}"/>'
+             f'<circle cx="{mid - gap + 3:.1f}" cy="64" r="0" />')
+    body = mark + f'\n<path fill="{green}" d="{nd}"/>{rules}<path fill="{green}" d="{sd}"/><path fill="{wheat}" d="{ed}"/>'
+    return wrap(x + nw + 4, 96, "Prairie Oak Landscape Co.", body), mark
+
+LOGOS = {"pelican-plumbing": pelican, "timberline-air": timberline, "prairie-oak": prairie}
+
+if __name__ == "__main__":
+    prev = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
+    for slug, fn in LOGOS.items():
+        svg, mark = fn()
+        if prev:
+            open(os.path.join(prev, f"{slug}.svg"), "w").write(svg)
+            mono, _ = fn(*(["#1b1b1b"] * (fn.__code__.co_argcount - (1 if fn is pelican else 0))), *(["#fff"] if fn is pelican else []))
+            open(os.path.join(prev, f"{slug}-mono.svg"), "w").write(mono)
+            open(os.path.join(prev, f"{slug}-icon.svg"), "w").write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">{mark}</svg>')
+        else:
+            open(f"public/offices/{slug}/logo.svg", "w").write(svg)
+        print(slug, svg.split('width="')[1].split('"')[0])
