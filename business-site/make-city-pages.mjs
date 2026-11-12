@@ -24,6 +24,7 @@ const cities = [
       ["Summer heat", "When the AC quits in July, people call whoever shows up first on Google with good reviews and a number they can tap."],
       ["New neighbors", "People moving to the area don’t have a guy yet. They pick from Google ratings and reviews, not word of mouth."],
     ],
+    about: ["Local, and actually reachable", "butterbite is two brothers, and one of us lives right here in Tampa Bay and knows it well, from St. Pete to Brandon. We grew up in Indianapolis, so we know how much a good local business means to a neighborhood. You’ll always deal with one of us directly, never a call center, and we’re happy to meet in person."],
     towns: ["Tampa", "St. Petersburg", "Clearwater", "Brandon", "Largo", "Riverview", "Wesley Chapel", "Palm Harbor", "Seminole", "Lutz"],
   },
   {
@@ -36,6 +37,7 @@ const cities = [
       ["Snow and freeze", "Furnaces, frozen pipes and snow removal: winter emergencies go to whoever is easy to find and easy to reach."],
       ["A growing metro", "Newcomers don’t have a go-to contractor yet. They choose by Google rating, reviews and a website that looks legit."],
     ],
+    about: ["Local, and actually reachable", "butterbite is two brothers, and one of us lives right here in the Denver metro and knows it well, from Arvada to Centennial. We grew up in Indianapolis, so we know how much a good local business means to a neighborhood. You’ll always deal with one of us directly, never a call center, and we’re happy to meet in person."],
     towns: ["Denver", "Aurora", "Lakewood", "Arvada", "Westminster", "Littleton", "Centennial", "Thornton", "Englewood", "Highlands Ranch"],
   },
   {
@@ -48,6 +50,7 @@ const cities = [
       ["Spring storms", "Wind and hail bring roof, siding and tree damage. Searches spike, and reviews decide who gets the job."],
       ["Growing suburbs", "Fishers, Westfield, Noblesville: new homeowners pick their contractors from Google ratings and reviews."],
     ],
+    about: ["Indy is home", "butterbite is two brothers who grew up right here in Indianapolis. We’re back all the time, especially around the holidays, and Indy businesses are the ones we care about most. You’ll always deal with one of us directly, by text, call or email, never a call center."],
     towns: ["Indianapolis", "Carmel", "Fishers", "Noblesville", "Greenwood", "Westfield", "Avon", "Plainfield", "Zionsville", "Brownsburg"],
   },
 ];
@@ -82,6 +85,14 @@ ${c.why.map(([t, p]) => `        <div class="card"><h3>${t}</h3><p>${p}</p></div
 ${c.towns.map((t) => `        <li>${t}</li>`).join("\n")}
       </ul>
       <p class="pillar-extra">For plumbers, HVAC, electricians, landscapers, roofers, cleaners, pest control and other local service businesses.</p>
+    </div>
+  </section>`);
+  // About us: the short, local version for this city.
+  h = replaceOnce(h, sectionById("about"), `  <section id="about" aria-labelledby="about-title">
+    <div class="wrap">
+      <p class="eyebrow">About us</p>
+      <h2 id="about-title">${c.about[0]}</h2>
+      <p class="lead">${c.about[1]}</p>
     </div>
   </section>`);
   h = replaceOnce(h, "<h2 id=\"contact-title\">Let’s talk about your business.</h2>", `<h2 id="contact-title">Let’s talk about your ${c.name} business.</h2>`);
