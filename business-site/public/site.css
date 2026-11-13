@@ -227,3 +227,8 @@
   @keyframes flow-dash { to { background-position: 11px 0; } }
   @keyframes flow-dash-down { to { background-position: 0 11px; } }
   #automatic .lead { color: var(--on-dark); }
+  /* About: heading left, text right on wide screens (until we add a photo) */
+  @media (min-width: 900px) {
+    .about-grid { display: grid; grid-template-columns: 2fr 3fr; gap: 56px; align-items: start; }
+    .about-text .lead:first-child { margin-top: 0; }
+  }
