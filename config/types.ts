@@ -396,6 +396,16 @@ export interface OfficeConfig {
   heroLayout?: "card" | "bleed" | "soft";
 
   /**
+   * The hero's main button. Leave out for the usual request button (it opens the request form).
+   * Dealers whose main business is selling can point it at their listings instead, e.g.
+   * { label: "Shop scooters", href: "#inventory" }.
+   */
+  heroAction?: { label: string; href: string };
+
+  /** The small "Like this website? Made by butterbite digital" line in the footer. On unless false. */
+  credit?: boolean;
+
+  /**
    * Phones with a big hero name (heroLayout): how it hands over to the top bar as you scroll.
    * "glide" (default): it flies into the bar's logo; "fade": iPhone large-title style; "expand":
    * the call/menu capsule stretches into the full bar.

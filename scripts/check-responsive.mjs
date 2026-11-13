@@ -29,7 +29,8 @@ const FOLD_MUST_SHOW = {
   // The bar's logo, or the big name in a photo-first hero (the bar's logo steps aside while it shows).
   "practice name": '#hero-name, header a[href="#top"]',
   headline: "#hero-title",
-  "Request button": '#hero-actions a[href="#request"]',
+  // The request button, or (dealers) the button to their listings.
+  "Request button": '#hero-actions a[href="#request"], #hero-actions a[href="#inventory"]',
   Call: '#hero-actions a[href^="tel:"]',
   "open/closed status": '#top a[href="#contact"]',
   Emergency: '#top a[href="#emergency"]',

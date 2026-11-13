@@ -223,7 +223,7 @@ export const TRADES: Record<"plumbing" | "hvac" | "landscaping" | "scooters", { 
     perks: ["Honest, upfront prices", "Most makes and models", "New scooters in stock"],
     terms: homeTerms({
       trade: "Scooter shop", craft: "scooter repair", business: "a scooter sales and repair shop", schemaType: "MotorcycleRepair", icon: "bike",
-      request: "Book service", requestShort: "Book service", requestTitle: "Book a repair or ask a question", requestEyebrow: "Book",
+      request: "Get in touch", requestShort: "Get in touch", requestTitle: "Ask about a scooter or book service", requestEyebrow: "Contact",
       requestKind: "Service", requestSubject: "Service request",
       requestAside: { title: "A clear price first", text: "We'll look at your scooter and tell you the price before any work starts." },
       emergency: null, servicesTitle: "Service & repairs", servicesPageTitle: "Scooter services",

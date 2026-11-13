@@ -74,6 +74,8 @@ const seminoleScooters: OfficeInput = {
     team: { src: "/offices/seminole-scooters/shop-floor.webp", alt: "Scooters on the shop floor at Seminole Scooters" },
   },
   heroLayout: "bleed",
+  // Selling is TJ's main business, so the hero's main button goes to the scooters for sale.
+  heroAction: { label: "Shop scooters", href: "#inventory" },
 
   design: "butter",
   theme: { preset: "sage-blue", accent: "#0d5560" },

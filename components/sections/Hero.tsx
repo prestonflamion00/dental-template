@@ -8,6 +8,7 @@ import {
   MapPin,
   Phone,
   Smile,
+  ArrowRight,
 } from "lucide-react";
 import type { OfficeConfig } from "@/config/types";
 import { BookButton } from "@/components/booking/BookButton";
@@ -159,7 +160,14 @@ export function Hero({ office }: { office: OfficeConfig }) {
             id="hero-actions"
             className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:flex-wrap"
           >
-            <BookButton size="lg" className="col-span-2 max-sm:px-4 lg:px-6" />
+            {office.heroAction ? (
+              <a href={office.heroAction.href} className="btn btn-primary btn-lg col-span-2 max-sm:px-4 lg:px-6">
+                {office.heroAction.label}
+                <ArrowRight size={18} aria-hidden="true" />
+              </a>
+            ) : (
+              <BookButton size="lg" className="col-span-2 max-sm:px-4 lg:px-6" />
+            )}
             <a
               href={telHref(contact.phone)}
               className={cx(
