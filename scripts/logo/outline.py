@@ -11,6 +11,7 @@ FONTS = {
     "archivo": os.path.join(HERE, "fonts", "archivo-latin-standard-normal.woff2"),
     "outfit": os.path.join(HERE, "fonts", "outfit-latin-wght-normal.woff2"),
     "zilla": os.path.join(HERE, "fonts", "zilla-slab-latin-700-normal.woff2"),
+    "fraunces-italic": os.path.join(HERE, "fonts", "fraunces-latin-full-italic.woff2"),
 }
 _c = {}
 
