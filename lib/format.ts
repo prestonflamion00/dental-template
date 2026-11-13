@@ -55,3 +55,8 @@ export function doctorSlug(name: string): string {
 export function doctorShortName(name: string): string {
   return /^Dr\.?\s/.test(name) ? `Dr. ${name.split(" ").at(-1)}` : name.split(" ")[0];
 }
+
+/** How the business gets back to people: "call or text", or just "call" when it doesn't text (terms.texts). */
+export const confirmVerb = (terms: { texts?: boolean }) => (terms.texts === false ? "call" : "call or text");
+/** The same as a channel: "phone or text", or "phone". */
+export const confirmChannel = (terms: { texts?: boolean }) => (terms.texts === false ? "phone" : "phone or text");

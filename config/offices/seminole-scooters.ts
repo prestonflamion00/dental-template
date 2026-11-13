@@ -73,6 +73,8 @@ const seminoleScooters: OfficeInput = {
     caption: "New scooters on the lot in Pinellas Park, near St. Pete",
     team: { src: "/offices/seminole-scooters/shop-floor.webp", alt: "Scooters on the shop floor at Seminole Scooters" },
   },
+  // TJ doesn't text: every "call or text" on the site (and in the request email) says "call".
+  terms: { texts: false },
   heroLayout: "bleed",
   // Selling is TJ's main business, so the hero's main button goes to the scooters for sale.
   heroAction: { label: "Shop scooters", href: "#inventory" },

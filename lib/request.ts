@@ -56,7 +56,7 @@ export function validateRequest(v: RequestValues, opts: { needLocation?: boolean
 export function requestEmail(
   v: RequestValues,
   practice: string,
-  terms: { customer: string; requestSubject: string; insurance: boolean } = { customer: "patient", requestSubject: "Appointment request", insurance: true },
+  terms: { customer: string; requestSubject: string; insurance: boolean; texts?: boolean } = { customer: "patient", requestSubject: "Appointment request", insurance: true },
 ): { subject: string; text: string } {
   const parsed = v.phone.trim() ? parsePhone(v.phone) : null;
   const phone = parsed?.ok ? parsed.display : "not given";
@@ -80,7 +80,7 @@ export function requestEmail(
   return {
     subject: `${terms.requestSubject}: ${v.name} (${who})`,
     text: [
-      `${v.name} sent a ${terms.requestSubject.toLowerCase()} on the ${practice} website. Please call or text to confirm a time.`,
+      `${v.name} sent a ${terms.requestSubject.toLowerCase()} on the ${practice} website. Please ${terms.texts === false ? "call" : "call or text"} to confirm a time.`,
       "Nothing has been booked yet.",
       "",
       `Name:       ${v.name}`,

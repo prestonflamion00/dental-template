@@ -92,6 +92,8 @@ export type Specialty = "general" | "orthodontics" | "pediatric" | "plumbing" | 
  * service calls or estimates.
  */
 export interface Terms {
+  /** False when the business doesn't text customers: every "call or text" becomes "call". Default true. */
+  texts?: boolean;
   /** "Dentist", "Plumber": page titles such as "Plumber in Clearwater, FL". */
   trade: string;
   /** "dental care", "plumbing": "Plumbing in Clearwater". */

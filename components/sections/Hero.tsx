@@ -441,7 +441,7 @@ export function Hero({ office }: { office: OfficeConfig }) {
                       ? office.terms.accepting
                       : office.terms.request}
                   </strong>
-                  Send a request online and we’ll call or text to confirm.
+                  Send a request online and we’ll {office.terms.texts === false ? "call" : "call or text"} to confirm.
                 </p>
               </div>
             </div>
