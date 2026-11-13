@@ -75,7 +75,7 @@ const seminoleScooters: OfficeInput = {
   },
   heroLayout: "bleed",
 
-  design: "honey",
+  design: "butter",
   theme: { preset: "sage-blue", accent: "#0d5560" },
   sections: ["inventory", "services", "reviews", "newPatients", "doctors", "faq"],
 
@@ -140,8 +140,8 @@ const seminoleScooters: OfficeInput = {
 
   copy: {
     heroEyebrow: "Scooter sales & service in Pinellas Park",
-    heroHeadline: "Find your next scooter, and keep it running.",
-    heroHighlight: "your next scooter",
+    heroHeadline: "Find your next scooter.",
+    heroHighlight: "next scooter",
     heroSubhead: "New Kymco and Wolf scooters in stock, financing, and honest repairs for most makes and models.",
     comfortPerks: ["Authorized Kymco & Wolf dealer", "Oil changes under $30", "4.9 stars from 142 riders", "Free first oil change with a new scooter"],
   },
