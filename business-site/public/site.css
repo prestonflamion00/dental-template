@@ -178,3 +178,52 @@
   .btn-light { background: var(--cream); color: var(--ink); }
   .btn-ghost-light { border: 2px solid var(--on-dark); color: var(--cream); }
   .cta .actions { margin-top: 24px; }
+
+  /* ── Sound familiar? ── */
+  .pains { grid-template-columns: repeat(3, 1fr); }
+  .pain-q { margin: 0 !important; font-weight: 700; color: var(--ink); font-size: 1.08rem; }
+  .pain-fix { color: var(--honey); font-weight: 600; padding-left: 1.4em; position: relative; }
+  .pain-fix::before { content: "→"; position: absolute; left: 0; }
+
+  /* ── Automatic flows (animated when scrolled into view) ── */
+  .flows { display: grid; gap: 24px; margin-top: 40px; }
+  .flow { background: #3a2d22; border: 1px solid #4f3f31; border-radius: 24px; padding: 28px; }
+  .flow h3 { font-size: 1.35rem; }
+  .flow-steps { list-style: none; padding: 0; margin: 22px 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px; }
+  .node { position: relative; background: var(--ink); border: 1px solid #5a4838; border-radius: 18px; padding: 16px; }
+  .node.done { border-color: var(--honey-light); }
+  .node .ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(232,176,75,.14); color: var(--honey-light); margin-bottom: 10px; }
+  .node svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .node b { display: block; color: var(--cream); line-height: 1.3; }
+  .node small { display: block; color: #d8cab4; margin-top: 4px; font-size: .92rem; line-height: 1.4; }
+  .node:not(:last-child)::after { content: ""; position: absolute; top: 50%; left: 100%; width: 36px; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--honey-light) 0 6px, transparent 6px 11px); background-size: 11px 2px; transform-origin: left center; }
+  .flows-note { margin-top: 18px; color: #d8cab4; font-size: .95rem; }
+  @media (max-width: 900px) {
+    .pains { grid-template-columns: 1fr; }
+    .flow { padding: 22px 18px; }
+    .flow-steps { grid-template-columns: 1fr; gap: 26px; }
+    .node:not(:last-child)::after { top: 100%; left: 36px; width: 2px; height: 26px;
+      background: repeating-linear-gradient(180deg, var(--honey-light) 0 6px, transparent 6px 11px); background-size: 2px 11px; transform-origin: center top; }
+  }
+
+  /* ── Five steps ── */
+  @media (min-width: 1000px) { .steps.five { grid-template-columns: repeat(5, 1fr); gap: 16px; } .steps.five li { padding: 24px 20px; } }
+  @media (min-width: 601px) and (max-width: 999px) { .steps.five { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ── Scroll animations: only with JS on and motion allowed; content always visible otherwise ── */
+  @media (prefers-reduced-motion: no-preference) {
+    html.js [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+    html.js [data-reveal].is-on { opacity: 1; transform: none; }
+    html.js [data-flow] .node { opacity: 0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease, border-color .4s; transition-delay: calc(var(--i) * 550ms); }
+    html.js [data-flow] .node::after { transform: scaleX(0); transition: transform .45s ease calc(var(--i) * 550ms + 300ms); }
+    html.js [data-flow].is-on .node { opacity: 1; transform: none; }
+    html.js [data-flow].is-on .node::after { transform: scaleX(1); animation: flow-dash .9s linear infinite; }
+    @media (max-width: 900px) {
+      html.js [data-flow] .node::after { transform: scaleY(0); }
+      html.js [data-flow].is-on .node::after { transform: scaleY(1); animation-name: flow-dash-down; }
+    }
+  }
+  @keyframes flow-dash { to { background-position: 11px 0; } }
+  @keyframes flow-dash-down { to { background-position: 0 11px; } }
+  #automatic .lead { color: var(--on-dark); }

@@ -32,3 +32,13 @@
       }
     });
   })();
+
+  // Scroll animations: cards fade up and the "automatic" flows play once when they come into view.
+  (function () {
+    var els = document.querySelectorAll("[data-reveal],[data-flow]"); if (!els.length) return;
+    if (!("IntersectionObserver" in window)) { els.forEach(function (el) { el.classList.add("is-on"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("is-on"); io.unobserve(e.target); } });
+    }, { threshold: 0.2, rootMargin: "0px 0px -40px 0px" });
+    els.forEach(function (el) { io.observe(el); });
+  })();
