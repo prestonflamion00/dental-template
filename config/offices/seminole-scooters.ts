@@ -13,11 +13,11 @@ const seminoleScooters: OfficeInput = {
   practice: {
     name: "Seminole Scooters",
     specialty: "scooters",
-    logo: { text: "Seminole Scooters", mark: "Pinellas Park, FL", image: "/offices/seminole-scooters/logo.svg", width: 560, height: 96, icon: "/offices/seminole-scooters/icon.svg", shape: "wide" },
+    logo: { text: "Seminole Scooters", mark: "Pinellas Park · St. Pete area", image: "/offices/seminole-scooters/logo.svg", width: 560, height: 96, icon: "/offices/seminole-scooters/icon.svg", shape: "wide" },
     acceptingNewPatients: true,
-    tagline: "Scooter sales & repair in Pinellas Park",
+    tagline: "Scooter sales & repair in Pinellas Park, in the St. Petersburg area",
     description:
-      "Scooter sales and repair in Pinellas Park, FL. Authorized Kymco and Wolf Brand dealer, with quick oil changes, tires, belts and repairs for most makes and models.",
+      "Scooter sales and repair in Pinellas Park, FL, serving St. Petersburg and all of Pinellas County. Authorized Kymco and Wolf Brand dealer, with quick oil changes, tires, belts and repairs for most makes and models.",
   },
 
   contact: {
@@ -70,7 +70,7 @@ const seminoleScooters: OfficeInput = {
     src: "/offices/seminole-scooters/lineup.webp",
     alt: "A row of new scooters lined up outside Seminole Scooters",
     position: "50% 60%",
-    caption: "New scooters on the lot in Pinellas Park",
+    caption: "New scooters on the lot in Pinellas Park, near St. Pete",
     team: { src: "/offices/seminole-scooters/shop-floor.webp", alt: "Scooters on the shop floor at Seminole Scooters" },
   },
   heroLayout: "bleed",
@@ -139,7 +139,7 @@ const seminoleScooters: OfficeInput = {
   },
 
   copy: {
-    heroEyebrow: "Scooter sales & service in Pinellas Park",
+    heroEyebrow: "Scooter sales & service · Pinellas Park, St. Pete area",
     heroHeadline: "Find your next scooter.",
     heroHighlight: "next scooter",
     heroSubhead: "New Kymco and Wolf scooters in stock, financing, and honest repairs for most makes and models.",
