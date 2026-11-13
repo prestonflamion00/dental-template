@@ -72,6 +72,44 @@ def logo_c(teal="#145e63", yellow="#ffc94a", orange="#ff8a3d", pink="#ef5b84", b
     body = sun + palm + horizon + ride + f'<path fill="{teal}" d="{d}"/><path fill="{pink}" d="{sd}"/>'
     return wrap(W, 190, "Seminole Scooters", body)
 
+def logo_d(ink="#2a2118", sun="#e8a33a", red="#b8432f", yellow="#e8b83a", sky="#f6e7cf", white="#fffaf0"):
+    """Seminole heritage: a figure poling a cypress dugout canoe through sawgrass at sunset, over a
+    band of geometric patchwork. Silhouette only, no caricature or Plains-style headdress."""
+    W, cx = 340, 170
+    # Scene in a rounded arch window.
+    win = "M70 132V70A100 100 0 0 1 270 70V132Z"
+    scene = (f'<defs><clipPath id="sd-w"><path d="{win}"/></clipPath></defs>'
+             f'<path d="{win}" fill="{sky}"/>'
+             f'<g clip-path="url(#sd-w)">'
+             f'<circle cx="214" cy="104" r="34" fill="{sun}"/>'
+             f'<path d="M132 34q5-5 10 0q5-5 10 0M150 22q4-4 8 0q4-4 8 0" fill="none" stroke="{ink}" stroke-width="2" stroke-linecap="round"/>'
+             f'<path d="M60 114H280V140H60Z" fill="{ink}" opacity=".18"/>'
+             # sawgrass tufts
+             + "".join(f'<path d="M{x} 118l{-4+(x%5)} -{14+(x%9)}l3 {12+(x%7)}l2 -{18+(x%6)}l2 {16+(x%5)}l3 -{12+(x%8)}l1 {14}Z" fill="{ink}"/>' for x in range(64, 280, 13) if not 118 < x < 214) +
+             # cypress trees, left
+             f'<path d="M92 118V58l-10 14 6-2-12 18 8-3-14 20 10-3-10 16H92" fill="{ink}"/>'
+             f'<path d="M112 118V74l-8 12 5-2-10 16 7-2-10 16h16" fill="{ink}"/>'
+             # dugout canoe and figure poling
+             f'<path d="M124 110H222Q218 118 206 119H140Q128 118 124 110Z" fill="{ink}"/>'
+             f'<path d="M190 66L203 126" stroke="{ink}" stroke-width="2.4" stroke-linecap="round"/>'
+             f'<circle cx="174" cy="68" r="5.2" fill="{ink}"/>'
+             f'<path d="M168 66Q174 58 181 65Z" fill="{ink}"/>'
+             f'<path d="M168 75Q174 72 180 75L183 95L178 110H171L166 95Z" fill="{ink}"/>'
+             f'<path d="M179 77L191 74M178 84L193 82" stroke="{ink}" stroke-width="2.6" stroke-linecap="round"/>'
+             f'</g>'
+             f'<path d="{win}" fill="none" stroke="{ink}" stroke-width="3"/>')
+    # Patchwork band: repeating diamonds and bars.
+    band_y, bh = 138, 18
+    cells = ""
+    for i, x in enumerate(range(70, 270, 20)):
+        cells += f'<rect x="{x}" y="{band_y}" width="20" height="{bh}" fill="{[red, yellow, ink][i % 3]}"/>'
+        cells += f'<path d="M{x+10} {band_y+3}L{x+16} {band_y+9}L{x+10} {band_y+15}L{x+4} {band_y+9}Z" fill="{white}"/>'
+    band = cells + f'<rect x="70" y="{band_y-3}" width="200" height="3" fill="{ink}"/><rect x="70" y="{band_y+bh}" width="200" height="3" fill="{ink}"/>'
+    d, w = text("zilla", "SEMINOLE SCOOTERS", 27, cx, 196, 1.6, anchor="middle")
+    sd, sw = text("outfit", "SALES & SERVICE · PINELLAS PARK", 11, cx, 220, 3.2, anchor="middle", wght=600)
+    body = scene + band + f'<path fill="{ink}" d="{d}"/><path fill="{red}" d="{sd}"/>'
+    return wrap(W, 266, "Seminole Scooters", f'<g transform="translate(0 33)">{body}</g>')
+
 if __name__ == "__main__":
     out = sys.argv[1]
     open(f"{out}/option-a.svg", "w").write(logo_a())
@@ -80,4 +118,6 @@ if __name__ == "__main__":
     open(f"{out}/option-b-mono.svg", "w").write(logo_b("#1b1b1b", "#1b1b1b", "#ffffff"))
     open(f"{out}/scooter.svg", "w").write(wrap(120, 96, "mark", scooter()))
     open(f"{out}/option-c-stpete.svg", "w").write(logo_c())
+    open(f"{out}/option-d-heritage.svg", "w").write(logo_d())
+    open(f"{out}/option-d-heritage-mono.svg", "w").write(logo_d("#1b1b1b", "#1b1b1b", "#1b1b1b", "#1b1b1b", "#ffffff", "#ffffff"))
     open(f"{out}/option-c-stpete-mono.svg", "w").write(logo_c("#1b1b1b", "#1b1b1b", "#1b1b1b", "#1b1b1b", "#fff"))
