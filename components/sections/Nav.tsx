@@ -138,7 +138,10 @@ export function Nav({
     // on a clock at one speed. Up into the bar it glides in screen coordinates (the bar doesn't
     // move), so a fast flick can't leave it behind; back down it lands on the name's live spot.
     // If a fast fling has already carried the name off screen, it switches without a glide.
-    const DURATION = reduce ? 0 : 300; // ms
+    // Up into the bar: a visible glide. Back down to the hero: quick and quiet, so the hand-back is
+    // barely noticed (Preston's call, Nov 13).
+    const DURATION_UP = reduce ? 0 : 300; // ms
+    const DURATION_DOWN = reduce ? 0 : 140; // ms
     // Gap between the big name's top and the bar's bottom that switches stages (two thresholds, so
     // stopping on the line can't flicker). "fade" and "expand" wait until the name is half under the bar.
     const TO_BAR = morph !== "glide" ? -Math.round(big.offsetHeight * 0.6) : 24;
@@ -163,10 +166,12 @@ export function Nav({
     };
     // Starts quickly and settles gently (ease-out), so it answers the scroll at once.
     const ease = (t: number) => 1 - Math.pow(1 - t, 4);
-    const MARK_LAG = 50; // ms: "Vincennes, Indiana" follows the name a beat behind
+    const MARK_LAG_UP = 50; // ms: "Vincennes, Indiana" follows the name a beat behind (on the way up only)
     const frame = (now: number) => {
       anim = 0;
       const el = now - startAt;
+      const DURATION = dir ? DURATION_UP : DURATION_DOWN;
+      const MARK_LAG = dir ? MARK_LAG_UP : 0;
       if (!DURATION || el >= DURATION + MARK_LAG)
         return show(dir ? "bar" : "hero");
       pairs.forEach(({ src, dst, c }, k) => {
@@ -274,7 +279,9 @@ export function Nav({
         ref={navRef}
         aria-label="Main"
         className={cx(
-          "glass-strong mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-[24px] pl-4 pr-2.5 transition-all duration-300 ease-[var(--ease-soft)] sm:pl-5",
+          "glass-strong mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-[24px] pl-4 pr-2.5 transition-all ease-[var(--ease-soft)] sm:pl-5",
+          // The bar clears quickly when the name heads back to the hero, so the return is barely seen.
+          stage === "leaving" ? "duration-150" : "duration-300",
           scrolled ? "py-1.5 shadow-lg" : "py-2.5",
           heroMode && "nav-hero",
           // See-through until the name hands over (the glide fades the bar in while it flies).
