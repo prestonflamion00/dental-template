@@ -16,7 +16,8 @@ const home = readFileSync(join(pub, "index.html"), "utf8");
 const cities = [
   {
     slug: "tampa-bay",
-    phones: ["pelican", "prairie"], // hero phones: the demo from this area first name: "Tampa Bay", region: "across Tampa Bay",
+    phones: ["pelican", "prairie"], // hero phones: the demo from this area first
+    name: "Tampa Bay", region: "across Tampa Bay",
     h1: "Get found by customers <em>across Tampa Bay.</em>",
     lead: "From St. Pete to Brandon, when someone needs a plumber, a scooter repair or a new favorite lunch spot, they search Google and pick one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Tampa Bay customers search when it counts",
@@ -30,7 +31,8 @@ const cities = [
   },
   {
     slug: "denver",
-    phones: ["timberline", "pelican"], // hero phones: the demo from this area first name: "Denver", region: "across the Denver metro",
+    phones: ["timberline", "pelican"], // hero phones: the demo from this area first
+    name: "Denver", region: "across the Denver metro",
     h1: "Get found by customers <em>across the Denver metro.</em>",
     lead: "From Arvada to Centennial, when someone needs a roofer, a bike shop or a dog groomer, they search Google and pick one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Denver customers search when it counts",
@@ -44,7 +46,8 @@ const cities = [
   },
   {
     slug: "indianapolis",
-    phones: ["prairie", "timberline"], // hero phones: the demo from this area first name: "Indianapolis", region: "across Indianapolis",
+    phones: ["prairie", "timberline"], // hero phones: the demo from this area first
+    name: "Indianapolis", region: "across Indianapolis",
     h1: "Get found by customers <em>across Indianapolis.</em>",
     lead: "From Carmel to Greenwood, when someone needs a plumber, a salon or a landscaper, they search Google and pick one of the first few businesses they trust. We make sure that’s you, and that your business looks as solid online as it is in person.",
     whyTitle: "Indy customers search when it counts",
