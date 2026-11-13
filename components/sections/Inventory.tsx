@@ -19,7 +19,7 @@ export function Inventory({ data, phone }: { data: InventoryData; phone: string 
             <p className="w-full text-xs font-semibold text-muted min-[480px]:hidden">Swipe to see all {g.items.length} →</p>
           </div>
           {/* Small phones: each brand is a sideways swipe row, so 10+ listings don't become a long scroll. */}
-          <ul className="grid gap-4 max-[479px]:-mx-4 max-[479px]:flex max-[479px]:snap-x max-[479px]:snap-mandatory max-[479px]:overflow-x-auto max-[479px]:px-4 max-[479px]:pb-2 min-[480px]:grid-cols-2 lg:grid-cols-3 sm:gap-5">
+          <ul className="grid gap-4 max-[479px]:-mx-4 max-[479px]:flex max-[479px]:snap-x max-[479px]:snap-mandatory max-[479px]:scroll-px-4 max-[479px]:overflow-x-auto max-[479px]:px-4 max-[479px]:pb-2 min-[480px]:grid-cols-2 lg:grid-cols-3 sm:gap-5">
             {g.items.map((it, i) => (
               <li key={it.name} className="glass flex flex-col overflow-hidden rounded-[24px] max-[479px]:w-[82%] max-[479px]:shrink-0 max-[479px]:snap-start" data-reveal style={{ ["--d" as string]: `${(i % 3) * 60}ms` }}>
                 <div className="relative aspect-[4/3] bg-white">
