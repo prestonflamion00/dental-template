@@ -112,15 +112,19 @@ export function RequestForm({
 
   // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
   // pick that button's service, and put the cursor in the first field.
+  const prefilled = useRef("");
   useEffect(() => {
     const onStart = (e: Event) => {
-      const id = (e as CustomEvent<RequestEventDetail>).detail?.serviceId;
+      const { serviceId: id, note } = (e as CustomEvent<RequestEventDetail>).detail ?? {};
       const name = services.find((s) => s.id === id)?.name;
       setStatus((st) => (st === "sent" ? "idle" : st));
       setValues((v) => ({
         ...v,
         kind: "appointment",
         reason: name ?? v.reason,
+        // A button can start the message (e.g. "I'm asking about the Kymco Like 150i"); it replaces
+        // an earlier prefilled note but never something the visitor typed themselves.
+        message: note && (!v.message || v.message === prefilled.current) ? (prefilled.current = note) : v.message,
       }));
       if (!animate) setEngaged(true);
       setTimeout(

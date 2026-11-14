@@ -37,7 +37,7 @@ export function Inventory({ data, phone }: { data: InventoryData; phone: string 
                   {it.specs && <p className="mt-1 text-[0.95rem] text-muted">{it.specs}</p>}
                   <DealPrice price={it.price} salePrice={it.salePrice} saleEnds={it.saleEnds} />
                   <div className="mt-auto flex flex-wrap gap-2 pt-4">
-                    <BookButton serviceId="buy" icon={false} className="!min-h-11 !px-4 !text-sm">Ask about this one</BookButton>
+                    <BookButton serviceId="buy" note={`I'm interested in the ${it.name}. Is it still available?`} icon={false} className="!min-h-11 !px-4 !text-sm">Ask about this one</BookButton>
                     <a href={tel} className="btn btn-glass !min-h-11 !px-4 !text-sm">Call</a>
                   </div>
                 </div>

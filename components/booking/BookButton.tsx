@@ -12,6 +12,7 @@ export function BookButton({
   size = "md",
   variant = "primary",
   icon = true,
+  note,
 }: {
   children?: React.ReactNode;
   serviceId?: string;
@@ -19,6 +20,8 @@ export function BookButton({
   size?: "md" | "lg";
   variant?: "primary" | "glass";
   icon?: boolean;
+  /** Starts the message box with this text, e.g. which scooter they're asking about. */
+  note?: string;
 }) {
   const { open, url, requestLabel } = useBooking();
   children ??= requestLabel;
@@ -44,7 +47,7 @@ export function BookButton({
       className={cls}
       onClick={(e) => {
         e.preventDefault();
-        open(serviceId);
+        open(serviceId, note);
       }}
     >
       {content}
