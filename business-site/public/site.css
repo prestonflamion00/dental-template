@@ -228,3 +228,7 @@
     .about-grid { display: grid; grid-template-columns: 2fr 3fr; gap: 56px; align-items: start; }
     .about-text .lead:first-child { margin-top: 0; }
   }
+  /* "The usual headaches" on the dark band */
+  .dark .pain-q { color: var(--cream); }
+  .dark .card.pain .pain-fix { color: var(--honey-light); }
+  #familiar .lead { color: var(--on-dark); }
