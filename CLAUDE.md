@@ -13,6 +13,7 @@ Preston and Foster run **butterbite digital** (always lowercase): websites and m
 - Plain language, short answers, click-by-click steps. Screenshots are welcome.
 - Look up best practice whenever we meet a new industry or type of company.
 - Every change goes on a branch with a preview link. Merge to main and deploy live **only after Preston says "approved"**.
+- **Approved changes go live in the overnight window (about 12:50am Denver time), not right away**, unless Preston says "now". After an approval, schedule a one-time task in the session for that night that merges and deploys, then report what went live.
 - Client previews: `npx wrangler versions upload --preview-alias X` → `https://X-demos.butterbite.workers.dev`. Business site: run it inside `business-site/` → `https://X-butterbite-site.butterbite.workers.dev`. Wrangler sometimes fails the first time; retry.
 - Run `npm run check:responsive` and `npm run check:contrast` before releases. Never let cards or swipe rows touch the screen edge (16px phone gutter).
 - After builds, run `git checkout thumbnails/`.
