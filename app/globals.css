@@ -771,3 +771,14 @@ html, body { overflow-x: clip; }
 @keyframes maps-fade { from { opacity: 0; } }
 @keyframes maps-up { from { transform: translateY(24px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .maps-sheet, .maps-sheet-panel { animation: none; } }
+
+/* ── Smooth scrolling: blur only where page content actually moves underneath (menu bar, fixed and
+   sticky bars, the hero over photos, dialogs). Elsewhere glass sits on a plain background, so the
+   blur can't be seen but costs about half the frame rate while scrolling. ── */
+:is(.glass, .glass-strong, .btn-glass):not(nav, nav *, #top *, dialog *, .fixed *, .sticky *) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* A wide image logo leaves no room for the extra "wide only" links (e.g. Contact, already covered by
+   the Get in touch button), so they stay in the menu instead of colliding with the logo. */
+nav:has(img[data-logo-wide]) .nav-wide-only { display: none; }

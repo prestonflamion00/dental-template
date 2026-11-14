@@ -293,7 +293,7 @@ export function Nav({
           heroMode && morph === "expand" && stage === "hero" && "nav-collapsed",
         )}
       >
-        <a href="#top" className="min-w-0 shrink rounded-xl">
+        <a href="#top" className="min-w-0 shrink rounded-xl xl:shrink-0">
           <span
             className={cx(
               "block origin-left duration-300",
@@ -321,7 +321,7 @@ export function Nav({
             .map((l) => (
               <li
                 key={l.href}
-                className={l.wideOnly ? "hidden 2xl:block" : undefined}
+                className={l.wideOnly ? "nav-wide-only hidden 2xl:block" : undefined}
               >
                 <a
                   href={l.href}
