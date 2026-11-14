@@ -1,2 +1,5 @@
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /hi/
+
+Sitemap: https://butterbitedigital.com/sitemap.xml

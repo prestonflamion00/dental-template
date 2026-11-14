@@ -19,6 +19,7 @@ Preston and Foster run **butterbite digital** (always lowercase): websites and m
 - After builds, run `git checkout thumbnails/`.
 
 ## Saving usage
+- When Preston says usage is getting low, do only light work (answers, small text edits, drafts). Builds, previews, screenshots and research wait for the overnight window. Claude can't see the usage meter, so Preston says when.
 - Work only on the site Preston is working on. Build just that site for its preview (`ONLY=<id> npm run build:all`, own preview alias).
 - **Frozen:** the dental demos and the fictional demos. Don't update, check or screenshot them unless we're about to show one.
 - Push template changes to live client sites in batches, when decided; run the full checks then.
