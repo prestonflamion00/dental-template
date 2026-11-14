@@ -43,7 +43,7 @@ export interface RequestFormProps {
    * surrounding [data-request-layout] widens the form to full width on larger screens. */
   animate?: boolean;
   /** Words for this kind of business (office.terms); dental wording when left out. */
-  terms?: Pick<Terms, "requestKind" | "requestTitle" | "newCustomer" | "insurance" | "privacyNote">;
+  terms?: Pick<Terms, "requestKind" | "requestTitle" | "newCustomer" | "insurance" | "privacyNote" | "texts">;
 }
 
 const inputCls = (err?: string) =>
@@ -112,15 +112,19 @@ export function RequestForm({
 
   // A "Request appointment" button elsewhere on the page (BookingProvider): switch to an appointment,
   // pick that button's service, and put the cursor in the first field.
+  const prefilled = useRef("");
   useEffect(() => {
     const onStart = (e: Event) => {
-      const id = (e as CustomEvent<RequestEventDetail>).detail?.serviceId;
+      const { serviceId: id, note } = (e as CustomEvent<RequestEventDetail>).detail ?? {};
       const name = services.find((s) => s.id === id)?.name;
       setStatus((st) => (st === "sent" ? "idle" : st));
       setValues((v) => ({
         ...v,
         kind: "appointment",
         reason: name ?? v.reason,
+        // A button can start the message (e.g. "I'm asking about the Kymco Like 150i"); it replaces
+        // an earlier prefilled note but never something the visitor typed themselves.
+        message: note && (!v.message || v.message === prefilled.current) ? (prefilled.current = note) : v.message,
       }));
       if (!animate) setEngaged(true);
       setTimeout(
@@ -212,7 +216,7 @@ export function RequestForm({
         </h3>
         <p className="mt-2 text-muted">
           {isAppt
-            ? `Thanks, ${first}. ${practiceName} will call or text you soon to confirm a time.`
+            ? `Thanks, ${first}. ${practiceName} will ${terms.texts === false ? "call" : "call or text"} you soon to confirm a time.`
             : `Thanks, ${first}. Someone from ${practiceName} will get back to you within one business day.`}
         </p>
         {!contactIsLive && (
@@ -333,7 +337,7 @@ export function RequestForm({
         {/* Phones skip the first sentence: the section intro right above says the same. */}
         <span className="max-sm:hidden">
           {isAppt
-            ? "Tell us what works for you and we’ll call or text to confirm a time. "
+            ? `Tell us what works for you and we’ll ${terms.texts === false ? "call" : "call or text"} to confirm a time. `
             : "We usually reply within one business day. "}
         </span>
         {terms.privacyNote}

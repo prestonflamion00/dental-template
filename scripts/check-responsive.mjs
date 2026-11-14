@@ -5,6 +5,8 @@
  * It also checks the first screen ("above the fold") on common devices: before any scrolling, every
  * site must show the practice name, what they do (the headline), Request appointment, Call, the
  * open/closed status and the Emergency button, and on phones nothing of the next section.
+ * On phones it also swipes through every sideways-scrolling row and checks each card stops at least
+ * 12px from the screen's left edge (cards must never sit flush against the edge after a swipe).
  * Optionally saves a screenshot per width for a quick visual pass.
  *
  *   node scripts/check-responsive.mjs [--shots <dir>] <url> [<url> ...]
@@ -27,7 +29,8 @@ const FOLD_MUST_SHOW = {
   // The bar's logo, or the big name in a photo-first hero (the bar's logo steps aside while it shows).
   "practice name": '#hero-name, header a[href="#top"]',
   headline: "#hero-title",
-  "Request button": '#hero-actions a[href="#request"]',
+  // The request button, or (dealers) the button to their listings.
+  "Request button": '#hero-actions a[href="#request"], #hero-actions a[href="#inventory"]',
   Call: '#hero-actions a[href^="tel:"]',
   "open/closed status": '#top a[href="#contact"]',
   Emergency: '#top a[href="#emergency"]',
@@ -96,6 +99,44 @@ for (const url of args) {
     if (shotsDir) {
       const name = url.replace(/^https?:\/\//, "").replace(/[^a-z0-9]+/gi, "-").replace(/-+$/, "");
       await page.screenshot({ path: join(shotsDir, `${name}-${width}.png`), fullPage: true });
+    }
+    await page.close();
+  }
+}
+// Phone gutters: swipe rows must keep the 16px side margin when a card snaps into place.
+const GUTTER_WIDTHS = [320, 390, 430];
+const MIN_GUTTER = 12;
+for (const url of args) {
+  for (const width of GUTTER_WIDTHS) {
+    const page = await browser.newPage({ viewport: { width, height: 900 } });
+    await page.goto(url, { waitUntil: "networkidle" });
+    await page.addStyleTag({ content: "html.js [data-reveal]{opacity:1!important;transform:none!important} *{scroll-behavior:auto!important}" });
+    const touching = await page.evaluate(async (min) => {
+      const out = [];
+      const frame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const rows = [...document.querySelectorAll("body *")].filter((el) => {
+        const cs = getComputedStyle(el);
+        return ["auto", "scroll"].includes(cs.overflowX) && el.scrollWidth > el.clientWidth + 4 && el.getClientRects().length;
+      });
+      for (const row of rows) {
+        const items = [...row.children].filter((c) => c.getClientRects().length);
+        for (const item of items.slice(0, 4)) {
+          item.scrollIntoView({ block: "nearest", inline: "start" });
+          await frame();
+          const left = item.getBoundingClientRect().left;
+          if (left < min) {
+            const where = row.closest("section, header, footer");
+            out.push(`${where?.id || "page"}: a swipe card stops ${Math.round(left)}px from the left edge`);
+            break;
+          }
+        }
+        row.scrollLeft = 0;
+      }
+      return [...new Set(out)];
+    }, MIN_GUTTER);
+    if (touching.length) {
+      problems++;
+      console.log(`✗ ${url} @ ${width}px: ${touching.join(" | ")} (needs scroll-padding, e.g. scroll-px-4)`);
     }
     await page.close();
   }

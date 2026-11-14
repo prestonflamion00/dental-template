@@ -53,7 +53,7 @@ export function QuickInfo({ office }: { office: OfficeConfig }) {
             <Phone size={22} />
           </span>
           <div>
-            <h2 className="mb-1.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">Call or text</h2>
+            <h2 className="mb-1.5 font-sans text-sm font-bold uppercase tracking-[0.12em] text-muted">{office.terms.texts === false ? "Call" : "Call or text"}</h2>
             <a href={telHref(contact.phone)} className="text-xl font-semibold text-ink hover:text-accent">
               {contact.phone}
             </a>

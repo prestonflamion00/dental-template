@@ -3,13 +3,13 @@ import type { OfficeConfig } from "@/config/types";
 import { Section } from "@/components/ui/Section";
 import { RequestForm } from "@/components/booking/RequestForm";
 import { openDays } from "@/lib/hours";
-import { telHref } from "@/lib/format";
+import { confirmChannel, confirmVerb, telHref } from "@/lib/format";
 
 /** "Request an appointment" (or service, or an estimate), high on the page: the same form the buttons open, shown inline. */
 export function RequestSection({ office }: { office: OfficeConfig }) {
   const { contact, practice, terms } = office;
   return (
-    <Section id="request" eyebrow={terms.requestEyebrow} title={terms.requestTitle} intro={office.copy.requestIntro ?? "Tell us a little about you and the team will call or text to find a time that works."}>
+    <Section id="request" eyebrow={terms.requestEyebrow} title={terms.requestTitle} intro={office.copy.requestIntro ?? `Tell us a little about you and the team will ${confirmVerb(terms)} to find a time that works.`}>
       {/* CSS in app/globals.css ([data-request-layout]) widens the form once it's in use. */}
       <div
         className="grid gap-5"
@@ -22,7 +22,7 @@ export function RequestSection({ office }: { office: OfficeConfig }) {
               <Clock size={22} />
             </span>
             <div>
-              <h3 className="font-sans text-[1.05rem] font-bold text-ink">We confirm by phone or text</h3>
+              <h3 className="font-sans text-[1.05rem] font-bold text-ink">We confirm by {confirmChannel(terms)}</h3>
               <p className="mt-1 text-[0.95rem] text-muted">Send a request any time. The team gets back to you during office hours with a time that fits.</p>
             </div>
           </li>

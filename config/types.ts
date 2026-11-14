@@ -33,7 +33,8 @@ export type IconName =
   // Home services
   | "wrench" | "droplet" | "flame" | "snowflake" | "fan" | "thermometer" | "house" | "trees" | "shovel"
   | "sprout" | "truck" | "bath" | "waves" | "zap" | "hammer" | "flower" | "clock" | "dollar" | "search"
-  | "vent" | "fence" | "shower" | "toilet" | "wind" | "scissors";
+  | "vent" | "fence" | "shower" | "toilet" | "wind" | "scissors"
+  | "bike" | "gauge" | "tag" | "card" | "refresh" | "fuel" | "cog";
 
 /**
  * Homepage sections. Some have fixed places (config/build.ts): hero and quick info open the page;
@@ -49,6 +50,7 @@ export type SectionId =
   | "doctors"
   | "reviews"
   | "gallery"
+  | "inventory"
   | "video"
   | "faq"
   | "contact";
@@ -82,7 +84,7 @@ export interface Location {
 }
 
 /** Sets the default wording, services and FAQs for details an office file leaves out (config/generic.ts). */
-export type Specialty = "general" | "orthodontics" | "pediatric" | "plumbing" | "hvac" | "landscaping";
+export type Specialty = "general" | "orthodontics" | "pediatric" | "plumbing" | "hvac" | "landscaping" | "scooters";
 
 /**
  * The words the site uses for this kind of business (config/generic.ts sets them per specialty; an
@@ -90,6 +92,8 @@ export type Specialty = "general" | "orthodontics" | "pediatric" | "plumbing" | 
  * service calls or estimates.
  */
 export interface Terms {
+  /** False when the business doesn't text customers: every "call or text" becomes "call". Default true. */
+  texts?: boolean;
   /** "Dentist", "Plumber": page titles such as "Plumber in Clearwater, FL". */
   trade: string;
   /** "dental care", "plumbing": "Plumbing in Clearwater". */
@@ -319,6 +323,13 @@ export interface OfficeConfig {
   /** Optional "Before & after" gallery. Images live in /public/gallery. */
   gallery?: GalleryItem[];
 
+  /**
+   * Optional "For sale" section (dealers: scooters, bikes, cars and the like): grouped listings,
+   * the brands they carry, and financing. A listing's sale price disappears on its own once
+   * `saleEnds` has passed, so an old deal never sits on the homepage.
+   */
+  inventory?: Inventory;
+
   booking: {
     /**
      * If set, every "Request appointment" button links here (e.g. a Zocdoc,
@@ -385,6 +396,16 @@ export interface OfficeConfig {
    * "bleed": edge to edge, fading into the page; "soft": no frame, soft edges, centered text.
    */
   heroLayout?: "card" | "bleed" | "soft";
+
+  /**
+   * The hero's main button. Leave out for the usual request button (it opens the request form).
+   * Dealers whose main business is selling can point it at their listings instead, e.g.
+   * { label: "Shop scooters", href: "#inventory" }.
+   */
+  heroAction?: { label: string; href: string };
+
+  /** The small "Like this website? Made by butterbite digital" line in the footer. On unless false. */
+  credit?: boolean;
 
   /**
    * Phones with a big hero name (heroLayout): how it hands over to the top bar as you scroll.
@@ -483,3 +504,30 @@ export type OfficeInput = DeepPartial<Omit<OfficeConfig, "placeholders" | "pract
   /** More offices, if the practice has several. Each without `hours` gets placeholder hours. */
   otherLocations?: (Omit<Location, "hours"> & { hours?: Record<Day, DayHours> })[];
 };
+
+/** One item for sale. Prices are display text ("$2,699 + fees"), so dealers can word them their way. */
+export interface InventoryItem {
+  name: string;
+  /** Short line under the name, e.g. "50cc · Up to 30 mph · Moped license". */
+  specs?: string;
+  price?: string;
+  /** Optional sale price, shown until `saleEnds` (YYYY-MM-DD, the last day of the sale). */
+  salePrice?: string;
+  saleEnds?: string;
+  /** Small label on the photo, e.g. "New", "Used", "Only one". */
+  badge?: string;
+  image?: string;
+}
+
+export interface Inventory {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  groups: { name: string; note?: string; items: InventoryItem[] }[];
+  /** "Brands we sell": a short pitch for each. */
+  brands?: { name: string; text: string }[];
+  /** Financing and payment: a few plain lines, plus an optional apply link per lender. */
+  financing?: { title: string; text: string; links?: { label: string; href: string }[] };
+  /** Small print under the listings (taxes, fees, availability). */
+  note?: string;
+}

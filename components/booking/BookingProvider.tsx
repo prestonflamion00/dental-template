@@ -5,7 +5,7 @@ import { withBase } from "@/lib/format";
 
 /** Fired on the page when a request button is used; the form picks the service and takes focus. */
 export const REQUEST_EVENT = "request:start";
-export type RequestEventDetail = { serviceId?: string };
+export type RequestEventDetail = { serviceId?: string; note?: string };
 
 export interface BookingSettings {
   /** External scheduler URL; when set, buttons link out instead of going to the request form. */
@@ -16,7 +16,7 @@ export interface BookingSettings {
   emergency?: string | null;
 }
 
-const Ctx = createContext<{ open: (serviceId?: string) => void; url?: string; requestLabel: string; emergency: string | null } | null>(null);
+const Ctx = createContext<{ open: (serviceId?: string, note?: string) => void; url?: string; requestLabel: string; emergency: string | null } | null>(null);
 
 /**
  * Every "Request appointment" button scrolls to the request form near the bottom of the page
@@ -24,7 +24,7 @@ const Ctx = createContext<{ open: (serviceId?: string) => void; url?: string; re
  * service when the button belongs to one. On pages without the form it goes to the home page's.
  */
 export function BookingProvider({ settings, children }: { settings: BookingSettings; children: React.ReactNode }) {
-  const open = useCallback((serviceId?: string) => {
+  const open = useCallback((serviceId?: string, note?: string) => {
     const section = document.getElementById("request");
     if (!section) {
       window.location.href = withBase("/#request");
@@ -49,7 +49,7 @@ export function BookingProvider({ settings, children }: { settings: BookingSetti
       } else {
         section.scrollIntoView({ behavior });
       }
-      window.dispatchEvent(new CustomEvent<RequestEventDetail>(REQUEST_EVENT, { detail: { serviceId } }));
+      window.dispatchEvent(new CustomEvent<RequestEventDetail>(REQUEST_EVENT, { detail: { serviceId, note } }));
     });
   }, []);
   const value = useMemo(

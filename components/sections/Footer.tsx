@@ -102,11 +102,25 @@ export function Footer({ office, showContact = true }: { office: OfficeConfig; s
         <div className="mt-10 flex flex-col gap-2 border-t border-ink/10 pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} {practice.name}. All rights reserved.</p>
           {office.terms.disclaimer && <p>{office.terms.disclaimer}</p>}
+          {office.credit !== false && (
+            // Small studio credit, nofollow per Google's guidance for "website by" links.
+            <p className="text-xs">
+              Like this website?{" "}
+              <a
+                href={`https://butterbitedigital.com/?ref=${office.id}`}
+                rel="nofollow noopener"
+                target="_blank"
+                className="underline decoration-ink/20 underline-offset-2 hover:text-ink"
+              >
+                Made by butterbite digital
+              </a>
+            </p>
+          )}
         </div>
         {office.stage === "demo" && !office.fictional && (
           <p className="mt-4 text-sm text-muted">
             This is a private sample design made for {practice.name} by butterbite digital, using public business
-            information and images. It isn’t affiliated with or endorsed by the practice and isn’t listed on search
+            information and images. It isn’t affiliated with or endorsed by the business and isn’t listed on search
             engines. Want it taken down? Email hello@butterbitedigital.com.
           </p>
         )}

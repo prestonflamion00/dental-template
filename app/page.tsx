@@ -18,6 +18,7 @@ import { NewPatients } from "@/components/sections/NewPatients";
 import { Doctors } from "@/components/sections/Doctors";
 import { Reviews } from "@/components/sections/Reviews";
 import { GalleryGrid } from "@/components/sections/Gallery";
+import { Inventory } from "@/components/sections/Inventory";
 import { VideoTour } from "@/components/sections/VideoTour";
 import { FaqList } from "@/components/sections/Faq";
 import { Contact } from "@/components/sections/Contact";
@@ -58,6 +59,7 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
         </MobileReveal>
       </Section>
     ) : null,
+  inventory: () => (office.inventory ? <Inventory data={office.inventory} phone={office.contact.phone} /> : null),
   video: () => <VideoTour office={office} />,
   faq: () => (
     <Section id="faq" eyebrow="FAQ" title="Questions? We’ve got answers" intro={office.copy.faqIntro}>
@@ -68,6 +70,7 @@ const SECTIONS: Record<SectionId, () => React.ReactNode> = {
 };
 
 const NAV_LINKS: Partial<Record<SectionId, { href: string; label: string; wideOnly?: boolean }>> = {
+  inventory: { href: "#inventory", label: "For Sale" },
   services: { href: "#services", label: "Services" },
   newPatients: { href: "#new-patients", label: office.terms.newCustomersNav },
   doctors: { href: "#doctors", label: "Our Team" },
