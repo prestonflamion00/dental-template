@@ -3,7 +3,7 @@
 Preston and Foster run **butterbite digital** (always lowercase): websites and marketing for small local businesses in Tampa Bay, Denver and Indianapolis. Preston builds (Denver); Foster sells (St. Pete). Plans: **Core** ($999 setup + $249/mo) and **Growth** ($1,799 + $449/mo); founding prices are half.
 
 ## Where things live
-- **Plan & decision log:** https://claude.ai/artifact/2HQqnyAjEio5fS2YGrwtnC (record every decision here)
+- **Plan & decision log:** https://claude.ai/artifact/2HQqnyAjEio5fS2YGrwtnC. Read it at the start of a new chat. The moment something is decided in chat, add it (newest decisions sit near "Long-term vision" and "Product direction"); add any new risk as a row in the RAID log's Risks table (next R number). Say "logged" in your reply.
 - **Packages doc:** https://claude.ai/artifact/XVa7YgCjziXk1YKTY8FC19
 - **To-do list:** https://claude.ai/artifact/R1hZsJ2Wse6JkmNkg2Pf2A (collection `items`)
 - **Google Drive:** folder "butterbite digital" (shared with Foster). Client folders inside it, e.g. "Seminole Scooters".
